@@ -1,18 +1,20 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronDown } from "lucide-react";
 import { useExchangeT } from "@/hooks/use-exchange-t";
 import { useTranslation } from "@/i18n/use-translation";
+import { LocaleLink } from "@/components/ui/locale-link";
+import { stripLocaleFromPath } from "@/i18n/locales";
 import { cn } from "@/lib/cn";
 
 export function TradeModeNav() {
   const t = useExchangeT();
   const tSite = useTranslation();
   const pathname = usePathname();
-  const isFutures = pathname.startsWith("/futures");
-  const isTrade = pathname.startsWith("/trade") || isFutures;
+  const bare = stripLocaleFromPath(pathname);
+  const isFutures = bare.startsWith("/futures");
+  const isTrade = bare.startsWith("/trade") || isFutures;
 
   return (
     <div className="group relative">
@@ -29,7 +31,7 @@ export function TradeModeNav() {
         <ChevronDown className="h-3.5 w-3.5 opacity-60" />
       </button>
 
-      <div className="invisible absolute left-0 top-full z-50 mt-0 w-72 rounded-lg border border-[var(--terminal-border,#2a3142)] bg-[#141414] p-3 opacity-0 shadow-2xl transition group-hover:visible group-hover:opacity-100">
+      <div className="invisible absolute left-0 top-full z-50 mt-0 w-72 rounded-lg border border-border bg-surface p-3 opacity-0 shadow-2xl transition group-hover:visible group-hover:opacity-100">
         <p className="mb-2 text-[10px] font-medium uppercase tracking-wide text-muted">
           {t("trade.tradeTypes")}
         </p>
@@ -38,7 +40,7 @@ export function TradeModeNav() {
             href="/trade/BTC-USDT"
             title={t("trade.spot")}
             desc={t("trade.spotDesc")}
-            active={!isFutures && pathname.startsWith("/trade")}
+            active={!isFutures && bare.startsWith("/trade")}
           />
           <ModeLink
             href="/futures/BTC-USDT"
@@ -51,18 +53,18 @@ export function TradeModeNav() {
           {t("trade.tools")}
         </p>
         <div className="grid grid-cols-2 gap-1 text-xs">
-          <Link
+          <LocaleLink
             href="/markets"
-            className="rounded-lg px-2 py-1.5 text-muted hover:bg-[#1c1c1c] hover:text-foreground"
+            className="rounded-lg px-2 py-1.5 text-muted hover:bg-surface-muted hover:text-foreground"
           >
             {t("markets.title")}
-          </Link>
-          <Link
+          </LocaleLink>
+          <LocaleLink
             href="/orders"
-            className="rounded-lg px-2 py-1.5 text-muted hover:bg-[#1c1c1c] hover:text-foreground"
+            className="rounded-lg px-2 py-1.5 text-muted hover:bg-surface-muted hover:text-foreground"
           >
             {t("orders.title")}
-          </Link>
+          </LocaleLink>
         </div>
       </div>
     </div>
@@ -81,17 +83,17 @@ function ModeLink({
   active: boolean;
 }) {
   return (
-    <Link
+    <LocaleLink
       href={href}
       className={cn(
         "block rounded-lg px-3 py-2 transition",
         active
-          ? "bg-[#1c1c1c] text-foreground"
-          : "hover:bg-[#1c1c1c]",
+          ? "bg-surface-muted text-foreground"
+          : "hover:bg-surface-muted",
       )}
     >
       <p className="text-sm font-medium">{title}</p>
       <p className="text-[11px] text-muted">{desc}</p>
-    </Link>
+    </LocaleLink>
   );
 }

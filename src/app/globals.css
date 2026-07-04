@@ -2,37 +2,84 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* ── Global design tokens（明暗全局一致） ── */
 :root {
-  --background: #fafbfc;
-  --foreground: #1a1d26;
+  --background: #ffffff;
+  --foreground: #0a0a0a;
   --surface: #ffffff;
-  --surface-muted: #f0f2f5;
-  --border: #e2e6ed;
-  --muted: #6b7280;
-  --primary: #5b4bd4;
-  --accent: #6c5ce7;
-  --up: #00b894;
-  --down: #e8456c;
-  --glass: rgba(255, 255, 255, 0.72);
+  --surface-muted: #f5f5f5;
+  --border: #e8e8e8;
+  --muted: #8c8c8c;
+  --primary: #0a0a0a;
+  --accent: #0a0a0a;
+  --up: #00a86b;
+  --down: #e5395c;
+  --glass: rgba(255, 255, 255, 0.86);
+
+  --terminal-bg: #ffffff;
+  --terminal-panel: #fafafa;
+  --terminal-panel-2: #f2f2f2;
+  --terminal-border: #e8e8e8;
+  --terminal-border-strong: #d4d4d4;
+  --terminal-text: #0a0a0a;
+  --terminal-muted: #8c8c8c;
+
+  --cta-bg: #0a0a0a;
+  --cta-fg: #ffffff;
+  --cta-secondary-bg: #f0f0f0;
+  --cta-secondary-fg: #0a0a0a;
+
+  /* 认证表单（白底面板，固定深色字，不随 dark 主题反转） */
+  --auth-text: #111111;
+  --auth-muted: #666666;
+  --auth-placeholder: #999999;
+  --auth-border: #e5e5e5;
+  --auth-input-bg: #f7f7f7;
+  --auth-hover: #f5f5f5;
+  --auth-active: #f0f0f0;
+  --auth-border-focus: #111111;
+  --auth-panel: #ffffff;
+  --auth-promo: #0a0a0a;
+  --auth-link: #b45309;
+  --auth-warning: #f0b90b;
 }
 
 .dark {
-  --background: #0a0c10;
+  --background: #000000;
   --foreground: #e8ecf4;
-  --surface: #141820;
-  --surface-muted: #1c2230;
-  --border: #2a3142;
+  --surface: #0a0a0a;
+  --surface-muted: #141414;
+  --border: #1f1f1f;
   --muted: #8b95a8;
-  --primary: #6c5ce7;
-  --accent: #00d2aa;
-  --up: #00d2aa;
-  --down: #ff6b8a;
-  --glass: rgba(20, 24, 32, 0.82);
+  --primary: #ffffff;
+  --accent: #ffffff;
+  --up: #98d330;
+  --down: #e93e8b;
+  --glass: rgba(10, 10, 10, 0.86);
+
+  --terminal-bg: #000000;
+  --terminal-panel: #0a0a0a;
+  --terminal-panel-2: #141414;
+  --terminal-border: #1f1f1f;
+  --terminal-border-strong: #2a2a2a;
+  --terminal-text: #e8ecf4;
+  --terminal-muted: #8b95a8;
+
+  --cta-bg: #ffffff;
+  --cta-fg: #0a0a0a;
+  --cta-secondary-bg: #1c1c1c;
+  --cta-secondary-fg: #e8ecf4;
 }
 
 [data-rise-fall="cn"] {
-  --up: #ff6b8a;
-  --down: #00d2aa;
+  --up: #e5395c;
+  --down: #00a86b;
+}
+
+.dark[data-rise-fall="cn"],
+.dark [data-rise-fall="cn"] {
+  --up: #e93e8b;
+  --down: #98d330;
 }
 
 @theme inline {
@@ -46,6 +93,26 @@
   --color-accent: var(--accent);
   --color-up: var(--up);
   --color-down: var(--down);
+  --color-cta: var(--cta-bg);
+  --color-cta-fg: var(--cta-fg);
+  --color-cta-secondary: var(--cta-secondary-bg);
+  --color-cta-secondary-fg: var(--cta-secondary-fg);
+  --color-terminal: var(--terminal-bg);
+  --color-terminal-panel: var(--terminal-panel);
+  --color-terminal-panel-2: var(--terminal-panel-2);
+  --color-terminal-border: var(--terminal-border);
+  --color-terminal-text: var(--terminal-text);
+  --color-terminal-muted: var(--terminal-muted);
+  --color-auth-text: var(--auth-text);
+  --color-auth-muted: var(--auth-muted);
+  --color-auth-placeholder: var(--auth-placeholder);
+  --color-auth-border: var(--auth-border);
+  --color-auth-input: var(--auth-input-bg);
+  --color-auth-hover: var(--auth-hover);
+  --color-auth-panel: var(--auth-panel);
+  --color-auth-promo: var(--auth-promo);
+  --color-auth-link: var(--auth-link);
+  --color-auth-warning: var(--auth-warning);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -63,7 +130,9 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 a {
@@ -76,7 +145,7 @@ button {
 }
 
 ::selection {
-  background: rgba(108, 92, 231, 0.35);
+  background: color-mix(in srgb, var(--foreground) 18%, transparent);
   color: inherit;
 }
 
@@ -90,51 +159,15 @@ button {
   border: 1px solid var(--border);
 }
 
-.aurora-bg {
-  background:
-    radial-gradient(circle at 12% -10%, rgba(108, 92, 231, 0.18), transparent 42%),
-    radial-gradient(circle at 88% 0%, rgba(0, 210, 170, 0.12), transparent 38%),
-    var(--background);
-}
-
-.depth-bar-bid {
-  background: linear-gradient(90deg, rgba(0, 210, 170, 0.22), transparent);
-}
-
-.depth-bar-ask {
-  background: linear-gradient(270deg, rgba(255, 107, 138, 0.22), transparent);
-}
-
-/* ── Velora Terminal — OKX-aligned dark desk ── */
-:root {
-  --terminal-bg: #000000;
-  --terminal-panel: #0a0a0a;
-  --terminal-panel-2: #141414;
-  --terminal-border: #1f1f1f;
-  --terminal-border-strong: #2a2a2a;
-  --terminal-text: #e8ecf4;
-  --terminal-muted: #8b95a8;
-}
-
+/* 交易终端：跟随全局明暗 token，不再强制黑夜 */
 .trade-route {
-  background: #000000;
-  color: #e8ecf4;
+  background: var(--terminal-bg);
+  color: var(--terminal-text);
 }
 
 .terminal-root {
   background: var(--terminal-bg);
   color: var(--terminal-text);
-}
-
-/* Force terminal pages to use dark palette even in light mode */
-.trade-route,
-.trade-route * {
-  --background: #000000;
-  --foreground: #e8ecf4;
-  --surface: #141414;
-  --surface-muted: #1c1c1c;
-  --border: #1f1f1f;
-  --muted: #8b95a8;
 }
 
 .terminal-panel {
@@ -149,6 +182,22 @@ button {
 
 .terminal-divider {
   border-color: var(--terminal-border);
+}
+
+.depth-bar-bid {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--up) 22%, transparent),
+    transparent
+  );
+}
+
+.depth-bar-ask {
+  background: linear-gradient(
+    270deg,
+    color-mix(in srgb, var(--down) 22%, transparent),
+    transparent
+  );
 }
 
 .terminal-scroll::-webkit-scrollbar {
@@ -171,12 +220,12 @@ button {
 }
 
 .orderbook-scroll::-webkit-scrollbar-thumb {
-  background: #3a3a3a;
+  background: var(--terminal-border-strong);
   border-radius: 4px;
 }
 
 .orderbook-scroll::-webkit-scrollbar-thumb:hover {
-  background: #505050;
+  background: var(--muted);
 }
 
 @keyframes ticker-scroll {
@@ -194,4 +243,263 @@ button {
 
 .ticker-animate:hover {
   animation-play-state: paused;
+}
+
+/* 门户首页 CTA */
+.btn-cta {
+  background: var(--cta-bg);
+  color: var(--cta-fg);
+}
+
+.btn-cta-secondary {
+  background: var(--cta-secondary-bg);
+  color: var(--cta-secondary-fg);
+}
+
+/* ── 认证表单全局（白底深字，不受暗色主题继承影响） ── */
+.auth-form {
+  --foreground: var(--auth-text);
+  --muted: var(--auth-muted);
+  --border: var(--auth-border);
+  color: var(--auth-text);
+  background: var(--auth-panel);
+}
+
+.auth-form h1,
+.auth-form h2,
+.auth-form h3,
+.auth-form label,
+.auth-form .auth-label,
+.auth-form span,
+.auth-form button {
+  color: var(--auth-text);
+}
+
+.auth-form .auth-muted,
+.auth-form p.auth-muted {
+  color: var(--auth-muted) !important;
+}
+
+.auth-form p:not(.auth-muted):not([class*="rose"]) {
+  color: var(--auth-muted);
+}
+
+.auth-form a,
+.auth-form .auth-link {
+  color: #b45309;
+}
+
+.auth-form a:hover,
+.auth-form .auth-link:hover {
+  color: #92400e;
+}
+
+.auth-form input:not([type="checkbox"]):not([type="radio"]),
+.auth-form select,
+.auth-form textarea,
+.auth-form .auth-input {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid var(--auth-border);
+  border-radius: 0.75rem;
+  background: var(--auth-input-bg);
+  color: var(--auth-text) !important;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  outline: none;
+}
+
+.auth-form input[type="checkbox"],
+.auth-form input[type="radio"] {
+  width: 1rem;
+  height: 1rem;
+  min-width: 1rem;
+  margin: 0;
+  padding: 0;
+  flex-shrink: 0;
+  border: 1px solid var(--auth-border);
+  border-radius: 0.25rem;
+  background: #ffffff;
+  accent-color: #111111;
+}
+
+.auth-form .auth-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--auth-muted) !important;
+}
+
+.auth-form .auth-check input {
+  margin-top: 0.125rem;
+}
+
+.auth-form input::placeholder,
+.auth-form textarea::placeholder {
+  color: var(--auth-placeholder) !important;
+  opacity: 1;
+}
+
+.auth-form input:not([type="checkbox"]):not([type="radio"]):focus,
+.auth-form select:focus,
+.auth-form textarea:focus,
+.auth-form .auth-input:focus {
+  border-color: var(--auth-border-focus);
+  background: #ffffff;
+}
+
+/* OKX 风格：触发器浅灰底、细边框 */
+.auth-form .auth-trigger {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid #e5e5e5;
+  border-radius: 0.75rem;
+  background: #f7f7f7;
+  color: var(--auth-text) !important;
+  padding: 0.875rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-align: left;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.auth-form .auth-trigger:hover {
+  border-color: #d0d0d0;
+}
+
+.auth-form .auth-trigger.is-open {
+  border-color: #d0d0d0;
+  background: #f7f7f7;
+}
+
+.auth-form .auth-trigger .auth-placeholder {
+  color: var(--auth-placeholder) !important;
+  font-weight: 400;
+}
+
+/* OKX 风格：白底浮层 + 轻阴影 */
+.auth-form .auth-dropdown {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  z-index: 40;
+  margin-top: 0.25rem;
+  overflow: hidden;
+  border: none;
+  border-radius: 0.75rem;
+  background: #ffffff;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  color: var(--auth-text);
+}
+
+/* 下拉内搜索：浅灰底、无边框、左侧给图标留位 */
+.auth-form .auth-dropdown input,
+.auth-form .auth-dropdown input:focus,
+.auth-form .auth-dropdown .auth-search {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  border: none !important;
+  border-radius: 0.5rem;
+  background: #f5f5f5 !important;
+  color: var(--auth-text) !important;
+  box-shadow: none !important;
+  font-weight: 400;
+  /* 左侧图标 16px + 间距，避免与 placeholder 重叠 */
+  padding: 0.625rem 0.75rem 0.625rem 2.5rem !important;
+}
+
+.auth-form .auth-dropdown input::placeholder,
+.auth-form .auth-dropdown .auth-search::placeholder {
+  color: var(--auth-placeholder) !important;
+  opacity: 1;
+}
+
+.auth-form .auth-dropdown .auth-search-wrap {
+  position: relative;
+}
+
+.auth-form .auth-dropdown .auth-search-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  z-index: 1;
+  width: 1rem;
+  height: 1rem;
+  transform: translateY(-50%);
+  color: #999999;
+  pointer-events: none;
+}
+
+.auth-form .auth-dropdown-item {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: #111111 !important;
+  text-align: left;
+  background: transparent;
+  border: 0;
+}
+
+.auth-form .auth-dropdown-item:hover,
+.auth-form .auth-dropdown-item.is-active {
+  background: #f5f5f5;
+}
+
+.auth-form .auth-dropdown-section {
+  padding: 0.25rem 1rem 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: #999999 !important;
+}
+
+.auth-form .auth-btn {
+  margin-top: 1.5rem;
+  width: 100%;
+  border-radius: 0.5rem;
+  padding: 0.875rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: background 0.15s ease;
+}
+
+.auth-form .auth-btn-primary {
+  background: #111111;
+  color: #ffffff !important;
+}
+
+.auth-form .auth-btn-primary:hover:not(:disabled) {
+  background: #222222;
+}
+
+.auth-form .auth-btn-primary:disabled {
+  cursor: not-allowed;
+  background: #e5e5e5;
+  color: #bbbbbb !important;
+}
+
+.auth-form .auth-flag {
+  display: flex;
+  height: 1.5rem;
+  width: 1.5rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 9999px;
+  background: #f0f0f0;
+  font-size: 1rem;
+  line-height: 1;
 }

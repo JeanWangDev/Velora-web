@@ -2,17 +2,20 @@
 
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
-import {
-  Check,
-  ChevronDown,
-  Search,
-  X,
-} from "lucide-react";
+import { Check, X } from "lucide-react";
 import { AuthService } from "@/services/auth-service";
 import { ApiClientError } from "@/services/api-client-error";
 import { toast } from "@/services/toast";
 import { useAuthStore } from "@/stores/use-auth-store";
 import { useLocale } from "@/i18n/use-translation";
+import {
+  AuthPageFrame,
+  AuthPromoPanel,
+} from "@/components/auth/auth-shell";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { CheckboxField } from "@/components/ui/checkbox-field";
+import { SearchableSelect } from "@/components/ui/searchable-select";
 import { cn } from "@/lib/cn";
 
 type KycStep =
@@ -52,24 +55,25 @@ const STEPS: KycStep[] = [
 ];
 
 interface RegisterKycModalProps {
-  open: boolean;
+  open?: boolean;
   onClose: () => void;
   onGoLogin?: () => void;
+  /** page = 独立注册页；modal = 弹层（兼容旧入口） */
+  variant?: "page" | "modal";
 }
 
 export function RegisterKycModal({
-  open,
+  open = true,
   onClose,
   onGoLogin,
+  variant = "modal",
 }: RegisterKycModalProps) {
   const locale = useLocale();
   const isZh = locale === "zh";
   const setSession = useAuthStore((s) => s.setSession);
 
   const [step, setStep] = useState<KycStep>("location");
-  const [country, setCountry] = useState("CN");
-  const [countryOpen, setCountryOpen] = useState(false);
-  const [countryQ, setCountryQ] = useState("");
+  const [country, setCountry] = useState("");
   const [email, setEmail] = useState("");
   const [inviteCode, setInviteCode] = useState("");
   const [password, setPassword] = useState("");
@@ -101,21 +105,19 @@ export function RegisterKycModal({
     return () => window.clearInterval(t);
   }, [cooldown]);
 
-  const stepIndex = STEPS.indexOf(step);
   const selectedCountry = COUNTRIES.find((c) => c.code === country);
+  const countryOptions = useMemo(
+    () =>
+      COUNTRIES.map((c) => ({
+        value: c.code,
+        label: isZh ? c.zh : c.en,
+        icon: c.flag,
+      })),
+    [isZh],
+  );
 
-  const filteredCountries = useMemo(() => {
-    const q = countryQ.trim().toLowerCase();
-    if (!q) return COUNTRIES;
-    return COUNTRIES.filter(
-      (c) =>
-        c.code.toLowerCase().includes(q) ||
-        c.zh.includes(q) ||
-        c.en.toLowerCase().includes(q),
-    );
-  }, [countryQ]);
-
-  if (!open || !mounted) return null;
+  if (variant === "modal" && (!open || !mounted)) return null;
+  if (variant === "page" && !open) return null;
 
   const label = (zh: string, en: string) => (isZh ? zh : en);
 
@@ -284,109 +286,50 @@ export function RegisterKycModal({
     </div>
   );
 
-  const progress = (
-    <div className="mb-6 flex gap-1.5">
-      {STEPS.slice(0, -1).map((s, i) => (
-        <span
-          key={s}
-          className={cn(
-            "h-1 flex-1 rounded-full",
-            i <= stepIndex ? "bg-black" : "bg-[#e5e5e5]",
-          )}
-        />
-      ))}
-    </div>
-  );
-
-  const inputCls =
-    "w-full rounded-xl border border-[#e5e5e5] bg-[#f7f7f7] px-4 py-3 text-sm text-black outline-none placeholder:text-[#999] focus:border-black focus:bg-white";
-
-  const primaryBtn = (enabled: boolean) =>
-    cn(
-      "mt-6 w-full rounded-full py-3.5 text-sm font-semibold transition",
-      enabled
-        ? "bg-black text-white hover:bg-[#222]"
-        : "cursor-not-allowed bg-[#e5e5e5] text-white",
-    );
-
   let body: ReactNode = null;
 
   if (step === "location") {
     body = (
       <>
-        <h1 className="text-2xl font-bold text-black">
+        <h1 className="text-2xl font-bold">
           {label("选择您的所在地", "Select your location")}
         </h1>
-        <p className="mt-2 text-sm text-[#666]">
+        <p className="auth-muted mt-2 text-sm">
           {label(
             "请选择居住国家/地区，以便我们为您提供合规服务。",
             "Select your country/region so we can provide compliant services.",
           )}
         </p>
         <div className="mt-8">
-          <label className="mb-2 block text-sm font-medium text-black">
-            {label("居住国家/地区", "Country/Region of Residence")}
-          </label>
+          <SearchableSelect
+            label={label("居住国家/地区", "Country/Region of Residence")}
+            value={country}
+            onChange={setCountry}
+            options={countryOptions}
+            placeholder={label("请选择居住地", "Please select residence")}
+            searchPlaceholder={label("搜索", "Search")}
+            sectionTitle={label("常用", "Common")}
+            emptyText={label("无匹配结果", "No results")}
+          />
+        </div>
+        <Button
+          variant="auth"
+          disabled={!country}
+          onClick={nextFromLocation}
+          className="mt-6"
+        >
+          {label("注册账户", "Create account")}
+        </Button>
+        <p className="auth-muted mt-5 text-sm">
+          {label("已有账号？", "Already have an account?")}{" "}
           <button
             type="button"
-            onClick={() => setCountryOpen((v) => !v)}
-            className="flex w-full items-center justify-between rounded-xl border border-[#e5e5e5] bg-[#f7f7f7] px-4 py-3 text-sm"
+            onClick={onGoLogin}
+            className="auth-link font-semibold"
           >
-            <span className="flex items-center gap-2">
-              <span>{selectedCountry?.flag}</span>
-              <span>
-                {isZh ? selectedCountry?.zh : selectedCountry?.en}
-              </span>
-            </span>
-            <ChevronDown className="h-4 w-4 text-[#999]" />
+            {label("登录", "Log in")}
           </button>
-          {countryOpen && (
-            <div className="mt-2 overflow-hidden rounded-xl border border-[#e5e5e5] bg-white shadow-lg">
-              <div className="relative border-b border-[#eee] p-2">
-                <Search className="absolute left-4 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#999]" />
-                <input
-                  autoFocus
-                  value={countryQ}
-                  onChange={(e) => setCountryQ(e.target.value)}
-                  placeholder={label("搜索", "Search")}
-                  className="w-full rounded-lg bg-[#f5f5f5] py-2 pl-8 pr-3 text-xs outline-none"
-                />
-              </div>
-              <p className="px-3 py-1.5 text-[10px] text-[#999]">
-                {label("常用", "Common")}
-              </p>
-              <div className="max-h-48 overflow-y-auto">
-                {filteredCountries.map((c) => (
-                  <button
-                    key={c.code}
-                    type="button"
-                    onClick={() => {
-                      setCountry(c.code);
-                      setCountryOpen(false);
-                    }}
-                    className={cn(
-                      "flex w-full items-center gap-2 px-3 py-2.5 text-left text-sm hover:bg-[#f5f5f5]",
-                      c.code === country && "bg-[#f0f0f0]",
-                    )}
-                  >
-                    <span>{c.flag}</span>
-                    <span>{isZh ? c.zh : c.en}</span>
-                    {c.code === country && (
-                      <Check className="ml-auto h-4 w-4" />
-                    )}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-        <button
-          type="button"
-          onClick={nextFromLocation}
-          className={primaryBtn(true)}
-        >
-          {label("继续", "Continue")}
-        </button>
+        </p>
       </>
     );
   }
@@ -395,78 +338,72 @@ export function RegisterKycModal({
     const canNext = email.includes("@");
     body = (
       <>
-        <h1 className="text-2xl font-bold text-black">
+        <h1 className="text-2xl font-bold">
           {label("添加邮箱地址", "Add email address")}
         </h1>
-        <p className="mt-2 text-sm text-[#666]">
+        <p className="auth-muted mt-2 text-sm">
           {label(
             "邮箱将作为您的登录账号",
             "This email will be your login account",
           )}
         </p>
         <div className="mt-8 space-y-4">
-          <div>
-            <label className="mb-1.5 block text-sm font-medium">
-              {label("邮箱", "Email")}
-            </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder={label("输入邮箱地址", "Enter email address")}
-              className={inputCls}
-            />
-          </div>
-          <div>
-            <label className="mb-1.5 block text-sm font-medium">
-              {label("邀请码 (选填)", "Invitation code (optional)")}
-            </label>
-            <input
-              value={inviteCode}
-              onChange={(e) => setInviteCode(e.target.value)}
-              placeholder={label("输入邀请码", "Enter invitation code")}
-              className={inputCls}
-            />
-          </div>
+          <Input
+            tone="auth"
+            label={label("邮箱", "Email")}
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder={label("输入邮箱地址", "Enter email address")}
+          />
+          <Input
+            tone="auth"
+            label={label("邀请码 (选填)", "Invitation code (optional)")}
+            value={inviteCode}
+            onChange={(e) => setInviteCode(e.target.value)}
+            placeholder={label("输入邀请码", "Enter invitation code")}
+          />
         </div>
-        <button
-          type="button"
+        <CheckboxField tone="auth" defaultChecked>
+          {label(
+            "我已阅读并同意隐私声明与用户协议",
+            "I agree to the Privacy Policy and Terms of Service",
+          )}
+        </CheckboxField>
+        <Button
+          variant="auth"
           disabled={!canNext}
           onClick={nextFromEmail}
-          className={primaryBtn(canNext)}
+          className="mt-6"
         >
           {label("注册", "Sign up")}
-        </button>
-        <p className="mt-4 text-center text-sm text-[#666]">
+        </Button>
+        <p className="auth-muted mt-4 text-sm">
           {label("已有账号？", "Already have an account?")}{" "}
           <button
             type="button"
             onClick={onGoLogin}
-            className="font-medium text-black underline"
+            className="auth-link font-semibold"
           >
             {label("登录", "Log in")}
           </button>
         </p>
-        <div className="my-6 flex items-center gap-3 text-xs text-[#999]">
-          <span className="h-px flex-1 bg-[#e5e5e5]" />
-          {label("或使用其他方式", "Or continue with")}
-          <span className="h-px flex-1 bg-[#e5e5e5]" />
+        <div className="auth-muted my-6 flex items-center gap-3 text-xs">
+          <span className="h-px flex-1 bg-auth-border" />
+          {label("或", "or")}
+          <span className="h-px flex-1 bg-auth-border" />
         </div>
-        <div className="grid grid-cols-2 gap-2">
-          {["Google", "Apple", "Telegram", label("Web3 钱包", "Web3 Wallet")].map(
-            (name) => (
-              <button
-                key={name}
-                type="button"
-                onClick={() =>
-                  toast.info(label("即将支持", "Coming soon"))
-                }
-                className="rounded-full border border-[#e5e5e5] py-2.5 text-xs font-medium text-black hover:bg-[#f7f7f7]"
-              >
-                {name}
-              </button>
-            ),
-          )}
+        <div className="grid grid-cols-3 gap-2">
+          {["Google", "Apple", "Telegram"].map((name) => (
+            <button
+              key={name}
+              type="button"
+              onClick={() => toast.info(label("即将支持", "Coming soon"))}
+              className="rounded-lg border border-auth-border py-2.5 text-xs font-medium hover:bg-auth-hover"
+            >
+              {name}
+            </button>
+          ))}
         </div>
       </>
     );
@@ -476,7 +413,7 @@ export function RegisterKycModal({
     const canNext = password.length >= 8 && password === confirmPassword;
     body = (
       <>
-        <h1 className="text-2xl font-bold text-black">
+        <h1 className="text-2xl font-bold text-[#111]">
           {label("设置登录密码", "Set login password")}
         </h1>
         <p className="mt-2 text-sm text-[#666]">
@@ -495,7 +432,6 @@ export function RegisterKycModal({
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder={label("输入密码", "Enter password")}
-              className={inputCls}
             />
           </div>
           <div>
@@ -507,18 +443,17 @@ export function RegisterKycModal({
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder={label("再次输入密码", "Re-enter password")}
-              className={inputCls}
             />
           </div>
         </div>
-        <button
-          type="button"
+        <Button
+          variant="auth"
           disabled={!canNext}
           onClick={nextFromPassword}
-          className={primaryBtn(canNext)}
+          className="mt-6"
         >
           {label("继续", "Continue")}
-        </button>
+        </Button>
       </>
     );
   }
@@ -527,12 +462,12 @@ export function RegisterKycModal({
     const canNext = code.trim().length >= 4;
     body = (
       <>
-        <h1 className="text-2xl font-bold text-black">
+        <h1 className="text-2xl font-bold text-[#111]">
           {label("验证邮箱", "Verify email")}
         </h1>
         <p className="mt-2 text-sm text-[#666]">
           {label("验证码将发送至", "Code will be sent to")}{" "}
-          <span className="font-medium text-black">{email}</span>
+          <span className="font-medium text-[#111]">{email}</span>
         </p>
         <div className="mt-8 space-y-4">
           <div className="flex gap-2">
@@ -542,7 +477,7 @@ export function RegisterKycModal({
                 setCode(e.target.value.replace(/\D/g, "").slice(0, 6))
               }
               placeholder={label("输入验证码", "Enter code")}
-              className={cn(inputCls, "flex-1")}
+              className="flex-1"
               maxLength={6}
             />
             <button
@@ -562,14 +497,14 @@ export function RegisterKycModal({
             </p>
           )}
         </div>
-        <button
-          type="button"
+        <Button
+          variant="auth"
           disabled={!canNext}
           onClick={nextFromVerify}
-          className={primaryBtn(canNext)}
+          className="mt-6"
         >
           {label("继续", "Continue")}
-        </button>
+        </Button>
       </>
     );
   }
@@ -578,7 +513,7 @@ export function RegisterKycModal({
     const canNext = fullName.trim().length > 0 && idNumber.trim().length > 0;
     body = (
       <>
-        <h1 className="text-2xl font-bold text-black">
+        <h1 className="text-2xl font-bold text-[#111]">
           {label("身份认证 (KYC)", "Identity verification (KYC)")}
         </h1>
         <p className="mt-2 text-sm text-[#666]">
@@ -596,7 +531,6 @@ export function RegisterKycModal({
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               placeholder={label("与证件一致的姓名", "Name as on ID")}
-              className={inputCls}
             />
           </div>
           <div>
@@ -613,7 +547,7 @@ export function RegisterKycModal({
                     "rounded-full border px-3 py-1.5 text-xs",
                     idType === t.id
                       ? "border-black bg-black text-white"
-                      : "border-[#e5e5e5] text-black",
+                      : "border-[#e5e5e5] text-[#111]",
                   )}
                 >
                   {isZh ? t.zh : t.en}
@@ -629,7 +563,6 @@ export function RegisterKycModal({
               value={idNumber}
               onChange={(e) => setIdNumber(e.target.value)}
               placeholder={label("输入证件号码", "Enter ID number")}
-              className={inputCls}
             />
           </div>
           <div className="rounded-xl border border-dashed border-[#ddd] bg-[#fafafa] px-4 py-8 text-center text-xs text-[#999]">
@@ -639,16 +572,16 @@ export function RegisterKycModal({
             )}
           </div>
         </div>
-        <button
-          type="button"
+        <Button
+          variant="auth"
           disabled={!canNext || loading}
           onClick={nextFromIdentity}
-          className={primaryBtn(canNext && !loading)}
+          className="mt-6"
         >
           {loading
             ? label("提交中…", "Submitting…")
             : label("提交认证", "Submit verification")}
-        </button>
+        </Button>
       </>
     );
   }
@@ -659,7 +592,7 @@ export function RegisterKycModal({
         <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#98D330]/20">
           <Check className="h-8 w-8 text-[#3a7a00]" strokeWidth={2.5} />
         </div>
-        <h1 className="text-2xl font-bold text-black">
+        <h1 className="text-2xl font-bold text-[#111]">
           {label("注册完成", "Registration complete")}
         </h1>
         <p className="mt-2 max-w-sm text-sm text-[#666]">
@@ -671,11 +604,11 @@ export function RegisterKycModal({
         <div className="mt-6 w-full rounded-xl bg-[#f7f7f7] p-4 text-left text-xs text-[#666]">
           <p>
             {label("邮箱", "Email")}:{" "}
-            <span className="font-medium text-black">{email}</span>
+            <span className="font-medium text-[#111]">{email}</span>
           </p>
           <p className="mt-1">
             {label("所在地", "Location")}:{" "}
-            <span className="font-medium text-black">
+            <span className="font-medium text-[#111]">
               {isZh ? selectedCountry?.zh : selectedCountry?.en}
             </span>
           </p>
@@ -686,50 +619,65 @@ export function RegisterKycModal({
             </span>
           </p>
         </div>
-        <button
-          type="button"
-          onClick={onClose}
-          className={primaryBtn(true)}
-        >
+        <Button variant="auth" onClick={onClose} className="mt-6">
           {label("开始交易", "Start trading")}
-        </button>
+        </Button>
       </div>
     );
   }
+
+  const formBody = (
+    <>
+      {error && (
+        <p className="mb-4 rounded-lg bg-rose-50 px-3 py-2 text-xs text-rose-700">
+          {error}
+        </p>
+      )}
+      {body}
+      {step !== "done" && step !== "location" && (
+        <button
+          type="button"
+          onClick={() => {
+            setError("");
+            const i = STEPS.indexOf(step);
+            if (i > 0) setStep(STEPS[i - 1]);
+          }}
+          className="mt-4 text-center text-xs text-[#999] hover:text-[#111]"
+        >
+          {label("返回上一步", "Back")}
+        </button>
+      )}
+    </>
+  );
+
+  if (variant === "page") {
+    return (
+      <AuthPageFrame promo={<AuthPromoPanel variant="trust" />}>
+        {formBody}
+      </AuthPageFrame>
+    );
+  }
+
+  const formPanel = (
+    <div className="auth-form relative flex min-w-0 flex-1 flex-col overflow-y-auto p-8 sm:px-12 sm:py-10">
+      <button
+        type="button"
+        onClick={onClose}
+        className="absolute right-4 top-4 rounded-full p-1.5 text-[#999] hover:bg-[#f0f0f0] hover:text-[#111]"
+      >
+        <X className="h-5 w-5" />
+      </button>
+      {formBody}
+    </div>
+  );
+
+  if (!mounted) return null;
 
   return createPortal(
     <div className="fixed inset-0 z-[120] flex bg-black/50">
       <div className="m-auto flex h-[min(92vh,720px)] w-[min(96vw,960px)] overflow-hidden rounded-2xl bg-white shadow-2xl">
         {promo}
-        <div className="relative flex min-w-0 flex-1 flex-col overflow-y-auto bg-white p-8 sm:p-10">
-          <button
-            type="button"
-            onClick={onClose}
-            className="absolute right-4 top-4 rounded-full p-1.5 text-[#999] hover:bg-[#f0f0f0] hover:text-black"
-          >
-            <X className="h-5 w-5" />
-          </button>
-          {step !== "done" && progress}
-          {error && (
-            <p className="mb-4 rounded-lg bg-rose-50 px-3 py-2 text-xs text-rose-700">
-              {error}
-            </p>
-          )}
-          {body}
-          {step !== "done" && step !== "location" && (
-            <button
-              type="button"
-              onClick={() => {
-                setError("");
-                const i = STEPS.indexOf(step);
-                if (i > 0) setStep(STEPS[i - 1]);
-              }}
-              className="mt-4 text-center text-xs text-[#999] hover:text-black"
-            >
-              {label("返回上一步", "Back")}
-            </button>
-          )}
-        </div>
+        {formPanel}
       </div>
     </div>,
     document.body,

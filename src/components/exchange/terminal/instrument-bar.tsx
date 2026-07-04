@@ -28,13 +28,13 @@ function StatCell({
 }) {
   return (
     <div className="flex min-w-0 shrink-0 flex-col gap-0.5 px-2">
-      <span className="inline-flex items-center gap-0.5 text-[10px] leading-none text-[#8b95a8]">
+      <span className="inline-flex items-center gap-0.5 text-[10px] leading-none text-[var(--terminal-muted)]">
         {label}
         {link && <ExternalLink className="h-2.5 w-2.5 opacity-60" />}
       </span>
       <span
         className={cn(
-          "font-mono text-xs font-medium leading-none tabular-nums text-[#e8ecf4]",
+          "font-mono text-xs font-medium leading-none tabular-nums text-[var(--terminal-text)]",
           valueClassName,
         )}
       >
@@ -66,10 +66,10 @@ export function InstrumentBar({
     mode === "futures" ? "bg-accent/15 text-accent" : "bg-up/15 text-up";
 
   return (
-    <div className="relative z-30 flex h-12 shrink-0 items-center gap-1 border-b border-[#1f1f1f] bg-black px-3">
+    <div className="relative z-30 flex h-12 shrink-0 items-center gap-1 border-b border-[var(--terminal-border)] bg-[var(--terminal-bg)] px-3">
       {/* 币对选择：不设 overflow，避免裁切下拉 */}
       <div className="relative z-40 flex shrink-0 items-center gap-2 pr-2">
-        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#1c1c1c] text-[11px] font-bold text-foreground">
+        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[var(--terminal-panel-2)] text-[11px] font-bold text-foreground">
           {meta?.base?.slice(0, 1) ?? "?"}
         </div>
         <div className="flex items-center gap-1.5">
@@ -103,7 +103,7 @@ export function InstrumentBar({
         </button>
       </div>
 
-      <div className="mx-1 h-6 w-px shrink-0 bg-[#1f1f1f]" />
+      <div className="mx-1 h-6 w-px shrink-0 bg-[var(--terminal-border)]" />
 
       {/* 最新价 + 涨跌 */}
       <div className="flex shrink-0 flex-col gap-0.5 px-2">

@@ -4,6 +4,7 @@ import { SiteHeader } from "@/components/site-header";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { ToastViewport } from "@/components/ui/toast-viewport";
 import { HtmlLangSync } from "@/i18n/html-lang-sync";
+import { LocaleSync } from "@/i18n/locale-sync";
 import { CommandPalette } from "@/components/command-palette";
 import { MockMarketTicker } from "@/components/exchange/mock-market-ticker";
 import { RiseFallSync } from "@/components/exchange/rise-fall-sync";
@@ -41,12 +42,11 @@ export default function RootLayout({
       <body className="min-h-full bg-background text-foreground">
         <ThemeProvider>
           <HtmlLangSync />
+          <LocaleSync />
           <RiseFallSync />
           <MockMarketTicker />
-          <div className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(34,211,238,0.08),transparent_30%),radial-gradient(circle_at_bottom_right,rgba(168,85,247,0.08),transparent_24%)] dark:bg-[radial-gradient(circle_at_top,rgba(34,211,238,0.12),transparent_30%),radial-gradient(circle_at_bottom_right,rgba(168,85,247,0.12),transparent_24%),#020617]">
+          <div className="min-h-screen bg-background">
             <SiteHeader />
-            {/* No width constraint here — each page chooses its own container.
-                Content pages wrap with `max-w-7xl`; /trade takes full width. */}
             <main className="flex flex-1 flex-col">{children}</main>
             <ToastViewport />
             <CommandPalette />

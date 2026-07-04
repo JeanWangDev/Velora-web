@@ -1,11 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { ChevronDown, ChevronRight, Search, Star, Wifi } from "lucide-react";
 import { useExchangeT } from "@/hooks/use-exchange-t";
 import { useLocale } from "@/i18n/use-translation";
+import { LocaleLink } from "@/components/ui/locale-link";
 import { MOCK_SYMBOLS } from "@/mocks/exchange-data";
 import { useMockMarketStore } from "@/stores/use-mock-market-store";
 import { useWatchlistStore } from "@/stores/use-watchlist-store";
@@ -296,7 +296,7 @@ export function SymbolPickerDropdown({
                 const up = tk.change24h > 0;
                 const down = tk.change24h < 0;
                 return (
-                  <Link
+                  <LocaleLink
                     key={s.symbol}
                     href={`${basePath}/${s.symbol}`}
                     onClick={() => setOpen(false)}
@@ -350,7 +350,7 @@ export function SymbolPickerDropdown({
                     <span className="text-right font-mono tabular-nums text-[#c8cdd6]">
                       {formatCompact(tk.quoteVolume24h, locale)}
                     </span>
-                  </Link>
+                  </LocaleLink>
                 );
               })}
             </div>

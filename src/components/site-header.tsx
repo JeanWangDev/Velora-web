@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Bell,
@@ -9,14 +8,11 @@ import {
   HelpCircle,
   MessageSquare,
   Search,
-  Wallet,
 } from "lucide-react";
 import { useState } from "react";
 import { useTranslation, type TranslationKey } from "@/i18n/use-translation";
 import { useExchangeT } from "@/hooks/use-exchange-t";
 import { VeloraLogo } from "@/components/ui/velora-logo";
-import { LoginModal } from "@/components/auth/login-modal";
-import { RegisterKycModal } from "@/components/auth/register-kyc-modal";
 import { UserAccountMenu } from "@/components/auth/user-account-menu";
 import { AuthHydrator } from "@/components/auth/auth-hydrator";
 import { TradeModeNav } from "@/components/exchange/okx/trade-mode-nav";
@@ -24,7 +20,9 @@ import { AssetsDropdown } from "@/components/exchange/terminal/assets-dropdown";
 import { NotificationsDropdown } from "@/components/exchange/terminal/notifications-dropdown";
 import { LanguageSwitcher } from "@/components/ui/language-switcher";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { LocaleLink } from "@/components/ui/locale-link";
 import { useAuthStore } from "@/stores/use-auth-store";
+import { stripLocaleFromPath } from "@/i18n/locales";
 import { cn } from "@/lib/cn";
 
 const NAV: { href: string; labelKey: TranslationKey; dropdown?: boolean }[] = [
@@ -38,39 +36,28 @@ export function SiteHeader() {
   const t = useTranslation();
   const et = useExchangeT();
   const pathname = usePathname();
-  const [loginOpen, setLoginOpen] = useState(false);
-  const [registerOpen, setRegisterOpen] = useState(false);
+  const barePath = stripLocaleFromPath(pathname);
   const [searchQ, setSearchQ] = useState("");
   const user = useAuthStore((s) => s.user);
   const hydrated = useAuthStore((s) => s.hydrated);
   const isTerminal =
-    pathname.startsWith("/trade") || pathname.startsWith("/futures");
-
+    barePath.startsWith("/trade") || barePath.startsWith("/futures");
   return (
     <>
       <AuthHydrator />
       <header
         className={cn(
-          "sticky top-0 z-50 border-b",
-          isTerminal
-            ? "border-[#1f1f1f] bg-[#000000]"
-            : "border-border bg-surface",
+          "sticky top-0 z-50 border-b border-border bg-background",
+          isTerminal && "bg-[var(--terminal-bg)]",
         )}
       >
         <div className="flex h-12 items-center gap-4 px-4">
-          {/* Logo */}
-          <Link href="/" className="flex shrink-0 items-center gap-2">
+          <LocaleLink href="/" className="flex shrink-0 items-center gap-2">
             <VeloraLogo showWordmark className="h-7 w-auto" />
-          </Link>
+          </LocaleLink>
 
-          <div
-            className={cn(
-              "hidden h-5 w-px md:block",
-              isTerminal ? "bg-[#2a2a2a]" : "bg-border",
-            )}
-          />
+          <div className="hidden h-5 w-px bg-border md:block" />
 
-          {/* Center nav — OKX style */}
           <nav className="hidden flex-1 items-center gap-1 md:flex">
             {NAV.map((item) => {
               if (item.dropdown && item.labelKey === "nav.trade") {
@@ -78,11 +65,11 @@ export function SiteHeader() {
               }
               const active =
                 item.labelKey === "nav.trade"
-                  ? pathname.startsWith("/trade") ||
-                    pathname.startsWith("/futures")
-                  : pathname.startsWith(item.href);
+                  ? barePath.startsWith("/trade") ||
+                    barePath.startsWith("/futures")
+                  : barePath.startsWith(item.href);
               return (
-                <Link
+                <LocaleLink
                   key={item.href}
                   href={item.href}
                   className={cn(
@@ -96,12 +83,11 @@ export function SiteHeader() {
                   {item.dropdown && (
                     <ChevronDown className="h-3.5 w-3.5 opacity-60" />
                   )}
-                </Link>
+                </LocaleLink>
               );
             })}
           </nav>
 
-          {/* Right utilities */}
           <div className="ml-auto flex items-center gap-2">
             <div className="relative hidden lg:block">
               <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted" />
@@ -109,26 +95,16 @@ export function SiteHeader() {
                 value={searchQ}
                 onChange={(e) => setSearchQ(e.target.value)}
                 placeholder={et("markets.search")}
-                className={cn(
-                  "w-40 rounded-full py-1.5 pl-8 pr-3 text-xs outline-none xl:w-48",
-                  isTerminal
-                    ? "border border-[var(--terminal-border)] bg-[#141414] text-foreground placeholder:text-muted"
-                    : "border border-border bg-surface-muted",
-                )}
+                className="w-40 rounded-full border border-border bg-surface-muted py-1.5 pl-8 pr-3 text-xs outline-none placeholder:text-muted xl:w-48"
               />
             </div>
 
-            <Link
+            <LocaleLink
               href="/assets"
-              className={cn(
-                "hidden rounded-full border px-3 py-1 text-xs font-medium sm:inline-flex",
-                isTerminal
-                  ? "border-[var(--terminal-border)] text-foreground hover:bg-[#141414]"
-                  : "border-border hover:border-accent/40",
-              )}
+              className="hidden rounded-full border border-border px-3 py-1 text-xs font-medium hover:bg-surface-muted sm:inline-flex"
             >
               {et("trade.deposit")}
-            </Link>
+            </LocaleLink>
 
             <AssetsDropdown />
 
@@ -138,34 +114,22 @@ export function SiteHeader() {
               <UserAccountMenu user={user} />
             ) : (
               <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => setLoginOpen(true)}
+                <LocaleLink
+                  href="/login"
                   className="text-xs text-muted transition hover:text-foreground"
                 >
                   {t("site.login")}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setRegisterOpen(true)}
-                  className={cn(
-                    "inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-xs font-medium transition",
-                    isTerminal
-                      ? "border-white/40 text-foreground hover:bg-[#141414]"
-                      : "border-border hover:border-accent/40",
-                  )}
+                </LocaleLink>
+                <LocaleLink
+                  href="/register"
+                  className="btn-cta inline-flex items-center rounded-full px-3 py-1.5 text-xs font-medium"
                 >
                   {t("site.register")}
-                </button>
+                </LocaleLink>
               </div>
             )}
 
-            <div
-              className={cn(
-                "hidden h-5 w-px lg:block",
-                isTerminal ? "bg-[#2a2a2a]" : "bg-border",
-              )}
-            />
+            <div className="hidden h-5 w-px bg-border lg:block" />
 
             <div className="flex items-center gap-1">
               <div className="hidden items-center gap-1 lg:flex">
@@ -180,22 +144,6 @@ export function SiteHeader() {
           </div>
         </div>
       </header>
-      <LoginModal
-        open={loginOpen}
-        onClose={() => setLoginOpen(false)}
-        onGoRegister={() => {
-          setLoginOpen(false);
-          setRegisterOpen(true);
-        }}
-      />
-      <RegisterKycModal
-        open={registerOpen}
-        onClose={() => setRegisterOpen(false)}
-        onGoLogin={() => {
-          setRegisterOpen(false);
-          setLoginOpen(true);
-        }}
-      />
     </>
   );
 }
@@ -211,7 +159,7 @@ function HeaderIconBtn({
     <button
       type="button"
       aria-label={label}
-      className="rounded p-2 text-muted transition hover:bg-[#141414] hover:text-foreground"
+      className="rounded p-2 text-muted transition hover:bg-surface-muted hover:text-foreground"
     >
       <Icon className="h-4 w-4" />
     </button>

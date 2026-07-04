@@ -58,7 +58,7 @@ export function TradeWorkspace({
 
   return (
     <div
-      className="terminal-root flex h-[calc(100dvh-48px)] min-h-0 flex-col overflow-hidden bg-black"
+      className="terminal-root flex h-[calc(100dvh-48px)] min-h-0 flex-col overflow-hidden bg-[var(--terminal-bg)]"
       style={{ ["--desk-h" as string]: `${deskHeight}px` }}
     >
       <InstrumentBar ticker={ticker} mode={mode} />
