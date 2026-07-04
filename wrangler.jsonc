@@ -1,0 +1,68 @@
+/**
+ * Cloudflare Workers 部署配置
+ *
+ * 生产: yarn deploy
+ * 测试: yarn deploy:test  (--env test → velora-web-test)
+ */
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "velora-web",
+	"main": ".open-next/worker.js",
+	"compatibility_date": "2026-05-24",
+	"compatibility_flags": [
+		"nodejs_compat",
+		"global_fetch_strictly_public"
+	],
+	"assets": {
+		"binding": "ASSETS",
+		"directory": ".open-next/assets"
+	},
+	"images": {
+		"binding": "IMAGES"
+	},
+	"services": [
+		{
+			"binding": "WORKER_SELF_REFERENCE",
+			"service": "velora-web"
+		}
+	],
+	"observability": {
+		"enabled": true
+	},
+	"upload_source_maps": true,
+	"vars": {
+		"NEXT_PUBLIC_APP_ENV": "production",
+		"NEXT_PUBLIC_API_BASE_URL": "https://api.velora.com",
+		"NEXT_PUBLIC_API_WS_URL": "wss://api.velora.com/ws/market",
+		"NEXT_PUBLIC_EVENTS_WS_URL": "wss://api.velora.com/ws/events",
+		"API_PROXY_TARGET": "https://api.velora.com"
+	},
+	"env": {
+		"test": {
+			"name": "velora-web-test",
+			"assets": {
+				"binding": "ASSETS",
+				"directory": ".open-next/assets"
+			},
+			"images": {
+				"binding": "IMAGES"
+			},
+			"observability": {
+				"enabled": true
+			},
+			"vars": {
+				"NEXT_PUBLIC_APP_ENV": "test",
+				"NEXT_PUBLIC_API_BASE_URL": "https://api-test.velora.com",
+				"NEXT_PUBLIC_API_WS_URL": "wss://api-test.velora.com/ws/market",
+				"NEXT_PUBLIC_EVENTS_WS_URL": "wss://api-test.velora.com/ws/events",
+				"API_PROXY_TARGET": "https://api-test.velora.com"
+			},
+			"services": [
+				{
+					"binding": "WORKER_SELF_REFERENCE",
+					"service": "velora-web-test"
+				}
+			]
+		}
+	}
+}

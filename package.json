@@ -1,0 +1,49 @@
+{
+  "name": "velora-web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "dev:test": "NEXT_PUBLIC_APP_ENV=test API_PROXY_TARGET=https://api-test.velora.com NEXT_PUBLIC_API_WS_URL=wss://api-test.velora.com/ws/market NEXT_PUBLIC_EVENTS_WS_URL=wss://api-test.velora.com/ws/events next dev",
+    "build": "next build",
+    "build:test": "NEXT_PUBLIC_APP_ENV=test NEXT_PUBLIC_API_BASE_URL=https://api-test.velora.com NEXT_PUBLIC_API_WS_URL=wss://api-test.velora.com/ws/market NEXT_PUBLIC_EVENTS_WS_URL=wss://api-test.velora.com/ws/events next build",
+    "cf:build:test": "NEXT_PUBLIC_APP_ENV=test NEXT_PUBLIC_API_BASE_URL=https://api-test.velora.com NEXT_PUBLIC_API_WS_URL=wss://api-test.velora.com/ws/market NEXT_PUBLIC_EVENTS_WS_URL=wss://api-test.velora.com/ws/events opennextjs-cloudflare build",
+    "start": "next start",
+    "lint": "eslint",
+    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "deploy:test": "npm run cf:build:test && opennextjs-cloudflare deploy -- --env test",
+    "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
+    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "preview:test": "npm run cf:build:test && opennextjs-cloudflare preview -- --env test",
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv ./cloudflare-env.d.ts"
+  },
+  "dependencies": {
+    "@opennextjs/cloudflare": "^1.19.9",
+    "ahooks": "^3.9.7",
+    "axios": "^1.16.1",
+    "eventemitter3": "^5.0.4",
+    "lightweight-charts": "^5.2.0",
+    "lucide-react": "^1.16.0",
+    "next": "16.2.6",
+    "next-themes": "^0.4.6",
+    "pako": "^2.1.0",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "recharts": "^3.8.1",
+    "viem": "^2.52.2",
+    "zustand": "^5.0.13"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/pako": "^2.0.4",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@types/webpack-env": "^1.18.8",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.6",
+    "tailwindcss": "^4",
+    "typescript": "^5",
+    "wrangler": "^4.94.0"
+  }
+}
