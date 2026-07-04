@@ -352,6 +352,32 @@ button {
   background: #ffffff;
 }
 
+/* 带小眼睛的密码框，右侧留出图标空间 */
+.auth-form input.auth-input-eye {
+  padding-right: 2.75rem !important;
+}
+
+/* 手机号组合输入 */
+.auth-form .auth-phone-field .auth-phone-input,
+.auth-form .auth-phone-field .auth-phone-input:focus {
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0.75rem !important;
+  color: var(--auth-text) !important;
+}
+
+/* 6 格验证码，避免被 width:100% 撑满 */
+.auth-form input.auth-otp-cell {
+  width: 2.75rem !important;
+  min-width: 2.5rem;
+  max-width: 3rem;
+  padding: 0 !important;
+  text-align: center;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
 /* OKX 风格：触发器浅灰底、细边框 */
 .auth-form .auth-trigger {
   display: flex;
@@ -398,6 +424,11 @@ button {
   background: #ffffff;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   color: var(--auth-text);
+}
+
+.auth-form .auth-dropdown.auth-dial-menu {
+  right: auto;
+  width: min(100%, 17.5rem);
 }
 
 /* 下拉内搜索：浅灰底、无边框、左侧给图标留位 */

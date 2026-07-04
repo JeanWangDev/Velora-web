@@ -4,18 +4,17 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Check, Globe, Info, Search } from "lucide-react";
 import { useLocale } from "@/i18n/use-translation";
-import type { Locale } from "@/i18n/dictionaries";
-import { useSwitchLocale } from "@/i18n/locale-path";
+import { useSwitchUrlLocale, useUrlLocale } from "@/i18n/locale-path";
+import {
+  URL_LOCALE_LABELS,
+  URL_LOCALES,
+  type UrlLocale,
+} from "@/i18n/locales";
 import {
   usePreferencesStore,
   type FiatCurrency,
 } from "@/stores/use-preferences-store";
 import { cn } from "@/lib/cn";
-
-const LANGUAGES: Array<{ code: Locale; label: string; urlTag: string }> = [
-  { code: "zh", label: "简体中文", urlTag: "zh-CN" },
-  { code: "en", label: "English", urlTag: "en" },
-];
 
 const CURRENCIES: FiatCurrency[] = [
   "CNY",
@@ -30,8 +29,9 @@ const CURRENCIES: FiatCurrency[] = [
 ];
 
 export function LanguageSwitcher() {
-  const locale = useLocale();
-  const switchLocale = useSwitchLocale();
+  const dictLocale = useLocale();
+  const urlLocale = useUrlLocale();
+  const switchUrlLocale = useSwitchUrlLocale();
   const fiatCurrency = usePreferencesStore((s) => s.fiatCurrency);
   const setFiatCurrency = usePreferencesStore((s) => s.setFiatCurrency);
 
@@ -72,14 +72,20 @@ export function LanguageSwitcher() {
     };
   }, [open]);
 
-  const langs = LANGUAGES.filter((l) =>
-    `${l.label} ${l.urlTag}`.toLowerCase().includes(langQ.trim().toLowerCase()),
-  );
+  const langs = URL_LOCALES.filter((code) => {
+    const label = URL_LOCALE_LABELS[code];
+    const q = langQ.trim().toLowerCase();
+    if (!q) return true;
+    return (
+      label.toLowerCase().includes(q) || code.toLowerCase().includes(q)
+    );
+  });
+
   const currencies = CURRENCIES.filter((c) =>
     c.toLowerCase().includes(curQ.trim().toLowerCase()),
   );
 
-  const isZh = locale === "zh";
+  const isZh = dictLocale === "zh";
 
   const panel =
     open && mounted
@@ -104,26 +110,26 @@ export function LanguageSwitcher() {
                 />
               </div>
               <div className="min-h-0 flex-1 overflow-y-auto">
-                {langs.map((l) => (
+                {langs.map((code) => (
                   <button
-                    key={l.code}
+                    key={code}
                     type="button"
                     onClick={() => {
-                      switchLocale(l.code);
+                      switchUrlLocale(code);
                       setOpen(false);
                     }}
                     className={cn(
                       "flex w-full items-center justify-between rounded-lg px-2 py-2.5 text-left text-sm hover:bg-surface-muted",
-                      l.code === locale && "bg-surface-muted",
+                      code === urlLocale && "bg-surface-muted",
                     )}
                   >
                     <span>
-                      {l.label}
+                      {URL_LOCALE_LABELS[code]}
                       <span className="ml-2 text-[10px] text-muted">
-                        /{l.urlTag}
+                        /{code}
                       </span>
                     </span>
-                    {l.code === locale && (
+                    {code === urlLocale && (
                       <Check className="h-4 w-4" strokeWidth={2.5} />
                     )}
                   </button>

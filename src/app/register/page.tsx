@@ -12,7 +12,7 @@ export default function RegisterPage() {
     <RegisterKycModal
       open
       variant="page"
-      onClose={() => router.push(localeHref("/trade/BTC-USDT"))}
+      onClose={() => router.push(localeHref("/login"))}
       onGoLogin={() => router.push(localeHref("/login"))}
     />
   );
