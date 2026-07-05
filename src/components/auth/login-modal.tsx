@@ -126,6 +126,9 @@ export function LoginModal({
       const message =
         error instanceof Error ? error.message : t("loginModal.operationFailed");
       setFieldErrors({ _form: message });
+      if (message.includes("频繁") || message.includes("frequent")) {
+        setCodeCooldown(60);
+      }
     } finally {
       setSendingCode(false);
     }

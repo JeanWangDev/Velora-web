@@ -14,6 +14,21 @@ export class AuthService {
     });
   }
 
+  /** 只校验验证码是否正确（不消费），用于多步表单在输入验证码时就给出真实反馈 */
+  static verifyCode(input: {
+    email: string;
+    purpose: "register" | "reset_password";
+    code: string;
+  }) {
+    return apiClient.sendRequest<{ valid: boolean }>({
+      url: `${BASE}/verify-code`,
+      method: "POST",
+      data: input,
+      skipAuth: true,
+      showErrorToast: false,
+    });
+  }
+
   static register(input: {
     email: string;
     code: string;

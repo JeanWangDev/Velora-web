@@ -158,6 +158,10 @@ export function RegisterKycModal({
           : label("验证码发送失败，请稍后重试", "Failed to send code. Please try again.");
       setError(message);
       toast.error(message);
+      // 后端返回"发送过于频繁"时，同步禁用重发按钮，避免用户立刻再点一次撞到同样的限流
+      if (message.includes("频繁") || message.includes("frequent")) {
+        setCooldown(60);
+      }
     } finally {
       setLoading(false);
     }
@@ -211,13 +215,31 @@ export function RegisterKycModal({
     void sendEmailCode();
   }
 
-  function nextFromEmailOtp() {
+  async function nextFromEmailOtp() {
     if (code.trim().length !== 6) {
       setError(label("请输入 6 位邮箱验证码", "Enter 6-digit email code"));
       return;
     }
     setError("");
-    setStep("password");
+    setLoading(true);
+    try {
+      // 真正调后端校验验证码是否正确，而不是只检查位数——避免用户随便填 6 位数字
+      // 就能"走过"这一步，直到最后设置密码提交时才发现验证码根本没对上。
+      await AuthService.verifyCode({
+        email: email.trim(),
+        purpose: "register",
+        code: code.trim(),
+      });
+      setStep("password");
+    } catch (e) {
+      const message =
+        e instanceof ApiClientError || e instanceof Error
+          ? e.message
+          : label("验证码错误或已过期", "Invalid or expired code");
+      setError(message);
+    } finally {
+      setLoading(false);
+    }
   }
 
   function nextFromPassword() {
@@ -554,10 +576,11 @@ export function RegisterKycModal({
         {code.length === 6 ? (
           <Button
             variant="auth"
-            onClick={nextFromEmailOtp}
+            disabled={loading}
+            onClick={() => void nextFromEmailOtp()}
             className="mt-6"
           >
-            {label("继续", "Continue")}
+            {loading ? label("校验中…", "Verifying…") : label("继续", "Continue")}
           </Button>
         ) : (
           <button
