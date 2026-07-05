@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
+import { useHydrated } from "@/hooks/use-hydrated";
 
 interface VeloraLogoProps {
   className?: string;
@@ -11,8 +11,7 @@ interface VeloraLogoProps {
 
 export function VeloraLogo({ className, showWordmark = false }: VeloraLogoProps) {
   const { resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  const mounted = useHydrated();
 
   const isDark = !mounted || resolvedTheme !== "light";
   const src = isDark ? "/brand/logo-dark.png" : "/brand/logo-light.png";

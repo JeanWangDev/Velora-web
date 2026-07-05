@@ -74,17 +74,23 @@ export function DepthBook({
     );
   };
 
-  let askTotal = 0;
-  const askRows = asks.map((l) => {
-    askTotal += l.qty;
-    return row(l.price, l.qty, "ask", askTotal);
-  });
+  const askRows = asks.reduce<{ total: number; nodes: ReturnType<typeof row>[] }>(
+    (acc, l) => {
+      acc.total += l.qty;
+      acc.nodes.push(row(l.price, l.qty, "ask", acc.total));
+      return acc;
+    },
+    { total: 0, nodes: [] },
+  ).nodes;
 
-  let bidTotal = 0;
-  const bidRows = bids.map((l) => {
-    bidTotal += l.qty;
-    return row(l.price, l.qty, "bid", bidTotal);
-  });
+  const bidRows = bids.reduce<{ total: number; nodes: ReturnType<typeof row>[] }>(
+    (acc, l) => {
+      acc.total += l.qty;
+      acc.nodes.push(row(l.price, l.qty, "bid", acc.total));
+      return acc;
+    },
+    { total: 0, nodes: [] },
+  ).nodes;
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">

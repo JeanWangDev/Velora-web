@@ -2,7 +2,6 @@
 
 import { cn } from "@/lib/cn";
 import { formatPercent } from "@/utils/format-exchange";
-import { useLocale } from "@/i18n/use-translation";
 
 export function PriceChange({
   value,
@@ -11,7 +10,6 @@ export function PriceChange({
   value: number;
   className?: string;
 }) {
-  const locale = useLocale();
   const up = value >= 0;
   return (
     <span
@@ -21,7 +19,7 @@ export function PriceChange({
         className,
       )}
     >
-      {formatPercent(value, locale)}
+      {formatPercent(value)}
     </span>
   );
 }

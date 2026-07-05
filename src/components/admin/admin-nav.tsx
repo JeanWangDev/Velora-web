@@ -8,6 +8,7 @@ const links = [
   { href: "/admin/symbols", labelKey: "site.adminSymbols" as const },
   { href: "/admin/users", labelKey: "site.adminUsers" as const },
   { href: "/admin/orders", labelKey: "site.adminOrders" as const },
+  { href: "/admin/kyc", labelKey: "site.adminKyc" as const },
 ];
 
 export function AdminNav() {

@@ -171,8 +171,8 @@ export function KycWizard({ onComplete, onCancel }: KycWizardProps) {
       fullName: name,
       idNumber: id,
       countryIso,
-      docFrontName: frontDoc.name,
-      docBackName: backDoc?.name,
+      docFrontName: frontDoc.uploadedUrl ?? frontDoc.name,
+      docBackName: backDoc?.uploadedUrl ?? backDoc?.name,
       address: address.trim() || undefined,
       validUntil: validUntil.trim() || undefined,
     });
@@ -205,6 +205,7 @@ export function KycWizard({ onComplete, onCancel }: KycWizardProps) {
                 : t("user.kycUploadPassportTitle")
             }
             hint={t("user.kycUploadFrontHint")}
+            side="front"
             value={frontDoc}
             onChange={(doc) => {
               setFrontDoc(doc);
@@ -219,6 +220,7 @@ export function KycWizard({ onComplete, onCancel }: KycWizardProps) {
           <UploadStep
             title={t("user.kycUploadBackTitle")}
             hint={t("user.kycUploadFrontHint")}
+            side="back"
             value={backDoc}
             onChange={(doc) => {
               setBackDoc(doc);
@@ -430,6 +432,7 @@ function GuideStep({ onStart }: { onStart: () => void }) {
 function UploadStep({
   title,
   hint,
+  side,
   value,
   onChange,
   onNext,
@@ -437,6 +440,7 @@ function UploadStep({
 }: {
   title: string;
   hint: string;
+  side: "front" | "back";
   value: UploadedDoc | null;
   onChange: (v: UploadedDoc | null) => void;
   onNext: () => void;
@@ -449,7 +453,7 @@ function UploadStep({
         <h2 className="text-lg font-semibold tracking-tight">{title}</h2>
         <p className="mt-2 text-sm text-muted">{hint}</p>
       </div>
-      <KycDocUploadZone value={value} onChange={onChange} />
+      <KycDocUploadZone value={value} onChange={onChange} side={side} />
       <KycPrimaryButton disabled={!value} onClick={onNext}>
         {nextLabel}
       </KycPrimaryButton>

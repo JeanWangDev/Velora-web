@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import {
   Apple,
   ChevronDown,
@@ -31,7 +31,8 @@ const COIN_COLORS: Record<string, string> = {
 };
 
 function Sparkline({ up }: { up: boolean }) {
-  const points = useMemo(() => {
+  // 装饰性随机曲线：仅需生成一次，用 useState 惰性初始化以满足渲染纯度规则。
+  const [points] = useState(() => {
     let y = 20;
     const pts: string[] = [];
     for (let i = 0; i < 16; i++) {
@@ -40,7 +41,7 @@ function Sparkline({ up }: { up: boolean }) {
       pts.push(`${(i / 15) * 80},${32 - y}`);
     }
     return pts.join(" ");
-  }, [up]);
+  });
 
   return (
     <svg width="80" height="32" viewBox="0 0 80 32" className="overflow-visible">

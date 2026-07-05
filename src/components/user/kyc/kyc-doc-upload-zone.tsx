@@ -1,25 +1,39 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
-import { Camera, CheckCircle2, ImagePlus, X } from "lucide-react";
+import { Camera, CheckCircle2, ImagePlus, Loader2, X } from "lucide-react";
 import { useExchangeT } from "@/hooks/use-exchange-t";
+import { KycService } from "@/services/kyc-service";
 import { toast } from "@/services/toast";
 import { cn } from "@/lib/cn";
 
-const MAX_BYTES = 20 * 1024 * 1024;
-const ACCEPT = ["image/jpeg", "image/jpg", "image/png"];
-const ACCEPT_EXT = ".jpg,.jpeg,.png";
+const MAX_BYTES = 5 * 1024 * 1024;
+const ACCEPT = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+const ACCEPT_EXT = ".jpg,.jpeg,.png,.webp";
 
 export interface UploadedDoc {
   name: string;
   previewUrl: string;
+  /** 上传到后端后返回的可访问 URL（无后端时为空） */
+  uploadedUrl?: string;
 }
 
 interface KycDocUploadZoneProps {
   value: UploadedDoc | null;
   onChange: (doc: UploadedDoc | null) => void;
+  /** 证件面，用于后端存储命名 */
+  side: "front" | "back";
   /** 移动端调起相机 */
   enableCamera?: boolean;
+}
+
+function readAsDataUrl(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result));
+    reader.onerror = () => reject(new Error("read failed"));
+    reader.readAsDataURL(file);
+  });
 }
 
 function validateFile(file: File, t: (k: string) => string): boolean {
@@ -37,30 +51,41 @@ function validateFile(file: File, t: (k: string) => string): boolean {
 export function KycDocUploadZone({
   value,
   onChange,
+  side,
   enableCamera = true,
 }: KycDocUploadZoneProps) {
   const t = useExchangeT();
   const inputRef = useRef<HTMLInputElement>(null);
   const cameraRef = useRef<HTMLInputElement>(null);
   const [dragOver, setDragOver] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   const pick = useCallback(
-    (file: File | undefined) => {
+    async (file: File | undefined) => {
       if (!file) return;
       if (!validateFile(file, t)) return;
       if (value?.previewUrl) URL.revokeObjectURL(value.previewUrl);
-      onChange({
-        name: file.name,
-        previewUrl: URL.createObjectURL(file),
-      });
+      const previewUrl = URL.createObjectURL(file);
+      onChange({ name: file.name, previewUrl });
+
+      setUploading(true);
+      try {
+        const dataUrl = await readAsDataUrl(file);
+        const res = await KycService.upload(dataUrl, side);
+        onChange({ name: file.name, previewUrl, uploadedUrl: res.url });
+      } catch {
+        // 无后端 / 上传失败：保留本地预览，走文件名兜底
+      } finally {
+        setUploading(false);
+      }
     },
-    [onChange, t, value?.previewUrl],
+    [onChange, t, value, side],
   );
 
   function onDrop(e: React.DragEvent) {
     e.preventDefault();
     setDragOver(false);
-    pick(e.dataTransfer.files[0]);
+    void pick(e.dataTransfer.files[0]);
   }
 
   function clear() {
@@ -86,7 +111,15 @@ export function KycDocUploadZone({
           >
             <X className="h-4 w-4" />
           </button>
-          <p className="border-t border-border px-3 py-2 text-center text-xs text-muted">
+          {uploading ? (
+            <div className="absolute inset-0 flex items-center justify-center bg-surface/60">
+              <Loader2 className="h-6 w-6 animate-spin text-primary" />
+            </div>
+          ) : null}
+          <p className="flex items-center justify-center gap-1.5 border-t border-border px-3 py-2 text-center text-xs text-muted">
+            {!uploading && value.uploadedUrl ? (
+              <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
+            ) : null}
             {value.name}
           </p>
         </div>
@@ -134,7 +167,7 @@ export function KycDocUploadZone({
         type="file"
         accept={ACCEPT_EXT}
         className="sr-only"
-        onChange={(e) => pick(e.target.files?.[0])}
+        onChange={(e) => void pick(e.target.files?.[0])}
       />
       {enableCamera ? (
         <input
@@ -143,7 +176,7 @@ export function KycDocUploadZone({
           accept={ACCEPT_EXT}
           capture="environment"
           className="sr-only"
-          onChange={(e) => pick(e.target.files?.[0])}
+          onChange={(e) => void pick(e.target.files?.[0])}
         />
       ) : null}
     </div>

@@ -4,7 +4,7 @@ import { useExchangeT } from "@/hooks/use-exchange-t";
 import { useLocale } from "@/i18n/use-translation";
 import { useMockTradingStore } from "@/stores/use-mock-trading-store";
 import { getSymbolMeta } from "@/mocks/exchange-data";
-import { displayPair, formatDateTime, formatPrice } from "@/utils/format-exchange";
+import { displayPair, formatPrice } from "@/utils/format-exchange";
 
 export function OpenOrdersPanel({ symbol }: { symbol?: string }) {
   const t = useExchangeT();

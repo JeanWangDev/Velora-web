@@ -148,16 +148,16 @@ export function OkxOrderBookPanel({
     const bidSlice = book.bids.slice(0, levelCount);
     const asksDesc = [...askSlice].reverse();
 
-    let askCum = 0;
-    const askCums = asksDesc.map((l) => {
-      askCum += l.qty;
-      return askCum;
-    });
-    let bidCum = 0;
-    const bidCums = bidSlice.map((l) => {
-      bidCum += l.qty;
-      return bidCum;
-    });
+    const askCums = asksDesc.reduce<number[]>((acc, l) => {
+      const prev = acc.length > 0 ? acc[acc.length - 1] : 0;
+      acc.push(prev + l.qty);
+      return acc;
+    }, []);
+    const bidCums = bidSlice.reduce<number[]>((acc, l) => {
+      const prev = acc.length > 0 ? acc[acc.length - 1] : 0;
+      acc.push(prev + l.qty);
+      return acc;
+    }, []);
 
     return {
       asks: asksDesc,

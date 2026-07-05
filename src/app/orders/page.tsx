@@ -4,7 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import { useExchangeT } from "@/hooks/use-exchange-t";
 import { useLocale } from "@/i18n/use-translation";
-import type { Locale } from "@/i18n/dictionaries";
 import { useMockTradingStore } from "@/stores/use-mock-trading-store";
 import { getSymbolMeta } from "@/mocks/exchange-data";
 import {

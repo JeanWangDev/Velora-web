@@ -3,13 +3,10 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Check, Globe, Info, Search } from "lucide-react";
+import { useHydrated } from "@/hooks/use-hydrated";
 import { useLocale } from "@/i18n/use-translation";
 import { useSwitchUrlLocale, useUrlLocale } from "@/i18n/locale-path";
-import {
-  URL_LOCALE_LABELS,
-  URL_LOCALES,
-  type UrlLocale,
-} from "@/i18n/locales";
+import { URL_LOCALE_LABELS, URL_LOCALES } from "@/i18n/locales";
 import {
   usePreferencesStore,
   type FiatCurrency,
@@ -36,14 +33,12 @@ export function LanguageSwitcher() {
   const setFiatCurrency = usePreferencesStore((s) => s.setFiatCurrency);
 
   const [open, setOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const mounted = useHydrated();
   const [langQ, setLangQ] = useState("");
   const [curQ, setCurQ] = useState("");
   const [pos, setPos] = useState({ top: 0, right: 0 });
   const triggerRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     if (!open) return;

@@ -9,7 +9,6 @@ import { useMockTradingStore } from "@/stores/use-mock-trading-store";
 import { useTerminalStore, type BottomDeskTab } from "@/stores/use-terminal-store";
 import { getSymbolMeta } from "@/mocks/exchange-data";
 import {
-  displayPair,
   formatDateTime,
   formatPrice,
   formatQty,

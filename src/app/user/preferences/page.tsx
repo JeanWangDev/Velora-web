@@ -1,8 +1,8 @@
 "use client";
 
 import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
 import { useExchangeT } from "@/hooks/use-exchange-t";
+import { useHydrated } from "@/hooks/use-hydrated";
 import {
   useLocale,
   useSetLocale,
@@ -36,13 +36,11 @@ export default function UserPreferencesPage() {
   const locale = useLocale();
   const setLocale = useSetLocale();
   const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
+  const mounted = useHydrated();
   const riseFall = usePreferencesStore((s) => s.riseFall);
   const timezone = usePreferencesStore((s) => s.timezone);
   const setRiseFall = usePreferencesStore((s) => s.setRiseFall);
   const setTimezone = usePreferencesStore((s) => s.setTimezone);
-
-  useEffect(() => setMounted(true), []);
 
   return (
     <div className="space-y-5">

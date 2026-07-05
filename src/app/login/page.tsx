@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { ChevronDown, Eye, EyeOff, QrCode, Search } from "lucide-react";
 import { AuthService } from "@/services/auth-service";
 import { ApiClientError } from "@/services/api-client-error";
-import { isMockAuthFallbackError, mockLogin } from "@/services/mock-auth";
 import { toast } from "@/services/toast";
 import { useAuthStore } from "@/stores/use-auth-store";
 import { useLocale, useTranslation } from "@/i18n/use-translation";
@@ -100,29 +99,6 @@ export default function LoginPage() {
       );
       router.push(localeHref("/trade/BTC-USDT"));
     } catch (error) {
-      if (isMockAuthFallbackError(error)) {
-        const session = mockLogin({
-          email: account.trim(),
-          password,
-        });
-        if (session) {
-          setSession(session.accessToken, session.user, session.expiresAt);
-          toast.success(
-            t("loginModal.welcomeBack").replace(
-              "{nickname}",
-              session.user.nickname,
-            ),
-          );
-          router.push(localeHref("/trade/BTC-USDT"));
-          return;
-        }
-        setFieldErrors({
-          _form: isZh
-            ? "本地模拟账号不存在或密码错误，请先完成注册"
-            : "Mock account not found or wrong password. Register first.",
-        });
-        return;
-      }
       const message =
         error instanceof ApiClientError
           ? error.message

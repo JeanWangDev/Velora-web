@@ -110,6 +110,10 @@ export function AdminOrdersClient() {
           <Loader2 className="h-4 w-4 animate-spin" />
           {t("adminOrders.loading")}
         </div>
+      ) : items.length === 0 ? (
+        <p className="rounded-2xl border border-dashed border-border py-16 text-center text-sm text-muted">
+          {t("adminOrders.empty")}
+        </p>
       ) : (
         <div className="overflow-x-auto rounded-2xl border border-border">
           <table className="min-w-full text-left text-sm">

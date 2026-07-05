@@ -1,23 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
-import { Check, ChevronDown, Eye, EyeOff, Search, X } from "lucide-react";
-import {
-  getPhoneCountry,
-  isValidPhone,
-  normalizePhoneDigits,
-  PHONE_COUNTRIES,
-} from "@/config/phone-countries";
+import { Check, Eye, EyeOff, X } from "lucide-react";
+import { useHydrated } from "@/hooks/use-hydrated";
+import { getPhoneCountry, PHONE_COUNTRIES } from "@/config/phone-countries";
 import { AuthService } from "@/services/auth-service";
 import { ApiClientError } from "@/services/api-client-error";
-import {
-  clearRegisterDraft,
-  isMockAuthFallbackError,
-  loadRegisterDraft,
-  mockRegister,
-  saveRegisterDraft,
-} from "@/services/mock-auth";
 import { toast } from "@/services/toast";
 import { useLocale } from "@/i18n/use-translation";
 import {
@@ -32,25 +21,16 @@ import { OtpInput } from "@/components/ui/otp-input";
 import { CaptchaModal } from "@/components/ui/captcha-modal";
 import { cn } from "@/lib/cn";
 
-/** OKX 风格：所在地 → 邮箱 → 人机验证 → 邮箱验证码 → 手机 → 短信验证码 → 密码 */
-type KycStep =
-  | "location"
-  | "email"
-  | "emailOtp"
-  | "phone"
-  | "phoneOtp"
-  | "password"
-  | "done";
+/**
+ * OKX 风格：所在地 → 邮箱 → 人机验证 → 邮箱验证码 → 密码
+ *
+ * 注册阶段暂不做手机号+短信验证：后端还没有接入真实短信服务商（阿里云/腾讯云 SMS 或
+ * Twilio），在没有真实短信通道之前绝不在前端伪造一个"随便填 6 位数字就能过"的假步骤。
+ * 手机号绑定放到登录后的"安全设置"里，接入真实短信服务商后再做（跟主流交易所一样分阶段收集）。
+ */
+type KycStep = "location" | "email" | "emailOtp" | "password" | "done";
 
-const STEPS: KycStep[] = [
-  "location",
-  "email",
-  "emailOtp",
-  "phone",
-  "phoneOtp",
-  "password",
-  "done",
-];
+const STEPS: KycStep[] = ["location", "email", "emailOtp", "password", "done"];
 
 /** 与后端 validatePasswordField 一致 */
 function getPasswordRules(password: string, isZh = true) {
@@ -111,65 +91,20 @@ export function RegisterKycModal({
   const [devCode, setDevCode] = useState("");
   const [cooldown, setCooldown] = useState(0);
   const [captchaOpen, setCaptchaOpen] = useState(false);
-  const [phone, setPhone] = useState("");
-  const [phoneIso, setPhoneIso] = useState("CN");
-  const [dialOpen, setDialOpen] = useState(false);
-  const [dialQ, setDialQ] = useState("");
-  const dialRef = useRef<HTMLDivElement>(null);
-  const [phoneCode, setPhoneCode] = useState("");
-  const [phoneDevCode, setPhoneDevCode] = useState("");
-  const [phoneCooldown, setPhoneCooldown] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [mounted, setMounted] = useState(false);
+  const mounted = useHydrated();
 
-  useEffect(() => setMounted(true), []);
-
+  /**
+   * 注册流程不做本地持久化：刷新页面即视为放弃当前注册会话，
+   * 一律从第一步重新开始（真实交易所不会保留半途而废的身份信息草稿，
+   * 且邮箱/短信验证码有时效性，跨刷新恢复反而会导致"验证码错误或已过期"）。
+   */
   useEffect(() => {
     if (!open) return;
-    if (variant === "page") {
-      const draft = loadRegisterDraft();
-      if (draft && draft.step !== "done") {
-        const valid = STEPS.includes(draft.step as KycStep);
-        if (valid) setStep(draft.step as KycStep);
-        if (draft.country) setCountry(draft.country);
-        if (draft.email) setEmail(draft.email);
-        if (draft.inviteCode) setInviteCode(draft.inviteCode);
-        if (draft.phone) setPhone(draft.phone);
-        if (draft.phoneIso) setPhoneIso(draft.phoneIso);
-        if (draft.code) setCode(draft.code);
-        if (draft.phoneCode) setPhoneCode(draft.phoneCode);
-        setError("");
-        return;
-      }
-    }
     setStep("location");
     setError("");
-  }, [open, variant]);
-
-  useEffect(() => {
-    if (!open || step === "done") return;
-    saveRegisterDraft({
-      step,
-      country,
-      email,
-      inviteCode,
-      phone,
-      phoneIso,
-      code,
-      phoneCode,
-    });
-  }, [
-    open,
-    step,
-    country,
-    email,
-    inviteCode,
-    phone,
-    phoneIso,
-    code,
-    phoneCode,
-  ]);
+  }, [open]);
 
   useEffect(() => {
     if (cooldown <= 0) return;
@@ -179,37 +114,6 @@ export function RegisterKycModal({
     );
     return () => window.clearInterval(t);
   }, [cooldown]);
-
-  useEffect(() => {
-    if (phoneCooldown <= 0) return;
-    const t = window.setInterval(
-      () => setPhoneCooldown((s) => (s <= 1 ? 0 : s - 1)),
-      1000,
-    );
-    return () => window.clearInterval(t);
-  }, [phoneCooldown]);
-
-  useEffect(() => {
-    if (!dialOpen) return;
-    const onDown = (e: MouseEvent) => {
-      if (!dialRef.current?.contains(e.target as Node)) setDialOpen(false);
-    };
-    document.addEventListener("mousedown", onDown);
-    return () => document.removeEventListener("mousedown", onDown);
-  }, [dialOpen]);
-
-  const phoneCountry = getPhoneCountry(phoneIso);
-  const dialOptions = useMemo(() => {
-    const q = dialQ.trim().toLowerCase();
-    if (!q) return PHONE_COUNTRIES;
-    return PHONE_COUNTRIES.filter(
-      (c) =>
-        c.dial.includes(q) ||
-        c.nameZh.includes(q) ||
-        c.nameEn.toLowerCase().includes(q) ||
-        c.iso.toLowerCase().includes(q),
-    );
-  }, [dialQ]);
 
   const selectedCountry = getPhoneCountry(country || "CN");
   const countryOptions = useMemo(
@@ -247,35 +151,16 @@ export function RegisterKycModal({
         setDevCode(result.devCode);
         setCode(result.devCode);
       }
-    } catch {
-      // 无后端时使用模拟验证码
-      const mock = "123456";
-      setDevCode(mock);
-      setCode(mock);
-      setCooldown(60);
-      toast.success(label("验证码已发送（模拟）", "Code sent (mock)"));
+    } catch (e) {
+      const message =
+        e instanceof ApiClientError || e instanceof Error
+          ? e.message
+          : label("验证码发送失败，请稍后重试", "Failed to send code. Please try again.");
+      setError(message);
+      toast.error(message);
     } finally {
       setLoading(false);
     }
-  }
-
-  function sendPhoneCode() {
-    const digits = normalizePhoneDigits(phone);
-    if (!isValidPhone(digits, phoneCountry)) {
-      setError(
-        label(
-          `请输入 ${phoneCountry.phoneLength} 位手机号`,
-          `Enter ${phoneCountry.phoneLength}-digit phone number`,
-        ),
-      );
-      return;
-    }
-    const mock = "654321";
-    setPhoneDevCode(mock);
-    setPhoneCode(mock);
-    setPhoneCooldown(60);
-    setError("");
-    toast.success(label("短信验证码已发送（模拟）", "SMS code sent (mock)"));
   }
 
   async function submitRegister() {
@@ -288,28 +173,9 @@ export function RegisterKycModal({
         password,
         confirmPassword,
       });
-      clearRegisterDraft();
       setStep("done");
       toast.success(label("注册成功，请登录", "Registered. Please log in."));
     } catch (e) {
-      if (isMockAuthFallbackError(e)) {
-        mockRegister({
-          email: email.trim(),
-          password,
-          phone: normalizePhoneDigits(phone),
-          phoneIso,
-          country,
-        });
-        clearRegisterDraft();
-        setStep("done");
-        toast.success(
-          label(
-            "注册成功（本地模拟），请登录",
-            "Registered (local mock). Please log in.",
-          ),
-        );
-        return;
-      }
       if (e instanceof ApiClientError || e instanceof Error) {
         setError(e.message);
       } else {
@@ -348,31 +214,6 @@ export function RegisterKycModal({
   function nextFromEmailOtp() {
     if (code.trim().length !== 6) {
       setError(label("请输入 6 位邮箱验证码", "Enter 6-digit email code"));
-      return;
-    }
-    setError("");
-    setStep("phone");
-  }
-
-  function nextFromPhone() {
-    const digits = normalizePhoneDigits(phone);
-    if (!isValidPhone(digits, phoneCountry)) {
-      setError(
-        label(
-          `请输入 ${phoneCountry.phoneLength} 位手机号（当前 ${digits.length} 位）`,
-          `Enter ${phoneCountry.phoneLength}-digit number (now ${digits.length})`,
-        ),
-      );
-      return;
-    }
-    setError("");
-    sendPhoneCode();
-    setStep("phoneOtp");
-  }
-
-  function nextFromPhoneOtp() {
-    if (phoneCode.trim().length !== 6) {
-      setError(label("请输入 6 位短信验证码", "Enter 6-digit SMS code"));
       return;
     }
     setError("");
@@ -744,185 +585,6 @@ export function RegisterKycModal({
     );
   }
 
-  if (step === "phone") {
-    const digits = normalizePhoneDigits(phone);
-    const canNext = isValidPhone(digits, phoneCountry);
-    body = (
-      <>
-        <h1 className="text-2xl font-bold">
-          {label("添加手机号码", "Add mobile phone number")}
-        </h1>
-        <p className="auth-muted mt-2 text-sm">
-          {label(
-            "我们将向这个手机号发送短信验证码，进一步保障您的账号安全。",
-            "We'll send an SMS code to protect your account.",
-          )}
-        </p>
-        <div className="mt-8">
-          <label className="auth-label mb-1.5 block text-sm font-medium">
-            {label("手机号", "Phone number")}
-          </label>
-          <div
-            className="auth-phone-field relative flex overflow-visible rounded-xl border border-auth-border bg-auth-input"
-            ref={dialRef}
-          >
-            <button
-              type="button"
-              onClick={() => setDialOpen((v) => !v)}
-              className="flex shrink-0 items-center gap-1 border-r border-auth-border px-3 py-3 text-sm font-medium text-auth-text hover:bg-auth-hover"
-            >
-              <span className="auth-flag text-sm">{phoneCountry.flag}</span>
-              <span>+{phoneCountry.dial}</span>
-              <ChevronDown
-                className={cn(
-                  "h-3.5 w-3.5 opacity-50 transition",
-                  dialOpen && "rotate-180",
-                )}
-              />
-            </button>
-            <input
-              type="tel"
-              value={phone}
-              onChange={(e) => {
-                const next = e.target.value.replace(/\D/g, "").slice(
-                  0,
-                  phoneCountry.phoneLength,
-                );
-                setPhone(next);
-                setError("");
-              }}
-              placeholder={label(
-                `请输入 ${phoneCountry.phoneLength} 位手机号`,
-                `${phoneCountry.phoneLength}-digit number`,
-              )}
-              className="auth-phone-input min-w-0 flex-1"
-              maxLength={phoneCountry.phoneLength}
-            />
-            {phone && (
-              <button
-                type="button"
-                onClick={() => setPhone("")}
-                className="px-3 text-auth-placeholder"
-              >
-                ×
-              </button>
-            )}
-
-            {dialOpen && (
-              <div className="auth-dropdown auth-dial-menu">
-                <div className="px-2 pt-2 pb-1">
-                  <div className="auth-search-wrap">
-                    <Search className="auth-search-icon" aria-hidden />
-                    <input
-                      autoFocus
-                      value={dialQ}
-                      onChange={(e) => setDialQ(e.target.value)}
-                      placeholder={label("搜索国家/区号", "Search country/code")}
-                      className="auth-search"
-                    />
-                  </div>
-                </div>
-                <div className="max-h-52 overflow-y-auto pb-1">
-                  {dialOptions.map((c) => (
-                    <button
-                      key={c.iso}
-                      type="button"
-                      onClick={() => {
-                        setPhoneIso(c.iso);
-                        setPhone("");
-                        setDialOpen(false);
-                        setDialQ("");
-                      }}
-                      className={cn(
-                        "auth-dropdown-item",
-                        c.iso === phoneIso && "is-active",
-                      )}
-                    >
-                      <span className="auth-flag">{c.flag}</span>
-                      <span className="min-w-0 flex-1 truncate">
-                        {isZh ? c.nameZh : c.nameEn}
-                      </span>
-                      <span className="font-mono text-auth-muted">
-                        +{c.dial}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-          <p className="auth-muted mt-1.5 text-xs">
-            {label(
-              `${phoneCountry.nameZh}手机号为 ${phoneCountry.phoneLength} 位（已输入 ${digits.length} 位）`,
-              `${phoneCountry.nameEn}: ${phoneCountry.phoneLength} digits (${digits.length} entered)`,
-            )}
-          </p>
-        </div>
-        <Button
-          variant="auth"
-          disabled={!canNext}
-          onClick={nextFromPhone}
-          className="mt-6"
-        >
-          {label("立即验证", "Verify now")}
-        </Button>
-      </>
-    );
-  }
-
-  if (step === "phoneOtp") {
-    const displayPhone = `+${phoneCountry.dial} ${normalizePhoneDigits(phone)}`;
-    body = (
-      <>
-        <h1 className="text-2xl font-bold">
-          {label(
-            "输入发送到您手机上的 6 位验证码",
-            "Enter the 6-digit code sent to your phone",
-          )}
-        </h1>
-        <p className="auth-muted mt-2 text-sm">
-          {label("请查收发送至", "Check the SMS sent to")}{" "}
-          <span className="font-medium text-auth-text">{displayPhone}</span>
-          {label(" 的短信验证码。", ".")}
-        </p>
-        <div className="mt-8">
-          <OtpInput value={phoneCode} onChange={setPhoneCode} />
-        </div>
-        {phoneDevCode && (
-          <p className="mt-3 rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800">
-            {label("开发环境验证码", "Dev code")}: {phoneDevCode}
-          </p>
-        )}
-        {phoneCode.length === 6 ? (
-          <Button variant="auth" onClick={nextFromPhoneOtp} className="mt-6">
-            {label("继续", "Continue")}
-          </Button>
-        ) : (
-          <button
-            type="button"
-            disabled={phoneCooldown > 0}
-            onClick={sendPhoneCode}
-            className="mt-6 w-full rounded-lg border border-auth-border bg-auth-input py-3.5 text-sm font-semibold text-auth-muted disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {phoneCooldown > 0
-              ? `${label("重发", "Resend")} (${phoneCooldown}s)`
-              : label("重发", "Resend")}
-          </button>
-        )}
-        <button
-          type="button"
-          onClick={() => {
-            setStep("phone");
-            setPhoneCode("");
-          }}
-          className="auth-link mt-4 w-full text-center text-sm"
-        >
-          {label("无法验证？更换手机号", "Can't verify? Change phone")}
-        </button>
-      </>
-    );
-  }
-
   if (step === "done") {
     body = (
       <div className="flex flex-col items-center py-10 text-center">
@@ -934,20 +596,14 @@ export function RegisterKycModal({
         </h1>
         <p className="auth-muted mt-2 max-w-sm text-sm">
           {label(
-            "您的账号已创建，邮箱与手机均已验证。",
-            "Your account is ready. Email and phone are verified.",
+            "您的账号已创建，邮箱已验证。",
+            "Your account is ready. Email verified.",
           )}
         </p>
         <div className="mt-6 w-full rounded-xl bg-auth-input p-4 text-left text-xs text-auth-muted">
           <p>
             {label("邮箱", "Email")}:{" "}
             <span className="font-medium text-auth-text">{email}</span>
-          </p>
-          <p className="mt-1">
-            {label("手机", "Phone")}:{" "}
-            <span className="font-medium text-auth-text">
-              +{phoneCountry.dial} {normalizePhoneDigits(phone)}
-            </span>
           </p>
           <p className="mt-1">
             {label("所在地", "Location")}:{" "}
@@ -1007,7 +663,10 @@ export function RegisterKycModal({
       onClose={() => setCaptchaOpen(false)}
       onSuccess={onCaptchaSuccess}
       title={label("安全验证", "Security verification")}
-      checkboxLabel={label("进行人机身份验证", "I'm not a robot")}
+      instruction={label(
+        "请在下图依次点击",
+        "Click the icons below in the order shown above",
+      )}
     />
   );
 

@@ -113,7 +113,7 @@ export function InstrumentBar({
         <span className={cn("font-mono text-[10px] leading-none tabular-nums", priceColor)}>
           {up ? "+" : ""}
           {formatPrice(Math.abs(changeAbs), precision, locale)} (
-          {formatPercent(ticker.change24h, locale)})
+          {formatPercent(ticker.change24h)})
         </span>
       </div>
 

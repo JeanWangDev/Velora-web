@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { X, Maximize2 } from "lucide-react";
 import { useExchangeT } from "@/hooks/use-exchange-t";
 import { useLocale } from "@/i18n/use-translation";

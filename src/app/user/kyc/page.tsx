@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BadgeCheck, Clock3, ShieldAlert, XCircle } from "lucide-react";
 import { KycStatusOverview, useKycStatusMeta } from "@/components/user/kyc/kyc-status-overview";
 import { KycWizard } from "@/components/user/kyc/kyc-wizard";
@@ -19,11 +19,16 @@ export default function UserKycPage() {
 
   const status = useKycStore((s) => s.status);
   const profile = useKycStore((s) => s.profile);
-  const submit = useKycStore((s) => s.submit);
+  const submitToServer = useKycStore((s) => s.submitToServer);
+  const hydrateFromServer = useKycStore((s) => s.hydrateFromServer);
   const approve = useKycStore((s) => s.approve);
   const reject = useKycStore((s) => s.reject);
 
   const [view, setView] = useState<PageView>("status");
+
+  useEffect(() => {
+    void hydrateFromServer();
+  }, [hydrateFromServer]);
 
   const meta = useKycStatusMeta(status, t);
   const StatusIcon =
@@ -35,7 +40,7 @@ export default function UserKycPage() {
           ? XCircle
           : ShieldAlert;
 
-  function handleWizardComplete(data: {
+  async function handleWizardComplete(data: {
     idType: import("@/stores/use-kyc-store").KycIdType;
     fullName: string;
     idNumber: string;
@@ -45,7 +50,7 @@ export default function UserKycPage() {
     address?: string;
     validUntil?: string;
   }) {
-    submit({
+    await submitToServer({
       ...data,
       docUploaded: true,
       docFrontName: data.docFrontName,

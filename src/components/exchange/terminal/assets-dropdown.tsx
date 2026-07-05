@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ChevronDown, Wallet } from "lucide-react";
 import { useExchangeT } from "@/hooks/use-exchange-t";
+import { useHydrated } from "@/hooks/use-hydrated";
 import { useLocale } from "@/i18n/use-translation";
 import { useMockMarketStore } from "@/stores/use-mock-market-store";
 import { useMockTradingStore } from "@/stores/use-mock-trading-store";
@@ -24,6 +25,9 @@ export function AssetsDropdown() {
   const t = useExchangeT();
   const locale = useLocale();
   const [open, setOpen] = useState(false);
+  // 模拟行情/持仓数据在服务端与客户端首次渲染时随机数种子不同，
+  // 挂载前渲染稳定占位符以避免 SSR/CSR 内容不一致的 hydration 警告。
+  const mounted = useHydrated();
   const balances = useMockTradingStore((s) => s.balances);
   const tickers = useMockMarketStore((s) => s.tickers);
 
@@ -52,7 +56,7 @@ export function AssetsDropdown() {
         <Wallet className="h-3.5 w-3.5 text-primary" />
         <span className="hidden sm:inline">{t("assets.title")}</span>
         <span className="font-mono tabular-nums text-muted">
-          ≈{formatCompact(total, locale)}
+          ≈{mounted ? formatCompact(total, locale) : "--"}
         </span>
         <ChevronDown className="h-3 w-3 text-muted" />
       </button>

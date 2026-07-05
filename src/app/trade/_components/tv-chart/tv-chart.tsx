@@ -63,11 +63,10 @@ export default function TVChart({
   const containerRef = useRef<HTMLDivElement | null>(null);
   const widgetRef = useRef<TVWidgetInstance | null>(null);
   /** 每次挂载独立 id，避免 TV 复用已 remove 的 container_id */
-  const containerIdRef = useRef(createContainerId());
+  const [containerId] = useState(createContainerId);
   const chartReadyRef = useRef(false);
   const appliedSymbolRef = useRef<string | null>(null);
   const symbolRef = useRef(symbol);
-  symbolRef.current = symbol;
   const onControlsReadyRef = useRef(onControlsReady);
   const onControlsDisposeRef = useRef(onControlsDispose);
   const unsubscribeScreenshotRef = useRef<(() => void) | null>(null);
@@ -77,8 +76,14 @@ export default function TVChart({
   const [tvReady, setTvReady] = useState(isTradingViewLoaded);
   const { resolvedTheme } = useTheme();
 
-  onControlsReadyRef.current = onControlsReady;
-  onControlsDisposeRef.current = onControlsDispose;
+  useEffect(() => {
+    symbolRef.current = symbol;
+  }, [symbol]);
+
+  useEffect(() => {
+    onControlsReadyRef.current = onControlsReady;
+    onControlsDisposeRef.current = onControlsDispose;
+  }, [onControlsReady, onControlsDispose]);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -119,7 +124,7 @@ export default function TVChart({
       datafeedMode === "mock" ? createMockDatafeed() : createMarketDatafeed();
 
     const widget = new window.TradingView.widget({
-      container_id: containerIdRef.current,
+      container_id: containerId,
       datafeed,
       symbol,
       interval,
@@ -339,6 +344,8 @@ export default function TVChart({
       widgetRef.current = null;
       resetDatafeedState();
     };
+    // containerId 挂载后不变；symbol 由下方独立 effect 通过 setSymbol 切换，此处刻意不重建 widget。
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tvReady, interval, isDark, tvLocale, datafeedMode]);
 
   // 仅切换币对时走 TV setSymbol，避免整表销毁导致订阅/接口报错
@@ -390,7 +397,7 @@ export default function TVChart({
 
       <div
         ref={containerRef}
-        id={containerIdRef.current}
+        id={containerId}
         className="h-full w-full bg-background"
       />
 

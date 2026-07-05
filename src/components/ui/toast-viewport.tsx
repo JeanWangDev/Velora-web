@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { CircleAlert, CircleCheck, Info, X } from "lucide-react";
+import { useHydrated } from "@/hooks/use-hydrated";
 import {
   APP_TOAST_EVENT,
   type ToastPayload,
@@ -100,11 +101,7 @@ function ToastList({ items, onDismiss }: { items: ToastItem[]; onDismiss: (id: s
 
 export function ToastViewport() {
   const [items, setItems] = useState<ToastItem[]>([]);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useHydrated();
 
   useEffect(() => {
     function handleToast(event: Event) {

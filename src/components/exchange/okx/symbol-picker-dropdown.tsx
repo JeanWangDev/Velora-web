@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { ChevronDown, ChevronRight, Search, Star, Wifi } from "lucide-react";
 import { useExchangeT } from "@/hooks/use-exchange-t";
+import { useHydrated } from "@/hooks/use-hydrated";
 import { useLocale } from "@/i18n/use-translation";
 import { LocaleLink } from "@/components/ui/locale-link";
 import { MOCK_SYMBOLS } from "@/mocks/exchange-data";
@@ -33,6 +34,39 @@ const COIN_COLORS: Record<string, string> = {
 const PANEL_W = 420;
 const PANEL_H = 460;
 
+function SortHead({
+  k,
+  label,
+  className,
+  sortKey,
+  sortAsc,
+  onToggle,
+}: {
+  k: SortKey;
+  label: string;
+  className?: string;
+  sortKey: SortKey;
+  sortAsc: boolean;
+  onToggle: (k: SortKey) => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={() => onToggle(k)}
+      className={cn(
+        "inline-flex items-center gap-0.5 text-[10px] text-[#c8cdd6] hover:text-white",
+        className,
+      )}
+    >
+      {label}
+      <span className="flex flex-col leading-none text-[8px] opacity-60">
+        <span className={sortKey === k && sortAsc ? "text-white" : ""}>▲</span>
+        <span className={sortKey === k && !sortAsc ? "text-white" : ""}>▼</span>
+      </span>
+    </button>
+  );
+}
+
 export function SymbolPickerDropdown({
   symbol,
   mode,
@@ -48,15 +82,13 @@ export function SymbolPickerDropdown({
   const [sortKey, setSortKey] = useState<SortKey>("turnover");
   const [sortAsc, setSortAsc] = useState(false);
   const [pos, setPos] = useState({ top: 0, left: 0 });
-  const [mounted, setMounted] = useState(false);
+  const mounted = useHydrated();
   const triggerRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const tickers = useMockMarketStore((s) => s.tickers);
   const watchlist = useWatchlistStore((s) => s.symbols);
   const toggleWatch = useWatchlistStore((s) => s.toggle);
   const basePath = mode === "futures" ? "/futures" : "/trade";
-
-  useEffect(() => setMounted(true), []);
 
   const updatePos = useCallback(() => {
     const el = triggerRef.current;
@@ -165,31 +197,6 @@ export function SymbolPickerDropdown({
     }
   };
 
-  const SortHead = ({
-    k,
-    label,
-    className,
-  }: {
-    k: SortKey;
-    label: string;
-    className?: string;
-  }) => (
-    <button
-      type="button"
-      onClick={() => toggleSort(k)}
-      className={cn(
-        "inline-flex items-center gap-0.5 text-[10px] text-[#c8cdd6] hover:text-white",
-        className,
-      )}
-    >
-      {label}
-      <span className="flex flex-col leading-none text-[8px] opacity-60">
-        <span className={sortKey === k && sortAsc ? "text-white" : ""}>▲</span>
-        <span className={sortKey === k && !sortAsc ? "text-white" : ""}>▼</span>
-      </span>
-    </button>
-  );
-
   const panel =
     open && mounted
       ? createPortal(
@@ -265,21 +272,33 @@ export function SymbolPickerDropdown({
                       ? "现货"
                       : "Spot"
                 }
+                sortKey={sortKey}
+                sortAsc={sortAsc}
+                onToggle={toggleSort}
               />
               <SortHead
                 k="price"
                 label={locale === "zh" ? "最新价" : "Last"}
                 className="justify-end"
+                sortKey={sortKey}
+                sortAsc={sortAsc}
+                onToggle={toggleSort}
               />
               <SortHead
                 k="change"
                 label={locale === "zh" ? "24H涨跌幅" : "24H %"}
                 className="justify-end"
+                sortKey={sortKey}
+                sortAsc={sortAsc}
+                onToggle={toggleSort}
               />
               <SortHead
                 k="turnover"
                 label={locale === "zh" ? "成交额" : "Turnover"}
                 className="justify-end"
+                sortKey={sortKey}
+                sortAsc={sortAsc}
+                onToggle={toggleSort}
               />
             </div>
 

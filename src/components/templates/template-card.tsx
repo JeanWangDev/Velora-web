@@ -6,7 +6,7 @@ import { useLocale, useTranslation } from "@/i18n/use-translation";
 import type { ChartTemplate } from "@/types/chart-template";
 import type { TradingPair } from "@/types/trading-pair";
 import { formatTemplateTime, resolveTemplateSymbol } from "@/utils/chart-template";
-import { Copy, Star, Trash2 } from "lucide-react";
+import { Copy, Star } from "lucide-react";
 
 type TemplateCardProps = {
   template: ChartTemplate;

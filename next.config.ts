@@ -9,10 +9,15 @@ const API_PROXY_TARGET =
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   async rewrites() {
+    const target = API_PROXY_TARGET.replace(/\/$/, "");
     return [
       {
         source: "/api/v1/:path*",
-        destination: `${API_PROXY_TARGET.replace(/\/$/, "")}/api/v1/:path*`,
+        destination: `${target}/api/v1/:path*`,
+      },
+      {
+        source: "/uploads/:path*",
+        destination: `${target}/uploads/:path*`,
       },
     ];
   },
