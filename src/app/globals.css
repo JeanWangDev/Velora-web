@@ -241,6 +241,20 @@ button {
   animation: ticker-scroll 40s linear infinite;
 }
 
+@keyframes kyc-scan {
+  0%,
+  100% {
+    top: 0;
+  }
+  50% {
+    top: calc(100% - 4px);
+  }
+}
+
+.kyc-scan-line {
+  animation: kyc-scan 2s ease-in-out infinite;
+}
+
 .ticker-animate:hover {
   animation-play-state: paused;
 }

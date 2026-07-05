@@ -1,13 +1,17 @@
 "use client";
 
-import Link from "next/link";
 import { useMemo } from "react";
-import { ArrowRight, Wallet } from "lucide-react";
+import { ArrowDownToLine, ArrowRight, ArrowUpFromLine, Wallet } from "lucide-react";
+import { LocaleLink } from "@/components/ui/locale-link";
+import { Button } from "@/components/ui/button";
 import { useExchangeT } from "@/hooks/use-exchange-t";
+import { useRequireKyc } from "@/hooks/use-require-kyc";
 import { useLocale } from "@/i18n/use-translation";
+import { toast } from "@/services/toast";
 import { useMockMarketStore } from "@/stores/use-mock-market-store";
 import { useMockTradingStore } from "@/stores/use-mock-trading-store";
 import { formatCompact, formatPrice } from "@/utils/format-exchange";
+import { cn } from "@/lib/cn";
 
 const STABLE = new Set(["USDT", "USDC", "USD"]);
 
@@ -27,7 +31,10 @@ export default function AssetsPage() {
   const t = useExchangeT();
   const locale = useLocale();
   const balances = useMockTradingStore((s) => s.balances);
+  const credit = useMockTradingStore((s) => s.credit);
+  const withdraw = useMockTradingStore((s) => s.withdraw);
   const tickers = useMockMarketStore((s) => s.tickers);
+  const { status, verified, ensureKyc } = useRequireKyc();
 
   const totalUsd = useMemo(() => {
     return balances.reduce((sum, b) => {
@@ -42,6 +49,21 @@ export default function AssetsPage() {
     return vb - va;
   });
 
+  function handleDeposit() {
+    credit("USDT", 1000);
+    toast.success(t("assets.depositDemo"));
+  }
+
+  function handleWithdraw() {
+    if (!ensureKyc()) return;
+    const result = withdraw("USDT", 100);
+    if (!result.ok) {
+      toast.error(result.message ?? t("common.noData"));
+      return;
+    }
+    toast.success(t("assets.withdrawDemo"));
+  }
+
   return (
     <div className="aurora-bg mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
@@ -51,26 +73,69 @@ export default function AssetsPage() {
           </h1>
           <p className="mt-1 text-sm text-muted">Velora · Spot Ledger</p>
         </div>
-        <Link
+        <LocaleLink
           href="/assets/history"
           className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-4 py-2 text-sm hover:border-primary/40 hover:text-primary"
         >
           {t("assets.history")}
           <ArrowRight className="h-4 w-4" />
-        </Link>
+        </LocaleLink>
       </div>
 
+      {!verified ? (
+        <div
+          className={cn(
+            "mb-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border px-4 py-3 text-sm",
+            status === "pending"
+              ? "border-amber-500/30 bg-amber-500/10 text-amber-800 dark:text-amber-200"
+              : status === "rejected"
+                ? "border-rose-500/30 bg-rose-500/10 text-rose-800 dark:text-rose-200"
+                : "border-primary/30 bg-primary/10 text-foreground",
+          )}
+        >
+          <p>
+            {status === "pending"
+              ? t("user.kycPendingTip")
+              : status === "rejected"
+                ? t("user.kycRejectedTip")
+                : t("user.kycRequireWithdraw")}
+          </p>
+          <LocaleLink
+            href="/user/kyc"
+            className="shrink-0 rounded-full bg-surface px-3 py-1.5 text-xs font-semibold text-primary hover:opacity-90"
+          >
+            {t("user.kycGoVerify")}
+          </LocaleLink>
+        </div>
+      ) : null}
+
       <div className="glass-panel mb-6 rounded-2xl p-6">
-        <div className="flex items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/15 text-primary">
-            <Wallet className="h-6 w-6" />
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/15 text-primary">
+              <Wallet className="h-6 w-6" />
+            </div>
+            <div>
+              <p className="text-sm text-muted">{t("assets.total")}</p>
+              <p className="text-3xl font-semibold tabular-nums tracking-tight">
+                ≈ {formatCompact(totalUsd, locale)}{" "}
+                <span className="text-lg text-muted">USDT</span>
+              </p>
+            </div>
           </div>
-          <div>
-            <p className="text-sm text-muted">{t("assets.total")}</p>
-            <p className="text-3xl font-semibold tabular-nums tracking-tight">
-              ≈ {formatCompact(totalUsd, locale)}{" "}
-              <span className="text-lg text-muted">USDT</span>
-            </p>
+          <div className="flex flex-wrap gap-2">
+            <Button
+              variant="secondary"
+              className="gap-1.5"
+              onClick={handleDeposit}
+            >
+              <ArrowDownToLine className="h-4 w-4" />
+              {t("assets.deposit")}
+            </Button>
+            <Button className="gap-1.5" onClick={handleWithdraw}>
+              <ArrowUpFromLine className="h-4 w-4" />
+              {t("assets.withdraw")}
+            </Button>
           </div>
         </div>
       </div>

@@ -1,9 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
-import { ChevronRight, Shield } from "lucide-react";
 import { useExchangeT } from "@/hooks/use-exchange-t";
 import {
   useLocale,
@@ -47,8 +45,8 @@ export default function UserPreferencesPage() {
   useEffect(() => setMounted(true), []);
 
   return (
-    <div className="aurora-bg mx-auto w-full max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
-      <h1 className="mb-6 text-2xl font-semibold tracking-tight">
+    <div className="space-y-5">
+      <h1 className="text-2xl font-semibold tracking-tight">
         {t("user.preferences")}
       </h1>
 
@@ -113,17 +111,6 @@ export default function UserPreferencesPage() {
             ))}
           </div>
         </PrefSection>
-
-        <Link
-          href="/user/security"
-          className="glass-panel flex items-center justify-between rounded-2xl p-5 transition hover:border-primary/30"
-        >
-          <div className="flex items-center gap-3">
-            <Shield className="h-5 w-5 text-primary" />
-            <span className="font-medium">{t("user.security")}</span>
-          </div>
-          <ChevronRight className="h-5 w-5 text-muted" />
-        </Link>
       </div>
     </div>
   );

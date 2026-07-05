@@ -41,6 +41,9 @@ export function CommandPalette() {
       { label: t("assets.title"), href: "/assets" },
       { label: t("orders.title"), href: "/orders" },
       { label: t("announcements.title"), href: "/announcements" },
+      { label: t("user.overview"), href: "/user" },
+      { label: t("user.kyc"), href: "/user/kyc" },
+      { label: t("user.security"), href: "/user/security" },
       { label: t("user.preferences"), href: "/user/preferences" },
     ];
     const symbols = MOCK_SYMBOLS.filter(

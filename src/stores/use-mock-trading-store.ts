@@ -37,6 +37,10 @@ interface MockTradingState {
   placeOrder: (input: PlaceOrderInput) => { ok: boolean; message?: string };
   cancelOrder: (orderId: string) => void;
   cancelAll: (symbol?: string) => void;
+  /** 演示充值 */
+  credit: (currency: string, amount: number) => void;
+  /** 演示提现（需调用方先校验 KYC） */
+  withdraw: (currency: string, amount: number) => { ok: boolean; message?: string };
 }
 
 function findBalance(balances: Balance[], currency: string): Balance | undefined {
@@ -191,6 +195,50 @@ export const useMockTradingStore = create<MockTradingState>()(
           (o) => !symbol || o.symbol === symbol,
         );
         toCancel.forEach((o) => get().cancelOrder(o.id));
+      },
+
+      credit: (currency, amount) => {
+        if (amount <= 0) return;
+        const balances = get().balances;
+        const existing = findBalance(balances, currency);
+        const nextAvailable = (existing?.available ?? 0) + amount;
+        const nextBalances = existing
+          ? updateBalance(balances, currency, { available: nextAvailable })
+          : [...balances, { currency, available: amount, frozen: 0 }];
+        const entry: LedgerEntry = {
+          id: `lg-${Date.now()}`,
+          currency,
+          type: "deposit",
+          amount,
+          balanceAfter: nextAvailable + (existing?.frozen ?? 0),
+          refId: `dep-${Date.now()}`,
+          ts: Date.now(),
+        };
+        set({ balances: nextBalances, ledger: [entry, ...get().ledger] });
+      },
+
+      withdraw: (currency, amount) => {
+        if (amount <= 0) return { ok: false, message: "invalid amount" };
+        const balances = get().balances;
+        const existing = findBalance(balances, currency);
+        if (!existing || existing.available < amount) {
+          return { ok: false, message: "insufficient" };
+        }
+        const nextAvailable = existing.available - amount;
+        const nextBalances = updateBalance(balances, currency, {
+          available: nextAvailable,
+        });
+        const entry: LedgerEntry = {
+          id: `lg-${Date.now()}`,
+          currency,
+          type: "withdraw",
+          amount: -amount,
+          balanceAfter: nextAvailable + existing.frozen,
+          refId: `wd-${Date.now()}`,
+          ts: Date.now(),
+        };
+        set({ balances: nextBalances, ledger: [entry, ...get().ledger] });
+        return { ok: true };
       },
     }),
     { name: "velora-mock-trading" },

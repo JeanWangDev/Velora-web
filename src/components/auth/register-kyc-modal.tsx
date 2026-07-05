@@ -11,6 +11,13 @@ import {
 } from "@/config/phone-countries";
 import { AuthService } from "@/services/auth-service";
 import { ApiClientError } from "@/services/api-client-error";
+import {
+  clearRegisterDraft,
+  isMockAuthFallbackError,
+  loadRegisterDraft,
+  mockRegister,
+  saveRegisterDraft,
+} from "@/services/mock-auth";
 import { toast } from "@/services/toast";
 import { useLocale } from "@/i18n/use-translation";
 import {
@@ -120,9 +127,49 @@ export function RegisterKycModal({
 
   useEffect(() => {
     if (!open) return;
+    if (variant === "page") {
+      const draft = loadRegisterDraft();
+      if (draft && draft.step !== "done") {
+        const valid = STEPS.includes(draft.step as KycStep);
+        if (valid) setStep(draft.step as KycStep);
+        if (draft.country) setCountry(draft.country);
+        if (draft.email) setEmail(draft.email);
+        if (draft.inviteCode) setInviteCode(draft.inviteCode);
+        if (draft.phone) setPhone(draft.phone);
+        if (draft.phoneIso) setPhoneIso(draft.phoneIso);
+        if (draft.code) setCode(draft.code);
+        if (draft.phoneCode) setPhoneCode(draft.phoneCode);
+        setError("");
+        return;
+      }
+    }
     setStep("location");
     setError("");
-  }, [open]);
+  }, [open, variant]);
+
+  useEffect(() => {
+    if (!open || step === "done") return;
+    saveRegisterDraft({
+      step,
+      country,
+      email,
+      inviteCode,
+      phone,
+      phoneIso,
+      code,
+      phoneCode,
+    });
+  }, [
+    open,
+    step,
+    country,
+    email,
+    inviteCode,
+    phone,
+    phoneIso,
+    code,
+    phoneCode,
+  ]);
 
   useEffect(() => {
     if (cooldown <= 0) return;
@@ -241,24 +288,30 @@ export function RegisterKycModal({
         password,
         confirmPassword,
       });
-      // 注册成功后不自动登录，引导用户去登录页
+      clearRegisterDraft();
       setStep("done");
       toast.success(label("注册成功，请登录", "Registered. Please log in."));
     } catch (e) {
-      // Mock 阶段：后端不可用时仍完成 KYC 演示
+      if (isMockAuthFallbackError(e)) {
+        mockRegister({
+          email: email.trim(),
+          password,
+          phone: normalizePhoneDigits(phone),
+          phoneIso,
+          country,
+        });
+        clearRegisterDraft();
+        setStep("done");
+        toast.success(
+          label(
+            "注册成功（本地模拟），请登录",
+            "Registered (local mock). Please log in.",
+          ),
+        );
+        return;
+      }
       if (e instanceof ApiClientError || e instanceof Error) {
-        const msg = e.message;
-        if (
-          msg.includes("fetch") ||
-          msg.includes("Network") ||
-          msg.includes("Failed") ||
-          (e instanceof ApiClientError && e.status >= 500)
-        ) {
-          setStep("done");
-          toast.success(label("KYC 资料已提交（模拟）", "KYC submitted (mock)"));
-          return;
-        }
-        setError(msg);
+        setError(e.message);
       } else {
         setError(label("注册失败", "Register failed"));
       }
