@@ -43,12 +43,14 @@ interface KycWizardProps {
     validUntil?: string;
   }) => void;
   onCancel: () => void;
+  /** 开发阶段：OCR 完成后自动提交并通过 */
+  autoApprove?: boolean;
 }
 
 const fieldClass =
   "w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm text-foreground outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/15";
 
-export function KycWizard({ onComplete, onCancel }: KycWizardProps) {
+export function KycWizard({ onComplete, onCancel, autoApprove = false }: KycWizardProps) {
   const t = useExchangeT();
   const locale = useLocale();
   const isZh = locale === "zh";
@@ -64,6 +66,7 @@ export function KycWizard({ onComplete, onCancel }: KycWizardProps) {
   const [countryIso, setCountryIso] = useState("CN");
   const [address, setAddress] = useState("");
   const [validUntil, setValidUntil] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const startOcr = useCallback(() => {
     setStep("ocr-processing");
@@ -85,15 +88,51 @@ export function KycWizard({ onComplete, onCancel }: KycWizardProps) {
     [idType, frontDoc, backDoc, user],
   );
 
-  function applyOcrResult(result: KycOcrResult) {
-    setOcrResult(result);
-    setFullName(result.fullName);
-    setIdNumber(result.idNumber);
-    setCountryIso(result.countryIso);
-    setAddress(result.address ?? "");
-    setValidUntil(result.validUntil ?? "");
-    setStep("personal-info");
-  }
+  const applyOcrResult = useCallback(
+    (result: KycOcrResult) => {
+      setOcrResult(result);
+      setFullName(result.fullName);
+      setIdNumber(result.idNumber);
+      setCountryIso(result.countryIso);
+      setAddress(result.address ?? "");
+      setValidUntil(result.validUntil ?? "");
+
+      if (autoApprove && frontDoc) {
+        onComplete({
+          idType,
+          fullName: result.fullName,
+          idNumber: result.idNumber,
+          countryIso: result.countryIso,
+          docFrontName: frontDoc.uploadedUrl ?? frontDoc.name,
+          docBackName: backDoc?.uploadedUrl ?? backDoc?.name,
+          address: result.address,
+          validUntil: result.validUntil,
+        });
+        return;
+      }
+
+      setStep("personal-info");
+    },
+    [autoApprove, frontDoc, backDoc, idType, onComplete],
+  );
+
+  const autoSubmitAfterUpload = useCallback(async () => {
+    if (!frontDoc || submitting) return;
+    setSubmitting(true);
+    try {
+      const result = await recognizeIdDocument({
+        idType,
+        frontFileName: frontDoc.name,
+        backFileName: backDoc?.name,
+        userHint: user ? { nickname: user.nickname, email: user.email } : undefined,
+      });
+      applyOcrResult(result);
+    } catch {
+      toast.error(t("user.kycOcrFailed"));
+    } finally {
+      setSubmitting(false);
+    }
+  }, [frontDoc, backDoc, idType, user, applyOcrResult, submitting, t]);
 
   function goBack() {
     switch (step) {
@@ -133,14 +172,22 @@ export function KycWizard({ onComplete, onCancel }: KycWizardProps) {
     }
     if (idType === "id_card") {
       setStep("upload-back");
-    } else {
-      startOcr();
+      return;
     }
+    if (autoApprove) {
+      void autoSubmitAfterUpload();
+      return;
+    }
+    startOcr();
   }
 
   function afterBack() {
     if (!backDoc) {
       toast.error(t("user.kycBackRequired"));
+      return;
+    }
+    if (autoApprove) {
+      void autoSubmitAfterUpload();
       return;
     }
     startOcr();
@@ -212,7 +259,8 @@ export function KycWizard({ onComplete, onCancel }: KycWizardProps) {
               setOcrResult(null);
             }}
             onNext={afterFront}
-            nextLabel={t("user.kycNextStep")}
+            nextLabel={submitting ? t("user.kycSubmitting") : t("user.kycNextStep")}
+            nextDisabled={submitting}
           />
         ) : null}
 
@@ -227,7 +275,8 @@ export function KycWizard({ onComplete, onCancel }: KycWizardProps) {
               setOcrResult(null);
             }}
             onNext={afterBack}
-            nextLabel={t("user.kycNextStep")}
+            nextLabel={submitting ? t("user.kycSubmitting") : t("user.kycNextStep")}
+            nextDisabled={submitting}
           />
         ) : null}
 
@@ -437,6 +486,7 @@ function UploadStep({
   onChange,
   onNext,
   nextLabel,
+  nextDisabled = false,
 }: {
   title: string;
   hint: string;
@@ -445,6 +495,7 @@ function UploadStep({
   onChange: (v: UploadedDoc | null) => void;
   onNext: () => void;
   nextLabel: string;
+  nextDisabled?: boolean;
 }) {
   return (
     <div className="space-y-5">
@@ -454,7 +505,7 @@ function UploadStep({
         <p className="mt-2 text-sm text-muted">{hint}</p>
       </div>
       <KycDocUploadZone value={value} onChange={onChange} side={side} />
-      <KycPrimaryButton disabled={!value} onClick={onNext}>
+      <KycPrimaryButton disabled={!value || nextDisabled} onClick={onNext}>
         {nextLabel}
       </KycPrimaryButton>
       <KycPrivacyFooter />

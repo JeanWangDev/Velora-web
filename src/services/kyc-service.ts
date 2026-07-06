@@ -18,6 +18,7 @@ export interface ServerKycVerification {
   rejectReason: string | null;
   submittedAt: number | null;
   reviewedAt: number | null;
+  diditSessionId?: string | null;
 }
 
 export interface AdminKycVerification extends ServerKycVerification {
@@ -86,6 +87,37 @@ export class KycService {
       url: `${BASE}/review`,
       method: "POST",
       data: { userId, action, rejectReason },
+    });
+  }
+
+  /** Didit 是否已启用 */
+  static getDiditConfig() {
+    return KycService.getConfig().then((r) => ({ enabled: r.diditEnabled }));
+  }
+
+  /** KYC 运行时配置 */
+  static getConfig() {
+    return apiClient.sendRequest<{ diditEnabled: boolean; devAutoApprove: boolean }>({
+      url: `${BASE}/config`,
+      method: "GET",
+    });
+  }
+
+  /** 创建 Didit 验证会话 */
+  static createDiditSession(input?: { callbackUrl?: string; language?: string }) {
+    return apiClient.sendRequest<{ sessionId: string; url: string }>({
+      url: `${BASE}/didit/session`,
+      method: "POST",
+      data: input ?? {},
+    });
+  }
+
+  /** 同步 Didit 验证结果 */
+  static syncDidit(sessionId: string) {
+    return apiClient.sendRequest<{ kyc: ServerKycVerification }>({
+      url: `${BASE}/didit/sync`,
+      method: "POST",
+      data: { sessionId },
     });
   }
 }

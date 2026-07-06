@@ -85,13 +85,15 @@ export async function recognizeIdDocument(
 ): Promise<KycOcrResult> {
   const seed = `${input.frontFileName}|${input.backFileName ?? ""}|${input.idType}`;
 
-  onPhase?.("detecting");
-  await delay(900);
-  onPhase?.("reading");
-  await delay(1100);
-  onPhase?.("validating");
-  await delay(800);
-  onPhase?.("done");
+  if (onPhase) {
+    onPhase("detecting");
+    await delay(900);
+    onPhase("reading");
+    await delay(1100);
+    onPhase("validating");
+    await delay(800);
+    onPhase("done");
+  }
 
   const fullName = deriveFullName(input.userHint);
   const countryIso = input.idType === "id_card" ? "CN" : "CN";

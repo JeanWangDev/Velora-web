@@ -16,6 +16,7 @@ interface KycStatusOverviewProps {
   status: KycStatus;
   profile: KycProfile | null;
   onStart: () => void;
+  showDemoReview?: boolean;
   onApprove: () => void;
   onReject: () => void;
 }
@@ -24,6 +25,7 @@ export function KycStatusOverview({
   status,
   profile,
   onStart,
+  showDemoReview = false,
   onApprove,
   onReject,
 }: KycStatusOverviewProps) {
@@ -38,7 +40,7 @@ export function KycStatusOverview({
             {status === "rejected" ? t("user.kycResubmit") : t("user.kycStart")}
           </Button>
         ) : null}
-        {status === "pending" ? (
+        {status === "pending" && showDemoReview ? (
           <div className="mt-5 flex flex-wrap gap-2">
             <Button variant="secondary" onClick={onApprove}>
               {t("user.kycDemoApprove")}

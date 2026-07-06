@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { useExchangeT } from "@/hooks/use-exchange-t";
 import {
@@ -29,6 +29,11 @@ export function KycOcrProcessing({ frontPreview, onDone, run }: KycOcrProcessing
   const t = useExchangeT();
   const [phase, setPhase] = useState<KycOcrPhase>("detecting");
   const [error, setError] = useState<string | null>(null);
+  const onDoneRef = useRef(onDone);
+
+  useEffect(() => {
+    onDoneRef.current = onDone;
+  }, [onDone]);
 
   useEffect(() => {
     let cancelled = false;
@@ -37,7 +42,7 @@ export function KycOcrProcessing({ frontPreview, onDone, run }: KycOcrProcessing
         const result = await run((p) => {
           if (!cancelled) setPhase(p);
         });
-        if (!cancelled) onDone(result);
+        if (!cancelled) onDoneRef.current(result);
       } catch {
         if (!cancelled) setError(t("user.kycOcrFailed"));
       }
@@ -45,7 +50,7 @@ export function KycOcrProcessing({ frontPreview, onDone, run }: KycOcrProcessing
     return () => {
       cancelled = true;
     };
-  }, [run, onDone, t]);
+  }, [run, t]);
 
   const phases = getOcrPhases();
   const currentIdx = phases.indexOf(phase);
