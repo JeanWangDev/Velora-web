@@ -9,7 +9,6 @@ interface ShardRange {
   endTime: number;
   limit: number;
 }
-
 interface MarketKlinesPayload {
   requestId: string;
   apiBaseUrl: string;
