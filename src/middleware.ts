@@ -8,8 +8,48 @@ import {
 
 const PUBLIC_FILE = /\.(.*)$/;
 
-export function middleware(request: NextRequest) {
+const DEFAULT_API_PROXY_TARGET = "https://velora-api-test.aipassly.com";
+
+function apiProxyTarget(): string {
+  return (
+    process.env.API_PROXY_TARGET?.trim() || DEFAULT_API_PROXY_TARGET
+  ).replace(/\/$/, "");
+}
+
+function shouldProxyToApi(pathname: string): boolean {
+  return pathname.startsWith("/api/v1") || pathname.startsWith("/uploads/");
+}
+
+/** Cloudflare / Next：浏览器同源 /api/v1 → 转发到 Velora-api（避免跨域） */
+async function proxyToApi(request: NextRequest): Promise<Response> {
+  const target = new URL(
+    request.nextUrl.pathname + request.nextUrl.search,
+    apiProxyTarget(),
+  );
+
+  const headers = new Headers(request.headers);
+  headers.delete("host");
+
+  const init: RequestInit & { duplex?: "half" } = {
+    method: request.method,
+    headers,
+    redirect: "manual",
+  };
+
+  if (request.method !== "GET" && request.method !== "HEAD") {
+    init.body = request.body;
+    init.duplex = "half";
+  }
+
+  return fetch(target, init);
+}
+
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  if (shouldProxyToApi(pathname)) {
+    return proxyToApi(request);
+  }
 
   if (
     pathname.startsWith("/_next") ||
@@ -24,7 +64,6 @@ export function middleware(request: NextRequest) {
   const segments = pathname.split("/").filter(Boolean);
   const first = segments[0];
 
-  // 已有语言前缀：rewrite 到无前缀路径，并写入 cookie
   if (first && isUrlLocale(first)) {
     const locale = first as UrlLocale;
     const rest = segments.slice(1).join("/");
@@ -40,7 +79,6 @@ export function middleware(request: NextRequest) {
     return res;
   }
 
-  // 无语言前缀：跳转到默认语言
   const cookieLocale = request.cookies.get("velora-url-locale")?.value;
   const locale =
     cookieLocale && isUrlLocale(cookieLocale)
@@ -52,5 +90,9 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+  matcher: [
+    "/api/v1/:path*",
+    "/uploads/:path*",
+    "/((?!_next/static|_next/image|favicon.ico).*)",
+  ],
 };

@@ -49,8 +49,8 @@ function isProductionFrontendHost(hostname: string): boolean {
 }
 
 function envApiOrigin(): string | undefined {
-  const value =
-    process.env.NEXT_PUBLIC_API_BASE_URL ?? process.env.API_PROXY_TARGET;
+  // 仅 SSR / Worker 服务端使用；浏览器 REST 走同源 /api/v1
+  const value = process.env.API_PROXY_TARGET ?? process.env.NEXT_PUBLIC_API_BASE_URL;
   return value ? trimOrigin(value) : undefined;
 }
 
