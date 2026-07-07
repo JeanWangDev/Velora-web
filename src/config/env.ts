@@ -5,7 +5,7 @@
  *   development → localhost:4000（本地 yarn dev）
  *   test        → velora-api-test.aipassly.com（测试 API）
  *                   前端 velora-test.aipassly.com 访问时自动匹配
- *   production  → api.velora.com（生产）
+ *   production  → velora-api-test.aipassly.com（生产）
  *
  * 显式设置 NEXT_PUBLIC_API_BASE_URL / API_PROXY_TARGET 时优先使用。
  */
@@ -14,7 +14,7 @@ export type AppEnv = "development" | "test" | "production";
 export const API_ORIGIN_BY_ENV: Record<AppEnv, string> = {
   development: "http://localhost:4000",
   test: "https://velora-api-test.aipassly.com",
-  production: "https://api.velora.com",
+  production: "https://velora-api-test.aipassly.com",
 };
 
 const VALID_ENVS: AppEnv[] = ["development", "test", "production"];

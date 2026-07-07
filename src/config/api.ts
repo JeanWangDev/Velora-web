@@ -9,7 +9,7 @@ import {
   type AppEnv,
 } from "@/config/env";
 
-export const PRODUCTION_API_ORIGIN = "https://api.velora.com";
+export const PRODUCTION_API_ORIGIN = "https://velora-api-test.aipassly.com";
 export const TEST_API_ORIGIN = "https://velora-api-test.aipassly.com";
 /** @deprecated use TEST_API_ORIGIN */
 export const PRE_API_ORIGIN = TEST_API_ORIGIN;
