@@ -7,7 +7,7 @@
  *                   前端 velora-test.aipassly.com 访问时自动匹配
  *   production  → velora-api-test.aipassly.com（生产）
  *
- * 显式设置 NEXT_PUBLIC_API_BASE_URL / API_PROXY_TARGET 时优先使用。
+ * 浏览器 REST 走同源 /api/v1 代理；SSR 用 NEXT_PUBLIC_API_BASE_URL / API_PROXY_TARGET。
  */
 export type AppEnv = "development" | "test" | "production";
 

@@ -250,7 +250,7 @@ class MarketStreamClient {
         this.pending.delete(clientId);
         entry.reject(
           new Error(
-            "行情订阅超时，请确认 trading-api 已启动且 NEXT_PUBLIC_API_WS_URL 配置正确",
+            "行情订阅超时，请确认 Velora-api 已启动且 NEXT_PUBLIC_API_WS_URL 配置正确",
           ),
         );
       }, SUBSCRIBE_TIMEOUT_MS);

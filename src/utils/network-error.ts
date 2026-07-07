@@ -2,18 +2,19 @@ import { isAxiosError } from "axios";
 import { getMarketWsUrl, resolveApiOrigin } from "@/config/api";
 
 function restHint(): string {
-  if (typeof window !== "undefined" && window.location.hostname.includes("velora.com")) {
-    const origin = resolveApiOrigin();
-    return `请确认 ${origin} 可访问，且后端 CLIENT_ORIGINS 已包含当前域名`;
+  if (typeof window !== "undefined") {
+    const host = window.location.hostname;
+    const apiOrigin = resolveApiOrigin();
+    if (host === "localhost" || host === "127.0.0.1") {
+      return `请确认 Velora-api 已启动（默认 http://localhost:4000），且 API_PROXY_TARGET 指向该地址`;
+    }
+    return `请确认 ${apiOrigin} 可访问（Velora-api），且后端 CLIENT_ORIGINS 已包含 https://${host}`;
   }
-  return "请确认 trading-api 已启动，且前端 API_PROXY_TARGET 配置正确";
+  return "请确认 Velora-api 已启动，且 API_PROXY_TARGET 配置正确";
 }
 
 function wsHint(): string {
-  if (typeof window !== "undefined" && window.location.hostname.includes("velora.com")) {
-    return `请确认 ${getMarketWsUrl()} 可连接`;
-  }
-  return `请确认 WebSocket 已启动（当前 ${getMarketWsUrl()}）`;
+  return `请确认 Velora-api WebSocket 可连接（当前 ${getMarketWsUrl()}）`;
 }
 
 /**
