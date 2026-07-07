@@ -9,7 +9,7 @@ import {
   type AppEnv,
 } from "@/config/env";
 
-export const PRODUCTION_API_ORIGIN = "https://velora-api-test.aipassly.com";
+export const PRODUCTION_API_ORIGIN = "https://velora-api.aipassly.com";
 export const TEST_API_ORIGIN = "https://velora-api-test.aipassly.com";
 /** @deprecated use TEST_API_ORIGIN */
 export const PRE_API_ORIGIN = TEST_API_ORIGIN;
@@ -49,8 +49,8 @@ function isProductionFrontendHost(hostname: string): boolean {
 }
 
 function envApiOrigin(): string | undefined {
-  // 仅 SSR / Worker 服务端使用；浏览器 REST 走同源 /api/v1
-  const value = process.env.API_PROXY_TARGET ?? process.env.NEXT_PUBLIC_API_BASE_URL;
+  const value =
+    process.env.NEXT_PUBLIC_API_BASE_URL ?? process.env.API_PROXY_TARGET;
   return value ? trimOrigin(value) : undefined;
 }
 
@@ -77,18 +77,26 @@ export function resolveApiOrigin(): string {
   return defaultApiOriginForEnv(getAppEnv());
 }
 
-/** 浏览器 REST：一律走同源 /api/v1（Next/CF rewrites → API_PROXY_TARGET） */
+/** Axios baseURL：本地 dev 走同源 /api/v1 代理，线上直连 API 子域 */
 export function getApiBaseUrl(): string {
-  if (typeof window !== "undefined") {
-    return "";
+  if (process.env.NEXT_PUBLIC_API_BASE_URL) {
+    return trimOrigin(process.env.NEXT_PUBLIC_API_BASE_URL);
   }
+
+  if (typeof window !== "undefined") {
+    if (isLocalHost(window.location.hostname)) return "";
+    return resolveApiOrigin();
+  }
+
   return resolveApiOrigin();
 }
 
-/** Web Worker：同源代理，与 getApiBaseUrl 一致 */
+/** Web Worker 内必须绝对 URL */
 export function getWorkerApiBaseUrl(): string {
-  if (typeof window !== "undefined") {
-    return window.location.origin;
+  if (typeof window !== "undefined" && isLocalHost(window.location.hostname)) {
+    return process.env.NEXT_PUBLIC_API_BASE_URL
+      ? trimOrigin(process.env.NEXT_PUBLIC_API_BASE_URL)
+      : window.location.origin;
   }
   return resolveApiOrigin();
 }

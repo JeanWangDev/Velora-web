@@ -1,5 +1,5 @@
 /**
- * Cloudflare Workers 部署配置
+ * Cloudflare Workers 部署配置（与 trading-client 一致）
  *
  * 生产: yarn deploy
  * 测试: yarn deploy:test  (--env test → velora-web-test)
@@ -8,8 +8,6 @@
  *   构建命令: npm run cf:build:test
  *   部署环境: test（或 development，二者等价）
  *   构建变量: 见 package.json build:test
- *
- * 自定义域名 velora-test.aipassly.com 在 Cloudflare 控制台绑定到 velora-web-test
  */
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
@@ -39,9 +37,10 @@
 	"upload_source_maps": true,
 	"vars": {
 		"NEXT_PUBLIC_APP_ENV": "production",
-		"NEXT_PUBLIC_API_WS_URL": "wss://velora-api-test.aipassly.com/ws/market",
-		"NEXT_PUBLIC_EVENTS_WS_URL": "wss://velora-api-test.aipassly.com/ws/events",
-		"API_PROXY_TARGET": "https://velora-api-test.aipassly.com"
+		"NEXT_PUBLIC_API_BASE_URL": "https://velora-api.aipassly.com",
+		"NEXT_PUBLIC_API_WS_URL": "wss://velora-api.aipassly.com/ws/market",
+		"NEXT_PUBLIC_EVENTS_WS_URL": "wss://velora-api.aipassly.com/ws/events",
+		"API_PROXY_TARGET": "https://velora-api.aipassly.com"
 	},
 	"env": {
 		"test": {
@@ -58,6 +57,7 @@
 			},
 			"vars": {
 				"NEXT_PUBLIC_APP_ENV": "test",
+				"NEXT_PUBLIC_API_BASE_URL": "https://velora-api-test.aipassly.com",
 				"NEXT_PUBLIC_API_WS_URL": "wss://velora-api-test.aipassly.com/ws/market",
 				"NEXT_PUBLIC_EVENTS_WS_URL": "wss://velora-api-test.aipassly.com/ws/events",
 				"API_PROXY_TARGET": "https://velora-api-test.aipassly.com"
@@ -83,6 +83,7 @@
 			},
 			"vars": {
 				"NEXT_PUBLIC_APP_ENV": "test",
+				"NEXT_PUBLIC_API_BASE_URL": "https://velora-api-test.aipassly.com",
 				"NEXT_PUBLIC_API_WS_URL": "wss://velora-api-test.aipassly.com/ws/market",
 				"NEXT_PUBLIC_EVENTS_WS_URL": "wss://velora-api-test.aipassly.com/ws/events",
 				"API_PROXY_TARGET": "https://velora-api-test.aipassly.com"

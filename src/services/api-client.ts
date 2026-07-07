@@ -145,9 +145,6 @@ class ApiClient {
   }
 
   private processRequestSuccess(config: InternalAxiosRequestConfig) {
-    // 浏览器每次请求强制同源 /api/v1，避免构建时 baseURL 被写死为 API 子域
-    config.baseURL = getApiBaseUrl();
-
     const requestConfig = config as InternalAxiosRequestConfig & {
       skipAuth?: boolean;
     };
