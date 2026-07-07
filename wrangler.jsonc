@@ -3,6 +3,13 @@
  *
  * 生产: yarn deploy
  * 测试: yarn deploy:test  (--env test → velora-web-test)
+ *
+ * Cloudflare Workers Builds 测试环境请设置：
+ *   构建命令: npm run cf:build:test
+ *   部署环境: test（或 development，二者等价）
+ *   构建变量: 见 package.json build:test
+ *
+ * 自定义域名 velora-test.aipassly.com 在 Cloudflare 控制台绑定到 velora-web-test
  */
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
@@ -52,10 +59,36 @@
 			},
 			"vars": {
 				"NEXT_PUBLIC_APP_ENV": "test",
-				"NEXT_PUBLIC_API_BASE_URL": "https://api-test.velora.com",
-				"NEXT_PUBLIC_API_WS_URL": "wss://api-test.velora.com/ws/market",
-				"NEXT_PUBLIC_EVENTS_WS_URL": "wss://api-test.velora.com/ws/events",
-				"API_PROXY_TARGET": "https://api-test.velora.com"
+				"NEXT_PUBLIC_API_BASE_URL": "https://velora-api-test.aipassly.com",
+				"NEXT_PUBLIC_API_WS_URL": "wss://velora-api-test.aipassly.com/ws/market",
+				"NEXT_PUBLIC_EVENTS_WS_URL": "wss://velora-api-test.aipassly.com/ws/events",
+				"API_PROXY_TARGET": "https://velora-api-test.aipassly.com"
+			},
+			"services": [
+				{
+					"binding": "WORKER_SELF_REFERENCE",
+					"service": "velora-web-test"
+				}
+			]
+		},
+		"development": {
+			"name": "velora-web-test",
+			"assets": {
+				"binding": "ASSETS",
+				"directory": ".open-next/assets"
+			},
+			"images": {
+				"binding": "IMAGES"
+			},
+			"observability": {
+				"enabled": true
+			},
+			"vars": {
+				"NEXT_PUBLIC_APP_ENV": "test",
+				"NEXT_PUBLIC_API_BASE_URL": "https://velora-api-test.aipassly.com",
+				"NEXT_PUBLIC_API_WS_URL": "wss://velora-api-test.aipassly.com/ws/market",
+				"NEXT_PUBLIC_EVENTS_WS_URL": "wss://velora-api-test.aipassly.com/ws/events",
+				"API_PROXY_TARGET": "https://velora-api-test.aipassly.com"
 			},
 			"services": [
 				{

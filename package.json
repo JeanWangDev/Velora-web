@@ -4,10 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "dev:test": "NEXT_PUBLIC_APP_ENV=test API_PROXY_TARGET=https://api-test.velora.com NEXT_PUBLIC_API_WS_URL=wss://api-test.velora.com/ws/market NEXT_PUBLIC_EVENTS_WS_URL=wss://api-test.velora.com/ws/events next dev",
+    "dev:test": "NEXT_PUBLIC_APP_ENV=test API_PROXY_TARGET=https://velora-api-test.aipassly.com NEXT_PUBLIC_API_WS_URL=wss://velora-api-test.aipassly.com/ws/market NEXT_PUBLIC_EVENTS_WS_URL=wss://velora-api-test.aipassly.com/ws/events next dev",
     "build": "next build",
-    "build:test": "NEXT_PUBLIC_APP_ENV=test NEXT_PUBLIC_API_BASE_URL=https://api-test.velora.com NEXT_PUBLIC_API_WS_URL=wss://api-test.velora.com/ws/market NEXT_PUBLIC_EVENTS_WS_URL=wss://api-test.velora.com/ws/events next build",
-    "cf:build:test": "NEXT_PUBLIC_APP_ENV=test NEXT_PUBLIC_API_BASE_URL=https://api-test.velora.com NEXT_PUBLIC_API_WS_URL=wss://api-test.velora.com/ws/market NEXT_PUBLIC_EVENTS_WS_URL=wss://api-test.velora.com/ws/events opennextjs-cloudflare build",
+    "build:test": "NEXT_PUBLIC_APP_ENV=test NEXT_PUBLIC_API_BASE_URL=https://velora-api-test.aipassly.com NEXT_PUBLIC_API_WS_URL=wss://velora-api-test.aipassly.com/ws/market NEXT_PUBLIC_EVENTS_WS_URL=wss://velora-api-test.aipassly.com/ws/events next build",
+    "cf:build:test": "NEXT_PUBLIC_APP_ENV=test NEXT_PUBLIC_API_BASE_URL=https://velora-api-test.aipassly.com NEXT_PUBLIC_API_WS_URL=wss://velora-api-test.aipassly.com/ws/market NEXT_PUBLIC_EVENTS_WS_URL=wss://velora-api-test.aipassly.com/ws/events opennextjs-cloudflare build",
     "start": "next start",
     "lint": "eslint",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",

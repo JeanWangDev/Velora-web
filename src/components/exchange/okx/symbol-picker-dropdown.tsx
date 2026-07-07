@@ -2,7 +2,9 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { ChevronDown, ChevronRight, Search, Star, Wifi } from "lucide-react";
+import { ChevronDown, ChevronRight, Search, Star } from "lucide-react";
+import { CoinIcon } from "@/components/exchange/coin-icon";
+import { NetworkStatusBadge } from "@/components/exchange/network-status-badge";
 import { useExchangeT } from "@/hooks/use-exchange-t";
 import { useHydrated } from "@/hooks/use-hydrated";
 import { useLocale } from "@/i18n/use-translation";
@@ -21,15 +23,6 @@ import { cn } from "@/lib/cn";
 
 type Cat = "watch" | "all" | "main" | "meme" | "platform" | "ai" | "new";
 type SortKey = "pair" | "price" | "change" | "turnover";
-
-const COIN_COLORS: Record<string, string> = {
-  BTC: "bg-[#f7931a]",
-  ETH: "bg-[#627eea]",
-  SOL: "bg-[#9945ff]",
-  BNB: "bg-[#f3ba2f]",
-  DOGE: "bg-[#c2a633]",
-  XRP: "bg-[#23292f]",
-};
 
 const PANEL_W = 420;
 const PANEL_H = 460;
@@ -347,14 +340,7 @@ export function SymbolPickerDropdown({
                           )}
                         />
                       </button>
-                      <span
-                        className={cn(
-                          "flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[9px] font-bold text-white",
-                          COIN_COLORS[s.base] ?? "bg-[#3a3a3a]",
-                        )}
-                      >
-                        {s.base.slice(0, 1)}
-                      </span>
+                      <CoinIcon base={s.base} size="xs" />
                       <span className="truncate font-medium">
                         {displayPair(s.symbol)}
                       </span>
@@ -374,14 +360,15 @@ export function SymbolPickerDropdown({
               })}
             </div>
 
-            <div className="flex items-center gap-1.5 border-t border-[#2a2a2a] px-3 py-1.5 text-[10px] text-up">
-              <Wifi className="h-3 w-3" />
-              {t("trade.networkStable")}
+            <div className="border-t border-[#2a2a2a] px-3 py-1.5">
+              <NetworkStatusBadge />
             </div>
           </div>,
           document.body,
         )
       : null;
+
+  const current = MOCK_SYMBOLS.find((s) => s.symbol === symbol);
 
   return (
     <>
@@ -396,6 +383,7 @@ export function SymbolPickerDropdown({
         aria-expanded={open}
         aria-haspopup="dialog"
       >
+        {current ? <CoinIcon base={current.base} size="xs" /> : null}
         {displayPair(symbol)}
         <ChevronDown
           className={cn("h-4 w-4 text-muted transition", open && "rotate-180")}

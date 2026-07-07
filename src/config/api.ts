@@ -10,7 +10,7 @@ import {
 } from "@/config/env";
 
 export const PRODUCTION_API_ORIGIN = "https://api.velora.com";
-export const TEST_API_ORIGIN = "https://api-test.velora.com";
+export const TEST_API_ORIGIN = "https://velora-api-test.aipassly.com";
 /** @deprecated use TEST_API_ORIGIN */
 export const PRE_API_ORIGIN = TEST_API_ORIGIN;
 export const LOCAL_API_ORIGIN = "http://localhost:4000";
@@ -29,10 +29,11 @@ function isLocalHost(hostname: string): boolean {
 /** 测试前端域名 */
 function isTestFrontendHost(hostname: string): boolean {
   return (
+    hostname === "velora-test.aipassly.com" ||
     hostname === "app-test.velora.com" ||
     hostname === "test.velora.com" ||
     hostname.startsWith("app-test.") ||
-    hostname.endsWith(".workers.dev") && hostname.includes("velora-web-test")
+    (hostname.endsWith(".workers.dev") && hostname.includes("velora-web-test"))
   );
 }
 

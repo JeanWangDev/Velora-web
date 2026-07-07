@@ -19,16 +19,8 @@ import { MOCK_SYMBOLS } from "@/mocks/exchange-data";
 import { displayPair, formatPrice } from "@/utils/format-exchange";
 import { useLocale } from "@/i18n/use-translation";
 import { PriceChange } from "@/components/exchange/price-change";
+import { CoinIcon } from "@/components/exchange/coin-icon";
 import { cn } from "@/lib/cn";
-
-const COIN_COLORS: Record<string, string> = {
-  BTC: "from-[#f7931a] to-[#e67e00]",
-  ETH: "from-[#627eea] to-[#3c5bc7]",
-  SOL: "from-[#9945ff] to-[#14f195]",
-  BNB: "from-[#f3ba2f] to-[#c99a12]",
-  XRP: "from-[#23292f] to-[#555]",
-  DOGE: "from-[#c2a633] to-[#9a8218]",
-};
 
 function Sparkline({ up }: { up: boolean }) {
   // 装饰性随机曲线：仅需生成一次，用 useState 惰性初始化以满足渲染纯度规则。
@@ -54,19 +46,6 @@ function Sparkline({ up }: { up: boolean }) {
         points={points}
       />
     </svg>
-  );
-}
-
-function CoinIcon({ base }: { base: string }) {
-  return (
-    <span
-      className={cn(
-        "flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br text-xs font-bold text-white shadow-md",
-        COIN_COLORS[base] ?? "from-[#444] to-[#222]",
-      )}
-    >
-      {base.slice(0, 1)}
-    </span>
   );
 }
 
@@ -192,7 +171,7 @@ export default function HomePage() {
                 className="absolute animate-pulse"
                 style={{ left: c.x, top: c.y }}
               >
-                <CoinIcon base={c.base} />
+                <CoinIcon base={c.base} size="md" />
               </div>
             ))}
           </div>
@@ -245,7 +224,7 @@ export default function HomePage() {
                 className="grid grid-cols-[1.4fr_1fr_1fr_auto] items-center gap-2 border-b border-border px-5 py-3.5 transition last:border-0 hover:bg-surface-muted/60"
               >
                 <span className="flex items-center gap-3">
-                  <CoinIcon base={meta.base} />
+                  <CoinIcon base={meta.base} size="md" />
                   <span>
                     <span className="block text-sm font-semibold">
                       {displayPair(meta.symbol)}
