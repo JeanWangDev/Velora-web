@@ -2,6 +2,7 @@
   "name": "velora-web",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "yarn@4.5.0",
   "scripts": {
     "dev": "next dev",
     "dev:test": "NEXT_PUBLIC_APP_ENV=test API_PROXY_TARGET=https://velora-api-test.aipassly.com NEXT_PUBLIC_API_WS_URL=wss://velora-api-test.aipassly.com/ws/market NEXT_PUBLIC_EVENTS_WS_URL=wss://velora-api-test.aipassly.com/ws/events next dev",
@@ -29,6 +30,7 @@
     "pako": "^2.1.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
+    "react-is": "19.2.4",
     "recharts": "^3.8.1",
     "viem": "^2.52.2",
     "zustand": "^5.0.13"
