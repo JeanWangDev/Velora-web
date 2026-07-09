@@ -165,7 +165,7 @@ export function ProfileModal({ open, onClose }: ProfileModalProps) {
           <button
             type="submit"
             disabled={loading || !isDirty}
-            className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+            className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-background transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {loading ? t("profileModal.saving") : t("profileModal.save")}
           </button>

@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { Loader2, ShieldAlert } from "lucide-react";
-import { AdminNav } from "@/components/admin/admin-nav";
 import { AppModal } from "@/components/ui/app-modal";
 import { ConfirmModal } from "@/components/ui/confirm-modal";
 import { LoginModal } from "@/components/auth/login-modal";
@@ -148,7 +147,7 @@ export function AdminKycClient() {
         <button
           type="button"
           onClick={() => setLoginOpen(true)}
-          className="mt-4 rounded-md bg-accent px-4 py-2 text-sm font-medium text-white"
+          className="mt-4 rounded-md bg-accent px-4 py-2 text-sm font-medium text-background"
         >
           {t("site.login")}
         </button>
@@ -170,8 +169,7 @@ export function AdminKycClient() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6 px-4 py-8 sm:px-6">
-      <AdminNav />
+    <div className="space-y-6">
 
       <div>
         <h1 className="text-2xl font-semibold text-foreground">{t("adminKyc.title")}</h1>

@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useExchangeT } from "@/hooks/use-exchange-t";
 import { useLocale } from "@/i18n/use-translation";
-import { useMockTradingStore } from "@/stores/use-mock-trading-store";
+import { useTradingStore } from "@/stores/use-trading-store";
 import { getSymbolMeta } from "@/mocks/exchange-data";
 import {
   displayPair,
@@ -19,11 +19,15 @@ export default function OrdersPage() {
   const t = useExchangeT();
   const locale = useLocale();
   const [tab, setTab] = useState<Tab>("open");
-  const openOrders = useMockTradingStore((s) => s.openOrders);
-  const orderHistory = useMockTradingStore((s) => s.orderHistory);
-  const userTrades = useMockTradingStore((s) => s.userTrades);
-  const cancelOrder = useMockTradingStore((s) => s.cancelOrder);
-  const cancelAll = useMockTradingStore((s) => s.cancelAll);
+  const openOrders = useTradingStore((s) => s.openOrders);
+  const orderHistory = useTradingStore((s) => s.orderHistory);
+  const userTrades = useTradingStore((s) => s.userTrades);
+  const cancelOrder = useTradingStore((s) => s.cancelOrder);
+  const cancelAll = useTradingStore((s) => s.cancelAll);
+
+  useEffect(() => {
+    void useTradingStore.getState().hydrate();
+  }, []);
 
   const tabs: { key: Tab; label: string }[] = [
     { key: "open", label: t("orders.tabOpen") },
@@ -40,7 +44,7 @@ export default function OrdersPage() {
         {tab === "open" && openOrders.length > 0 && (
           <button
             type="button"
-            onClick={() => cancelAll()}
+            onClick={() => void cancelAll()}
             className="text-sm text-down hover:underline"
           >
             {t("trade.cancelAll")}
@@ -103,11 +107,11 @@ function OrdersTable({
   t,
   onCancel,
 }: {
-  rows: ReturnType<typeof useMockTradingStore.getState>["openOrders"];
+  rows: ReturnType<typeof useTradingStore.getState>["openOrders"];
   empty: string;
   locale: "zh" | "en";
   t: (k: string) => string;
-  onCancel: (id: string) => void;
+  onCancel: (id: string) => void | Promise<void>;
 }) {
   if (rows.length === 0) {
     return <EmptyState message={empty} />;
@@ -187,7 +191,7 @@ function HistoryTable({
   locale,
   t,
 }: {
-  rows: ReturnType<typeof useMockTradingStore.getState>["orderHistory"];
+  rows: ReturnType<typeof useTradingStore.getState>["orderHistory"];
   empty: string;
   locale: "zh" | "en";
   t: (k: string) => string;
@@ -248,7 +252,7 @@ function TradesTable({
   locale,
   t,
 }: {
-  rows: ReturnType<typeof useMockTradingStore.getState>["userTrades"];
+  rows: ReturnType<typeof useTradingStore.getState>["userTrades"];
   empty: string;
   locale: "zh" | "en";
   t: (k: string) => string;

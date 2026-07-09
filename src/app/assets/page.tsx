@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { ArrowDownToLine, ArrowRight, ArrowUpFromLine, Wallet } from "lucide-react";
 import { LocaleLink } from "@/components/ui/locale-link";
 import { Button } from "@/components/ui/button";
@@ -9,7 +9,7 @@ import { useRequireKyc } from "@/hooks/use-require-kyc";
 import { useLocale } from "@/i18n/use-translation";
 import { toast } from "@/services/toast";
 import { useMockMarketStore } from "@/stores/use-mock-market-store";
-import { useMockTradingStore } from "@/stores/use-mock-trading-store";
+import { useTradingStore } from "@/stores/use-trading-store";
 import { formatCompact, formatPrice } from "@/utils/format-exchange";
 import { cn } from "@/lib/cn";
 
@@ -30,11 +30,13 @@ function assetUsdValue(
 export default function AssetsPage() {
   const t = useExchangeT();
   const locale = useLocale();
-  const balances = useMockTradingStore((s) => s.balances);
-  const credit = useMockTradingStore((s) => s.credit);
-  const withdraw = useMockTradingStore((s) => s.withdraw);
+  const balances = useTradingStore((s) => s.balances);
   const tickers = useMockMarketStore((s) => s.tickers);
   const { status, verified, ensureKyc } = useRequireKyc();
+
+  useEffect(() => {
+    void useTradingStore.getState().hydrate();
+  }, []);
 
   const totalUsd = useMemo(() => {
     return balances.reduce((sum, b) => {
@@ -50,18 +52,12 @@ export default function AssetsPage() {
   });
 
   function handleDeposit() {
-    credit("USDT", 1000);
-    toast.success(t("assets.depositDemo"));
+    toast.info(t("assets.depositContactAdmin"));
   }
 
   function handleWithdraw() {
     if (!ensureKyc()) return;
-    const result = withdraw("USDT", 100);
-    if (!result.ok) {
-      toast.error(result.message ?? t("common.noData"));
-      return;
-    }
-    toast.success(t("assets.withdrawDemo"));
+    toast.info(t("assets.withdrawComingSoon"));
   }
 
   return (

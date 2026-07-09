@@ -1,16 +1,21 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { useExchangeT } from "@/hooks/use-exchange-t";
 import { useLocale } from "@/i18n/use-translation";
-import { useMockTradingStore } from "@/stores/use-mock-trading-store";
+import { useTradingStore } from "@/stores/use-trading-store";
 import { formatDateTime, formatPrice } from "@/utils/format-exchange";
 
 export default function AssetsHistoryPage() {
   const t = useExchangeT();
   const locale = useLocale();
-  const ledger = useMockTradingStore((s) => s.ledger);
+  const ledger = useTradingStore((s) => s.ledger);
+
+  useEffect(() => {
+    void useTradingStore.getState().hydrate();
+  }, []);
 
   return (
     <div className="aurora-bg mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { useHydrated } from "@/hooks/use-hydrated";
 import { useMarketConnectionStatus } from "@/hooks/use-market-connection-status";
 import { useMockMarketStore } from "@/stores/use-mock-market-store";
 
@@ -8,12 +9,13 @@ import { useMockMarketStore } from "@/stores/use-mock-market-store";
 export function MockMarketTicker() {
   const tick = useMockMarketStore((s) => s.tick);
   const status = useMarketConnectionStatus();
+  const hydrated = useHydrated();
 
   useEffect(() => {
-    if (status === "offline") return;
+    if (!hydrated || status === "offline") return;
     const id = window.setInterval(() => tick(), 3000);
     return () => window.clearInterval(id);
-  }, [tick, status]);
+  }, [tick, status, hydrated]);
 
   return null;
 }

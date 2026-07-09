@@ -4,7 +4,10 @@ import type { AuthSession, AuthUser } from "@/types/auth";
 const BASE = "/api/v1/auth";
 
 export class AuthService {
-  static sendCode(input: { email: string; purpose: "register" | "reset_password" }) {
+  static sendCode(input: {
+    email: string;
+    purpose: "register" | "reset_password" | "login";
+  }) {
     return apiClient.sendRequest<{ message: string; devCode?: string }>({
       url: `${BASE}/send-code`,
       method: "POST",
@@ -17,7 +20,7 @@ export class AuthService {
   /** 只校验验证码是否正确（不消费），用于多步表单在输入验证码时就给出真实反馈 */
   static verifyCode(input: {
     email: string;
-    purpose: "register" | "reset_password";
+    purpose: "register" | "reset_password" | "login";
     code: string;
   }) {
     return apiClient.sendRequest<{ valid: boolean }>({
@@ -47,6 +50,33 @@ export class AuthService {
   static login(input: { email: string; password: string }) {
     return apiClient.sendRequest<AuthSession>({
       url: `${BASE}/login`,
+      method: "POST",
+      data: input,
+      skipAuth: true,
+      showErrorToast: false,
+    });
+  }
+
+  /** 登录第一步：校验密码并发送验证码 */
+  static loginChallenge(input: { email: string; password: string }) {
+    return apiClient.sendRequest<{
+      challengeToken: string;
+      maskedEmail: string;
+      message: string;
+      devCode?: string;
+    }>({
+      url: `${BASE}/login/challenge`,
+      method: "POST",
+      data: input,
+      skipAuth: true,
+      showErrorToast: false,
+    });
+  }
+
+  /** 登录第二步：校验验证码并完成登录 */
+  static loginVerify(input: { challengeToken: string; code: string }) {
+    return apiClient.sendRequest<AuthSession>({
+      url: `${BASE}/login/verify`,
       method: "POST",
       data: input,
       skipAuth: true,

@@ -5,8 +5,6 @@ import { ChevronDown } from "lucide-react";
 import { TradingPairsService } from "@/services/trading-pairs-service";
 import type { TradingPair } from "@/types/trading-pair";
 import { normalizeTradingPair } from "@/utils/symbol";
-import { toast } from "@/services/toast";
-import { useTranslation } from "@/i18n/use-translation";
 
 type SymbolPickerProps = {
   value: string;
@@ -23,7 +21,6 @@ const FALLBACK: TradingPair[] = [
     displayName: "Bitcoin",
     sortOrder: 10,
     isDefault: true,
-    accessTier: 0,
     status: 1,
   },
   {
@@ -34,7 +31,6 @@ const FALLBACK: TradingPair[] = [
     displayName: "Ethereum",
     sortOrder: 20,
     isDefault: false,
-    accessTier: 0,
     status: 1,
   },
   {
@@ -45,13 +41,11 @@ const FALLBACK: TradingPair[] = [
     displayName: "Solana",
     sortOrder: 30,
     isDefault: false,
-    accessTier: 0,
     status: 1,
   },
 ];
 
 export function SymbolPicker({ value, onChange, className = "" }: SymbolPickerProps) {
-  const t = useTranslation();
   const [pairs, setPairs] = useState<TradingPair[]>(FALLBACK);
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -105,25 +99,15 @@ export function SymbolPicker({ value, onChange, className = "" }: SymbolPickerPr
             <li key={pair.symbol}>
               <button
                 type="button"
-                disabled={pair.locked}
-                className={`flex w-full items-center justify-between px-3 py-2 text-left text-sm hover:bg-surface-muted disabled:cursor-not-allowed disabled:opacity-50 ${
+                className={`flex w-full items-center justify-between px-3 py-2 text-left text-sm hover:bg-surface-muted ${
                   pair.symbol === active ? "font-semibold text-accent" : "text-foreground"
                 }`}
                 onClick={() => {
-                  if (pair.locked) {
-                    toast.info(t("adminSymbols.accessVip"));
-                    return;
-                  }
                   onChange(pair.symbol);
                   setOpen(false);
                 }}
               >
-                <span className="flex items-center gap-1.5">
-                  {pair.symbol}
-                  {pair.accessTier === 1 ? (
-                    <span className="rounded bg-amber-500/10 px-1 text-[10px] text-amber-600">VIP</span>
-                  ) : null}
-                </span>
+                <span className="flex items-center gap-1.5">{pair.symbol}</span>
                 <span className="text-xs text-muted">{pair.displayName || pair.baseAsset}</span>
               </button>
             </li>

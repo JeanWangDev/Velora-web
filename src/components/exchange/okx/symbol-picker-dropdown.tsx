@@ -47,14 +47,14 @@ function SortHead({
       type="button"
       onClick={() => onToggle(k)}
       className={cn(
-        "inline-flex items-center gap-0.5 text-[10px] text-[#c8cdd6] hover:text-white",
+        "inline-flex items-center gap-0.5 text-[10px] text-[var(--terminal-muted)] hover:text-[var(--terminal-text)]",
         className,
       )}
     >
       {label}
       <span className="flex flex-col leading-none text-[8px] opacity-60">
-        <span className={sortKey === k && sortAsc ? "text-white" : ""}>▲</span>
-        <span className={sortKey === k && !sortAsc ? "text-white" : ""}>▼</span>
+        <span className={sortKey === k && sortAsc ? "text-[var(--terminal-accent)]" : ""}>▲</span>
+        <span className={sortKey === k && !sortAsc ? "text-[var(--terminal-accent)]" : ""}>▼</span>
       </span>
     </button>
   );
@@ -197,7 +197,7 @@ export function SymbolPickerDropdown({
             ref={panelRef}
             role="dialog"
             aria-label={locale === "zh" ? "选择交易对" : "Select pair"}
-            className="fixed z-[200] flex flex-col overflow-hidden rounded-lg border border-[#2a2a2a] bg-[#121212] shadow-2xl"
+            className="fixed z-[200] flex flex-col overflow-hidden rounded-lg border border-[var(--terminal-border)] bg-[var(--terminal-bg)] shadow-2xl"
             style={{
               top: pos.top,
               left: pos.left,
@@ -205,9 +205,10 @@ export function SymbolPickerDropdown({
               height: PANEL_H,
             }}
           >
+            {/* 搜索 */}
             <div className="p-3 pb-2">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted" />
+                <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[var(--terminal-muted)]" />
                 <input
                   autoFocus
                   value={q}
@@ -217,11 +218,12 @@ export function SymbolPickerDropdown({
                       ? "输入币种或合约地址"
                       : "Search coin or address"
                   }
-                  className="w-full rounded-md border-0 bg-[#1c1c1c] py-2 pl-9 pr-3 text-xs text-foreground outline-none placeholder:text-muted"
+                  className="w-full rounded-md border border-[var(--terminal-border)] bg-[var(--terminal-panel)] py-2 pl-9 pr-3 text-xs text-[var(--terminal-text)] outline-none placeholder:text-[var(--terminal-muted)]"
                 />
               </div>
             </div>
 
+            {/* 分类 Tab */}
             <div className="flex items-center gap-1 overflow-x-auto px-3 pb-2">
               {cats.map((c) => (
                 <button
@@ -231,39 +233,34 @@ export function SymbolPickerDropdown({
                   className={cn(
                     "inline-flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium transition",
                     cat === c.key
-                      ? "bg-white text-black"
-                      : "bg-transparent text-muted hover:text-foreground",
+                      ? "bg-[var(--terminal-accent)] text-white"
+                      : "text-[var(--terminal-muted)] hover:bg-[var(--terminal-panel)] hover:text-[var(--terminal-text)]",
                   )}
                 >
                   {c.star && (
                     <Star
                       className={cn(
                         "h-3 w-3",
-                        cat === c.key
-                          ? "fill-black text-black"
-                          : "text-muted",
+                        cat === c.key ? "fill-white text-white" : "text-[var(--terminal-muted)]",
                       )}
                     />
                   )}
                   {c.label}
                 </button>
               ))}
-              <span className="shrink-0 text-muted">
+              <span className="shrink-0 text-[var(--terminal-muted)]">
                 <ChevronRight className="h-3.5 w-3.5" />
               </span>
             </div>
 
-            <div className="grid grid-cols-[1.2fr_0.9fr_0.8fr_0.9fr] gap-1 border-b border-[#2a2a2a] px-3 py-1.5">
+            {/* 列头 */}
+            <div className="grid grid-cols-[1.2fr_0.9fr_0.8fr_0.9fr] gap-1 border-b border-[var(--terminal-border)] px-3 py-1.5">
               <SortHead
                 k="pair"
                 label={
                   mode === "futures"
-                    ? locale === "zh"
-                      ? "合约"
-                      : "Perp"
-                    : locale === "zh"
-                      ? "现货"
-                      : "Spot"
+                    ? locale === "zh" ? "合约" : "Perp"
+                    : locale === "zh" ? "现货" : "Spot"
                 }
                 sortKey={sortKey}
                 sortAsc={sortAsc}
@@ -295,9 +292,10 @@ export function SymbolPickerDropdown({
               />
             </div>
 
+            {/* 列表 */}
             <div className="terminal-scroll min-h-0 flex-1 overflow-y-auto">
               {rows.length === 0 && (
-                <p className="px-3 py-8 text-center text-xs text-muted">
+                <p className="px-3 py-8 text-center text-xs text-[var(--terminal-muted)]">
                   {t("common.noData")}
                 </p>
               )}
@@ -305,8 +303,6 @@ export function SymbolPickerDropdown({
                 const tk = tickers[s.symbol];
                 if (!tk) return null;
                 const active = s.symbol === symbol;
-                const up = tk.change24h > 0;
-                const down = tk.change24h < 0;
                 return (
                   <LocaleLink
                     key={s.symbol}
@@ -314,11 +310,9 @@ export function SymbolPickerDropdown({
                     onClick={() => setOpen(false)}
                     className={cn(
                       "grid grid-cols-[1.2fr_0.9fr_0.8fr_0.9fr] items-center gap-1 px-3 py-2 text-xs transition",
-                      active && "bg-[#1a3d2a]/30",
-                      !active && up && "hover:bg-[#141414]",
-                      !active && down && "hover:bg-[#2a1518]/40",
-                      !active && !up && !down && "hover:bg-[#141414]",
-                      down && !active && "bg-[#2a1518]/20",
+                      active
+                        ? "bg-[var(--terminal-accent)]/10"
+                        : "hover:bg-[var(--terminal-panel)]",
                     )}
                   >
                     <span className="flex min-w-0 items-center gap-1.5">
@@ -333,26 +327,29 @@ export function SymbolPickerDropdown({
                       >
                         <Star
                           className={cn(
-                            "h-3 w-3",
+                            "h-3 w-3 transition",
                             watchlist.includes(s.symbol)
                               ? "fill-amber-400 text-amber-400"
-                              : "text-[#555]",
+                              : "text-[var(--terminal-muted)] hover:text-amber-400",
                           )}
                         />
                       </button>
                       <CoinIcon base={s.base} size="xs" />
-                      <span className="truncate font-medium">
+                      <span className={cn(
+                        "truncate font-medium",
+                        active ? "text-[var(--terminal-accent)]" : "text-[var(--terminal-text)]",
+                      )}>
                         {displayPair(s.symbol)}
                       </span>
                     </span>
-                    <span className="text-right font-mono tabular-nums">
+                    <span className="text-right font-mono tabular-nums text-[var(--terminal-text)]">
                       {formatPrice(tk.last, s.pricePrecision, locale)}
                     </span>
                     <PriceChange
                       value={tk.change24h}
                       className="justify-end text-[11px]"
                     />
-                    <span className="text-right font-mono tabular-nums text-[#c8cdd6]">
+                    <span className="text-right font-mono tabular-nums text-[var(--terminal-muted)]">
                       {formatCompact(tk.quoteVolume24h, locale)}
                     </span>
                   </LocaleLink>
@@ -360,7 +357,8 @@ export function SymbolPickerDropdown({
               })}
             </div>
 
-            <div className="border-t border-[#2a2a2a] px-3 py-1.5">
+            {/* 底部状态 */}
+            <div className="border-t border-[var(--terminal-border)] px-3 py-1.5">
               <NetworkStatusBadge />
             </div>
           </div>,
@@ -379,7 +377,7 @@ export function SymbolPickerDropdown({
           if (!open) updatePos();
           setOpen((v) => !v);
         }}
-        className="inline-flex items-center gap-1.5 rounded px-1 py-0.5 text-base font-semibold hover:bg-[#141414]"
+        className="inline-flex items-center gap-1.5 rounded px-1 py-0.5 text-base font-semibold text-[var(--terminal-text)] hover:bg-[var(--terminal-panel)]"
         aria-expanded={open}
         aria-haspopup="dialog"
       >

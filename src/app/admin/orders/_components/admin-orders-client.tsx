@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Loader2, Search, ShieldAlert } from "lucide-react";
-import { AdminNav } from "@/components/admin/admin-nav";
 import { LoginModal } from "@/components/auth/login-modal";
 import { useLocale, useTranslation } from "@/i18n/use-translation";
 import { AdminBillingOrdersService } from "@/services/admin-billing-orders-service";
@@ -79,8 +78,7 @@ export function AdminOrdersClient() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6 px-4 py-8">
-      <AdminNav />
+    <div className="space-y-6">
       <h1 className="text-2xl font-semibold text-foreground">{t("adminOrders.title")}</h1>
 
       <form

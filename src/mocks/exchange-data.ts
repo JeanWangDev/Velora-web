@@ -89,6 +89,12 @@ function seedFromSymbol(symbol: string): number {
   return Math.abs(h);
 }
 
+/** 确定性伪随机 [0,1)，避免 SSR/CSR 初始数据不一致导致 hydration 报错 */
+function seededUnit(seed: number): number {
+  const x = Math.sin(seed * 12.9898 + 78.233) * 43758.5453;
+  return x - Math.floor(x);
+}
+
 export function createInitialTickers(): Record<string, Ticker> {
   const out: Record<string, Ticker> = {};
   for (const s of MOCK_SYMBOLS) {
@@ -122,27 +128,29 @@ export function jitterTicker(ticker: Ticker): Ticker {
   };
 }
 
-export function buildOrderBook(mid: number, levels = 36): OrderBook {
+export function buildOrderBook(mid: number, levels = 36, symbol = ""): OrderBook {
+  const base = seedFromSymbol(symbol);
   const step = mid > 1000 ? 0.5 : mid > 10 ? 0.01 : 0.0001;
   const bids = Array.from({ length: levels }, (_, i) => {
     const price = mid - step * (i + 1);
-    return { price, qty: Math.random() * 3 + 0.05 };
+    return { price, qty: seededUnit(base + i * 3 + 1) * 3 + 0.05 };
   });
   const asks = Array.from({ length: levels }, (_, i) => {
     const price = mid + step * (i + 1);
-    return { price, qty: Math.random() * 3 + 0.05 };
+    return { price, qty: seededUnit(base + i * 3 + 2) * 3 + 0.05 };
   });
   return { bids, asks };
 }
 
 export function buildRecentTrades(mid: number, symbol: string, count = 40): MarketTrade[] {
-  const now = Date.now();
+  const base = seedFromSymbol(symbol);
+  const now = 1_740_000_000_000 + (base % 86_400_000);
   return Array.from({ length: count }, (_, i) => {
-    const side = Math.random() > 0.5 ? "buy" : "sell";
+    const side = seededUnit(base + i * 5 + 1) > 0.5 ? "buy" : "sell";
     return {
       id: `${symbol}-${now - i * 1200}`,
-      price: mid + (Math.random() - 0.5) * mid * 0.001,
-      qty: Math.random() * 0.5 + 0.01,
+      price: mid + (seededUnit(base + i * 5 + 2) - 0.5) * mid * 0.001,
+      qty: seededUnit(base + i * 5 + 3) * 0.5 + 0.01,
       side,
       ts: now - i * 1200,
     };

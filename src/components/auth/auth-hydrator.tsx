@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { setUnauthorizedHandler } from "@/services/api-client";
 import { useAuthStore } from "@/stores/use-auth-store";
 import { useKycStore } from "@/stores/use-kyc-store";
+import { useTradingStore } from "@/stores/use-trading-store";
 
 export function AuthHydrator() {
   const hydrate = useAuthStore((state) => state.hydrate);
@@ -17,6 +18,7 @@ export function AuthHydrator() {
     setUnauthorizedHandler(() => {
       logout();
       resetKyc();
+      useTradingStore.getState().clearForLogout();
     });
 
     return () => {

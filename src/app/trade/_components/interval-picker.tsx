@@ -55,10 +55,10 @@ export function IntervalPicker({ value, onChange, variant = "default" }: Interva
             className={`rounded px-2 py-1 transition ${
               active
                 ? isTerminal
-                  ? "bg-[#1c1c1c] font-semibold text-foreground"
+                  ? "bg-[var(--terminal-panel)] font-semibold text-[var(--terminal-text)]"
                   : "bg-accent/10 font-semibold text-accent"
                 : isTerminal
-                  ? "text-muted hover:bg-[#141414] hover:text-foreground"
+                  ? "text-[var(--terminal-muted)] hover:bg-[var(--terminal-panel)] hover:text-[var(--terminal-text)]"
                   : "text-muted hover:bg-surface-muted hover:text-foreground"
             }`}
           >
@@ -96,7 +96,7 @@ export function IntervalPicker({ value, onChange, variant = "default" }: Interva
       {open ? (
         <div className={`absolute left-0 top-full z-50 mt-1 w-[min(92vw,22rem)] rounded-lg border p-3 shadow-lg ${
           isTerminal
-            ? "border-[var(--terminal-border)] bg-[#0a0a0a]"
+            ? "border-[var(--terminal-border)] bg-[var(--terminal-bg)]"
             : "border-border bg-surface"
         }`}>
           <div className="mb-3 flex items-center justify-between gap-2">
@@ -147,8 +147,12 @@ export function IntervalPicker({ value, onChange, variant = "default" }: Interva
                         }}
                         className={`relative flex items-center justify-center rounded px-2 py-1.5 text-xs transition ${
                           active && !editMode
-                            ? "bg-accent/10 font-semibold text-accent"
-                            : "bg-surface-muted/60 text-foreground hover:bg-surface-muted"
+                            ? isTerminal
+                              ? "bg-[var(--terminal-accent)]/15 font-semibold text-[var(--terminal-accent)]"
+                              : "bg-accent/10 font-semibold text-accent"
+                            : isTerminal
+                              ? "bg-[var(--terminal-panel)] text-[var(--terminal-text)] hover:bg-[var(--terminal-panel-2)]"
+                              : "bg-surface-muted/60 text-foreground hover:bg-surface-muted"
                         } ${editMode && isPinned ? "ring-1 ring-accent/40" : ""}`}
                       >
                         {item.label}

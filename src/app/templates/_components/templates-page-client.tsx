@@ -304,7 +304,7 @@ export function TemplatesPageClient() {
           <button
             type="button"
             onClick={() => setLoginOpen(true)}
-            className="rounded-md bg-accent px-4 py-2 text-sm font-medium text-white hover:opacity-90"
+            className="rounded-md bg-accent px-4 py-2 text-sm font-medium text-background hover:opacity-90"
           >
             {t("templatesPage.login")}
           </button>

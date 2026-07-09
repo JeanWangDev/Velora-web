@@ -194,7 +194,7 @@ export function SaveTemplateModal({
             type="button"
             disabled={submitting}
             onClick={() => void handleSubmit()}
-            className="inline-flex items-center gap-2 rounded-md bg-accent px-3 py-1.5 text-sm font-medium text-white disabled:opacity-60"
+            className="inline-flex items-center gap-2 rounded-md bg-accent px-3 py-1.5 text-sm font-medium text-background disabled:opacity-60"
           >
             {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
             {t("trade.templates.saveConfirm")}

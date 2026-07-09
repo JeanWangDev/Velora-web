@@ -11,7 +11,6 @@ import { AdminTradingPairsService } from "@/services/admin-trading-pairs-service
 import { useAuthStore } from "@/stores/use-auth-store";
 import { toast } from "@/services/toast";
 import type { TradingPair } from "@/types/trading-pair";
-import { AdminNav } from "@/components/admin/admin-nav";
 import { isAdminUser } from "@/utils/admin";
 
 type FormState = {
@@ -21,7 +20,6 @@ type FormState = {
   displayName: string;
   sortOrder: string;
   isDefault: boolean;
-  accessTier: "0" | "1";
   status: "0" | "1";
 };
 
@@ -32,7 +30,6 @@ const emptyForm = (): FormState => ({
   displayName: "",
   sortOrder: "100",
   isDefault: false,
-  accessTier: "0",
   status: "1",
 });
 
@@ -44,7 +41,6 @@ function formFromPair(pair: TradingPair): FormState {
     displayName: pair.displayName,
     sortOrder: String(pair.sortOrder),
     isDefault: pair.isDefault,
-    accessTier: pair.accessTier === 1 ? "1" : "0",
     status: pair.status === 1 ? "1" : "0",
   };
 }
@@ -113,7 +109,6 @@ export function AdminSymbolsClient() {
       displayName: form.displayName.trim(),
       sortOrder,
       isDefault: form.isDefault,
-      accessTier: Number(form.accessTier) as 0 | 1,
       status: Number(form.status) as 0 | 1,
     };
 
@@ -177,7 +172,7 @@ export function AdminSymbolsClient() {
         <button
           type="button"
           onClick={() => setLoginOpen(true)}
-          className="mt-4 rounded-md bg-accent px-4 py-2 text-sm font-medium text-white"
+          className="mt-4 rounded-md bg-accent px-4 py-2 text-sm font-medium text-background"
         >
           {t("site.login")}
         </button>
@@ -200,8 +195,7 @@ export function AdminSymbolsClient() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6 px-4 py-8 sm:px-6">
-      <AdminNav />
+    <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h1 className="text-2xl font-semibold text-foreground">{t("adminSymbols.title")}</h1>
@@ -210,7 +204,7 @@ export function AdminSymbolsClient() {
         <button
           type="button"
           onClick={openCreate}
-          className="inline-flex items-center justify-center gap-2 rounded-md bg-accent px-4 py-2 text-sm font-medium text-white hover:opacity-90"
+          className="inline-flex items-center justify-center gap-2 rounded-md bg-accent px-4 py-2 text-sm font-medium text-background hover:opacity-90"
         >
           <Plus className="h-4 w-4" />
           {t("adminSymbols.create")}
@@ -236,7 +230,6 @@ export function AdminSymbolsClient() {
                 <th className="px-4 py-3 font-medium">{t("adminSymbols.colExchange")}</th>
                 <th className="px-4 py-3 font-medium">{t("adminSymbols.colSort")}</th>
                 <th className="px-4 py-3 font-medium">{t("adminSymbols.colDefault")}</th>
-                <th className="px-4 py-3 font-medium">{t("adminSymbols.colAccess")}</th>
                 <th className="px-4 py-3 font-medium">{t("adminSymbols.colStatus")}</th>
                 <th className="px-4 py-3 font-medium" />
               </tr>
@@ -251,19 +244,6 @@ export function AdminSymbolsClient() {
                   <td className="px-4 py-3 text-muted">{pair.sortOrder}</td>
                   <td className="px-4 py-3 text-muted">
                     {pair.isDefault ? t("adminSymbols.yes") : t("adminSymbols.no")}
-                  </td>
-                  <td className="px-4 py-3">
-                    <span
-                      className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${
-                        pair.accessTier === 1
-                          ? "bg-amber-500/10 text-amber-700 dark:text-amber-400"
-                          : "bg-emerald-500/10 text-emerald-600"
-                      }`}
-                    >
-                      {pair.accessTier === 1
-                        ? t("adminSymbols.accessVip")
-                        : t("adminSymbols.accessFree")}
-                    </span>
                   </td>
                   <td className="px-4 py-3 text-muted">
                     {pair.status === 1
@@ -359,19 +339,6 @@ export function AdminSymbolsClient() {
           </label>
           <div className="grid gap-4 sm:grid-cols-2">
             <label className="block text-xs font-medium text-muted">
-              {t("adminSymbols.fieldAccessTier")}
-              <select
-                value={form.accessTier}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, accessTier: e.target.value as "0" | "1" }))
-                }
-                className="mt-1 w-full rounded-lg border border-border bg-surface-muted px-3 py-2 text-sm"
-              >
-                <option value="0">{t("adminSymbols.accessFree")}</option>
-                <option value="1">{t("adminSymbols.accessVip")}</option>
-              </select>
-            </label>
-            <label className="block text-xs font-medium text-muted">
               {t("adminSymbols.fieldStatus")}
               <select
                 value={form.status}
@@ -397,7 +364,7 @@ export function AdminSymbolsClient() {
             type="button"
             disabled={submitting}
             onClick={() => void handleSubmit()}
-            className="inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
+            className="inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2 text-sm font-medium text-background disabled:opacity-60"
           >
             {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
             {t("adminSymbols.confirm")}

@@ -10,8 +10,11 @@ import {
   formatCompact,
   formatPercent,
   formatPrice,
+  displayPair,
 } from "@/utils/format-exchange";
 import { SymbolPickerDropdown } from "@/components/exchange/okx/symbol-picker-dropdown";
+import { CoinIcon } from "@/components/exchange/coin-icon";
+import { useLayoutStore } from "@/stores/use-layout-store";
 import { cn } from "@/lib/cn";
 import type { TradeMode } from "@/stores/use-trade-mode-store";
 
@@ -53,6 +56,9 @@ export function InstrumentBar({
 }) {
   const t = useExchangeT();
   const locale = useLocale();
+  const layout = useLayoutStore((s) => s.layout);
+  // 标准版右侧已有币对列表，宽平模式左侧已有市场面板 → 隐藏下拉
+  const hidePicker = layout === "standard" || layout === "pro-left";
   const meta = getSymbolMeta(ticker.symbol);
   const toggle = useWatchlistStore((s) => s.toggle);
   const watched = useWatchlistStore((s) => s.isWatched(ticker.symbol));
@@ -73,7 +79,15 @@ export function InstrumentBar({
           {meta?.base?.slice(0, 1) ?? "?"}
         </div>
         <div className="flex items-center gap-1.5">
-          <SymbolPickerDropdown symbol={ticker.symbol} mode={mode} />
+          {hidePicker ? (
+            /* 已有侧边列表，只展示静态名称 */
+            <span className="flex items-center gap-1.5 px-1 text-base font-semibold text-[var(--terminal-text)]">
+              <CoinIcon base={meta?.base ?? "?"} size="xs" />
+              {displayPair(ticker.symbol)}
+            </span>
+          ) : (
+            <SymbolPickerDropdown symbol={ticker.symbol} mode={mode} />
+          )}
           <span
             className={cn(
               "rounded px-1.5 py-0.5 text-[10px] font-medium",
@@ -117,7 +131,7 @@ export function InstrumentBar({
         </span>
       </div>
 
-      {/* 行情统计：上标签下数值，始终可见，可横向滚动 */}
+      {/* 行情统计 */}
       <div className="flex min-w-0 flex-1 items-center gap-1 overflow-x-auto">
         {mode === "futures" && (
           <>
@@ -157,6 +171,7 @@ export function InstrumentBar({
           <StatCell label={t("trade.fundingRate")} value="0.0100%" />
         )}
       </div>
+
     </div>
   );
 }

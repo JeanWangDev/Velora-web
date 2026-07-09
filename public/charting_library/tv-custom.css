@@ -1,0 +1,8 @@
+/* 隐藏 TradingView 图表内嵌 logo */
+.onchart-tv-logo,
+.onchart-custom-logo,
+.onchart-cme-logo {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}

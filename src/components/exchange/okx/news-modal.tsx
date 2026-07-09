@@ -61,7 +61,7 @@ export function NewsModal({
       onClick={onClose}
     >
       <div
-        className="flex h-[min(80vh,560px)] w-full max-w-lg flex-col overflow-hidden rounded-xl border border-[var(--terminal-border)] bg-[#0a0a0a]"
+        className="flex h-[min(80vh,560px)] w-full max-w-lg flex-col overflow-hidden rounded-xl border border-[var(--terminal-border)] bg-[var(--terminal-bg)]"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between border-b border-[var(--terminal-border)] px-4 py-3">

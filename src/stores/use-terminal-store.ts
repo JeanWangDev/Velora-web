@@ -21,13 +21,12 @@ export const useTerminalStore = create<TerminalState>()(
   persist(
     (set, get) => ({
       marketRailOpen: false,
-      bottomDeskHeight: 168,
+      bottomDeskHeight: 300,
       bottomTab: "open",
       executionTab: "depth",
       toggleMarketRail: () =>
         set({ marketRailOpen: !get().marketRailOpen }),
-      setBottomDeskHeight: (h) =>
-        set({ bottomDeskHeight: Math.min(420, Math.max(140, h)) }),
+      setBottomDeskHeight: (h) => set({ bottomDeskHeight: h }),
       setBottomTab: (bottomTab) => set({ bottomTab }),
       setExecutionTab: (executionTab) => set({ executionTab }),
     }),

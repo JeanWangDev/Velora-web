@@ -23,7 +23,6 @@ const FALLBACK_PAIRS: TradingPair[] = [
     displayName: "Bitcoin",
     sortOrder: 10,
     isDefault: true,
-    accessTier: 0,
     status: 1,
   },
   {
@@ -34,7 +33,6 @@ const FALLBACK_PAIRS: TradingPair[] = [
     displayName: "Ethereum",
     sortOrder: 20,
     isDefault: false,
-    accessTier: 0,
     status: 1,
   },
   {
@@ -45,7 +43,6 @@ const FALLBACK_PAIRS: TradingPair[] = [
     displayName: "Solana",
     sortOrder: 30,
     isDefault: false,
-    accessTier: 0,
     status: 1,
   },
 ];

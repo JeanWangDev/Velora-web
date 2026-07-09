@@ -7,6 +7,8 @@ import { getSymbolMeta } from "@/mocks/exchange-data";
 import { formatPrice } from "@/utils/format-exchange";
 import { toast } from "@/services/toast";
 import { cn } from "@/lib/cn";
+import { LoginModal } from "@/components/auth/login-modal";
+import { useAuthStore } from "@/stores/use-auth-store";
 
 export function FuturesOrderForm({
   symbol,
@@ -28,6 +30,9 @@ export function FuturesOrderForm({
   const [type, setType] = useState<"limit" | "market">("limit");
   const [price, setPrice] = useState(String(lastPrice));
   const [qty, setQty] = useState("");
+  const [loginOpen, setLoginOpen] = useState(false);
+  const user = useAuthStore((s) => s.user);
+  const isLoggedIn = Boolean(user);
 
   useEffect(() => {
     setPrice(String(lastPrice));
@@ -143,17 +148,32 @@ export function FuturesOrderForm({
         {t("trade.available")}: {formatPrice(50000, 2, locale)} USDT
       </p>
 
-      <button
-        type="button"
-        onClick={submit}
-        className={cn(
-          "w-full rounded-lg py-2.5 text-sm font-semibold text-white",
-          side === "long" ? "bg-up" : "bg-down",
-        )}
-      >
-        {side === "long" ? t("trade.openLong") : t("trade.openShort")}{" "}
-        {meta?.base}
-      </button>
+      {isLoggedIn ? (
+        <button
+          type="button"
+          onClick={submit}
+          className={cn(
+            "w-full rounded-lg py-2.5 text-sm font-semibold text-white",
+            side === "long" ? "bg-up" : "bg-down",
+          )}
+        >
+          {side === "long" ? t("trade.openLong") : t("trade.openShort")}{" "}
+          {meta?.base}
+        </button>
+      ) : (
+        <button
+          type="button"
+          onClick={() => setLoginOpen(true)}
+          className={cn(
+            "w-full rounded-lg py-2.5 text-sm font-semibold text-white",
+            side === "long" ? "bg-up hover:brightness-110" : "bg-down hover:brightness-110",
+          )}
+        >
+          {t("trade.loginToTrade")}
+        </button>
+      )}
+
+      <LoginModal open={loginOpen} onClose={() => setLoginOpen(false)} />
 
       <div className="rounded border border-[var(--terminal-border)] p-2 text-[10px] text-muted">
         <p>{t("trade.marginRatio")}: 0.12%</p>

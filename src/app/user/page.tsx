@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import {
   ArrowRight,
   BadgeCheck,
@@ -16,8 +16,22 @@ import { useExchangeT } from "@/hooks/use-exchange-t";
 import { useLocale } from "@/i18n/use-translation";
 import { useAuthStore } from "@/stores/use-auth-store";
 import { useKycStore } from "@/stores/use-kyc-store";
+import { useMockMarketStore } from "@/stores/use-mock-market-store";
+import { useTradingStore } from "@/stores/use-trading-store";
 import { maskEmail } from "@/utils/mask-email";
+import { formatCompact } from "@/utils/format-exchange";
 import { cn } from "@/lib/cn";
+
+const STABLE = new Set(["USDT", "USDC"]);
+
+function assetUsdValue(
+  currency: string,
+  amount: number,
+  tickers: ReturnType<typeof useMockMarketStore.getState>["tickers"],
+) {
+  if (STABLE.has(currency)) return amount;
+  return amount * (tickers[`${currency}-USDT`]?.last ?? 0);
+}
 
 export default function UserOverviewPage() {
   const t = useExchangeT();
@@ -25,6 +39,19 @@ export default function UserOverviewPage() {
   const isZh = locale === "zh";
   const user = useAuthStore((s) => s.user)!;
   const kycStatus = useKycStore((s) => s.status);
+  const balances = useTradingStore((s) => s.balances);
+  const tickers = useMockMarketStore((s) => s.tickers);
+
+  useEffect(() => {
+    void useTradingStore.getState().hydrate();
+  }, []);
+
+  const totalUsd = useMemo(() => {
+    return balances.reduce((sum, b) => {
+      const amount = b.available + b.frozen;
+      return sum + assetUsdValue(b.currency, amount, tickers);
+    }, 0);
+  }, [balances, tickers]);
 
   const kycLabel = useMemo(() => {
     if (kycStatus === "verified") return t("user.kycStatusVerified");
@@ -72,6 +99,24 @@ export default function UserOverviewPage() {
             className="text-sm text-primary hover:underline"
           >
             {t("user.viewProfile")}
+          </LocaleLink>
+        </div>
+      </section>
+
+      <section className="glass-panel rounded-2xl p-5">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <p className="text-sm text-muted">{t("assets.total")}</p>
+            <p className="mt-1 font-mono text-2xl font-semibold tabular-nums">
+              {formatCompact(totalUsd, locale)} USDT
+            </p>
+          </div>
+          <LocaleLink
+            href="/assets"
+            className="inline-flex items-center gap-1 rounded-full border border-border px-4 py-2 text-sm font-medium hover:border-primary/40 hover:text-primary"
+          >
+            {t("assets.title")}
+            <ArrowRight className="h-4 w-4" />
           </LocaleLink>
         </div>
       </section>

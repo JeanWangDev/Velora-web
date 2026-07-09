@@ -114,7 +114,7 @@ export function IndicatorSettingsModal({
       onClick={onClose}
     >
       <div
-        className="flex h-[min(80vh,480px)] w-full max-w-2xl flex-col overflow-hidden rounded-xl border border-[var(--terminal-border)] bg-[#0a0a0a]"
+        className="flex h-[min(80vh,480px)] w-full max-w-2xl flex-col overflow-hidden rounded-xl border border-[var(--terminal-border)] bg-[var(--terminal-bg)]"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between border-b border-[var(--terminal-border)] px-4 py-3">
@@ -164,8 +164,8 @@ export function IndicatorSettingsModal({
                 <label
                   key={item.key}
                   className={cn(
-                    "flex cursor-pointer items-center gap-2 rounded px-2 py-1.5 text-xs hover:bg-[#141414]",
-                    checked && "bg-[#141414]",
+                    "flex cursor-pointer items-center gap-2 rounded px-2 py-1.5 text-xs hover:bg-[var(--terminal-panel)]",
+                    checked && "bg-[var(--terminal-panel)]",
                   )}
                 >
                   <input

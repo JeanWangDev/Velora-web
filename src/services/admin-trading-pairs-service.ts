@@ -10,7 +10,6 @@ export type AdminTradingPairInput = {
   displayName?: string;
   sortOrder?: number;
   isDefault?: boolean;
-  accessTier?: 0 | 1;
   status?: 0 | 1;
 };
 

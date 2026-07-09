@@ -9,6 +9,8 @@ import { useAuthStore } from "@/stores/use-auth-store";
 import { useTranslation } from "@/i18n/use-translation";
 import type { AuthModalMode } from "@/types/auth";
 import { AppModal } from "@/components/ui/app-modal";
+import { CaptchaModal } from "@/components/ui/captcha-modal";
+import { LoginVerifyModal } from "@/components/auth/login-verify-modal";
 import {
   hasFieldErrors,
   mapApiValidationDetails,
@@ -51,6 +53,13 @@ export function LoginModal({
 }: LoginModalProps) {
   const t = useTranslation();
   const setSession = useAuthStore((state) => state.setSession);
+  const logout = useAuthStore((state) => state.logout);
+
+  useEffect(() => {
+    if (!open) return;
+    logout();
+    setFieldErrors({});
+  }, [open, logout]);
 
   const [mode, setMode] = useState<AuthModalMode>(initialMode);
   const [loading, setLoading] = useState(false);
@@ -64,6 +73,23 @@ export function LoginModal({
   const [verificationCode, setVerificationCode] = useState("");
   const [devVerificationCode, setDevVerificationCode] = useState("");
   const [suggestRegister, setSuggestRegister] = useState(false);
+
+  const [captchaOpen, setCaptchaOpen] = useState(false);
+  const [verifyOpen, setVerifyOpen] = useState(false);
+  const [challengeToken, setChallengeToken] = useState("");
+  const [maskedContact, setMaskedContact] = useState("");
+  const [devCode, setDevCode] = useState("");
+  const [verifyError, setVerifyError] = useState("");
+  const [verifyLoading, setVerifyLoading] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(0);
+
+  useEffect(() => {
+    if (resendCooldown <= 0) return;
+    const timer = window.setInterval(() => {
+      setResendCooldown((s) => (s <= 1 ? 0 : s - 1));
+    }, 1000);
+    return () => window.clearInterval(timer);
+  }, [resendCooldown]);
 
   useEffect(() => {
     if (codeCooldown <= 0) return;
@@ -134,6 +160,68 @@ export function LoginModal({
     }
   }
 
+  async function startLoginChallenge() {
+    setVerifyError("");
+    setLoading(true);
+    try {
+      const result = await AuthService.loginChallenge({
+        email: email.trim(),
+        password,
+      });
+      setChallengeToken(result.challengeToken);
+      setMaskedContact(result.maskedEmail);
+      setDevCode(result.devCode ?? "");
+      setResendCooldown(60);
+      setVerifyOpen(true);
+      toast.success(result.message || t("loginModal.codeSent"));
+    } catch (error) {
+      if (error instanceof ApiClientError) {
+        const apiMessage = error.message?.trim() || t("loginModal.operationFailed");
+        setFieldErrors({ _form: apiMessage });
+        if (
+          error.status === 404 ||
+          apiMessage.includes("不存在") ||
+          apiMessage.includes("注册")
+        ) {
+          setSuggestRegister(true);
+        }
+      } else {
+        setFieldErrors({
+          _form:
+            error instanceof Error ? error.message : t("loginModal.operationFailed"),
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function completeLogin(code: string) {
+    setVerifyLoading(true);
+    setVerifyError("");
+    try {
+      const session = await AuthService.loginVerify({ challengeToken, code });
+      setSession(session.accessToken, session.user, session.expiresAt);
+      setVerifyOpen(false);
+      toast.success(
+        formatMessage(t("loginModal.welcomeBack"), {
+          nickname: session.user.nickname,
+        }),
+      );
+      onClose();
+    } catch (error) {
+      setVerifyError(
+        error instanceof ApiClientError
+          ? error.message
+          : error instanceof Error
+            ? error.message
+            : t("loginModal.operationFailed"),
+      );
+    } finally {
+      setVerifyLoading(false);
+    }
+  }
+
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
 
@@ -166,21 +254,15 @@ export function LoginModal({
 
     setFieldErrors({});
     setSuggestRegister(false);
+
+    if (mode === "login") {
+      setCaptchaOpen(true);
+      return;
+    }
+
     setLoading(true);
 
     try {
-      if (mode === "login") {
-        const session = await AuthService.login({ email: email.trim(), password });
-        setSession(session.accessToken, session.user, session.expiresAt);
-        toast.success(
-          formatMessage(t("loginModal.welcomeBack"), {
-            nickname: session.user.nickname,
-          }),
-        );
-        onClose();
-        return;
-      }
-
       if (mode === "register") {
         const session = await AuthService.register({
           email: email.trim(),
@@ -236,15 +318,6 @@ export function LoginModal({
       if (error instanceof ApiClientError) {
         const apiMessage = error.message?.trim() || t("loginModal.operationFailed");
         setFieldErrors({ _form: apiMessage });
-
-        if (
-          mode === "login" &&
-          (error.status === 404 ||
-            apiMessage.includes("不存在") ||
-            apiMessage.includes("注册"))
-        ) {
-          setSuggestRegister(true);
-        }
         return;
       }
 
@@ -269,6 +342,7 @@ export function LoginModal({
   const codePurpose = mode === "register" ? "register" : "reset_password";
 
   return (
+    <>
     <AppModal open={open} onClose={onClose} title={title}>
       <div className="mb-4 space-y-1">
         <p className="text-sm text-muted">{t("loginModal.subtitle")}</p>
@@ -423,11 +497,33 @@ export function LoginModal({
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-lg bg-accent px-3 py-2.5 text-sm font-semibold text-white transition hover:opacity-90 disabled:opacity-60"
+          className="w-full rounded-lg bg-accent px-3 py-2.5 text-sm font-semibold text-background transition hover:opacity-90 disabled:opacity-60"
         >
           {loading ? t("loginModal.submitting") : submitLabel}
         </button>
       </form>
     </AppModal>
+
+    <CaptchaModal
+      open={captchaOpen}
+      onClose={() => setCaptchaOpen(false)}
+      onSuccess={() => {
+        setCaptchaOpen(false);
+        void startLoginChallenge();
+      }}
+    />
+
+    <LoginVerifyModal
+      open={verifyOpen}
+      onClose={() => setVerifyOpen(false)}
+      maskedContact={maskedContact}
+      devCode={devCode}
+      loading={verifyLoading}
+      error={verifyError}
+      resendCooldown={resendCooldown}
+      onResend={() => void startLoginChallenge()}
+      onConfirm={(code) => void completeLogin(code)}
+    />
+    </>
   );
 }

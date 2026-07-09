@@ -24,7 +24,7 @@ function createInitialBooks(tickers: Record<string, Ticker>) {
   for (const s of MOCK_SYMBOLS) {
     const t = tickers[s.symbol];
     if (!t) continue;
-    orderBooks[s.symbol] = buildOrderBook(t.last);
+    orderBooks[s.symbol] = buildOrderBook(t.last, 36, s.symbol);
     recentTrades[s.symbol] = buildRecentTrades(t.last, s.symbol);
   }
   return { orderBooks, recentTrades };
@@ -47,7 +47,7 @@ export const useMockMarketStore = create<MockMarketState>((set, get) => ({
     set({
       orderBooks: {
         ...orderBooks,
-        [symbol]: buildOrderBook(ticker.last),
+        [symbol]: buildOrderBook(ticker.last, 36, symbol),
       },
       recentTrades: {
         ...recentTrades,
@@ -66,7 +66,7 @@ export const useMockMarketStore = create<MockMarketState>((set, get) => ({
       const updated = jitterTicker(t);
       nextTickers[sym] = updated;
       if (orderBooks[sym]) {
-        nextBooks[sym] = buildOrderBook(updated.last);
+        nextBooks[sym] = buildOrderBook(updated.last, 36, sym);
       }
       if (recentTrades[sym]) {
         const trades = [...recentTrades[sym]];

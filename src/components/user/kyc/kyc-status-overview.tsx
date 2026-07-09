@@ -66,7 +66,7 @@ export function KycStatusOverview({
         </ul>
       </section>
 
-      {profile && status !== "none" ? (
+      {profile && status !== "none" && !isPlaceholderProfile(profile) ? (
         <section className="glass-panel rounded-2xl p-5 text-sm">
           <h2 className="mb-3 text-sm font-medium text-muted">{t("user.kycTitle")}</h2>
           <dl className="grid gap-2 sm:grid-cols-2">
@@ -167,8 +167,12 @@ function Row({ label, value }: { label: string; value: string }) {
 }
 
 function maskId(id: string): string {
-  if (id.length <= 4) return "****";
+  if (id === "—" || id.length <= 4) return "****";
   return `${id.slice(0, 2)}${"*".repeat(Math.min(id.length - 4, 8))}${id.slice(-2)}`;
+}
+
+function isPlaceholderProfile(profile: KycProfile): boolean {
+  return profile.fullName === "—" || profile.idNumber === "—";
 }
 
 export function useKycStatusMeta(status: KycStatus, t: (k: string) => string) {

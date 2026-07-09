@@ -14,6 +14,8 @@ import {
   AuthPageFrame,
   AuthPromoPanel,
 } from "@/components/auth/auth-shell";
+import { LoginVerifyModal } from "@/components/auth/login-verify-modal";
+import { CaptchaModal } from "@/components/ui/captcha-modal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CheckboxField } from "@/components/ui/checkbox-field";
@@ -39,6 +41,12 @@ export default function LoginPage() {
   const router = useRouter();
   const localeHref = useLocaleHref();
   const setSession = useAuthStore((s) => s.setSession);
+  const logout = useAuthStore((s) => s.logout);
+
+  useEffect(() => {
+    // 登录页进入时清掉过期 token，避免后续登录请求被误判为「会话失效」
+    logout();
+  }, [logout]);
 
   const [tab, setTab] = useState<LoginTab>("email");
   const [email, setEmail] = useState("");
@@ -47,6 +55,17 @@ export default function LoginPage() {
   const [keepLogin, setKeepLogin] = useState(true);
   const [loading, setLoading] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<AuthFieldErrors>({});
+
+  const [captchaOpen, setCaptchaOpen] = useState(false);
+  const [verifyOpen, setVerifyOpen] = useState(false);
+  const [challengeToken, setChallengeToken] = useState("");
+  const [maskedContact, setMaskedContact] = useState("");
+  const [devCode, setDevCode] = useState("");
+  const [verifyError, setVerifyError] = useState("");
+  const [verifyLoading, setVerifyLoading] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(0);
+  const [pendingAccount, setPendingAccount] = useState("");
+  const [pendingPassword, setPendingPassword] = useState("");
 
   const [phone, setPhone] = useState("");
   const [phoneIso, setPhoneIso] = useState("CN");
@@ -68,6 +87,14 @@ export default function LoginPage() {
   }, [dialQ]);
 
   useEffect(() => {
+    if (resendCooldown <= 0) return;
+    const timer = window.setInterval(() => {
+      setResendCooldown((s) => (s <= 1 ? 0 : s - 1));
+    }, 1000);
+    return () => window.clearInterval(timer);
+  }, [resendCooldown]);
+
+  useEffect(() => {
     if (!dialOpen) return;
     const onDown = (e: MouseEvent) => {
       if (!dialRef.current?.contains(e.target as Node)) setDialOpen(false);
@@ -82,22 +109,21 @@ export default function LoginPage() {
   const canEmailSubmit =
     (email.includes("@") || email.trim().length >= 3) && password.length >= 6;
 
-  async function loginWithAccount(account: string) {
+  async function startLoginChallenge(account: string) {
     setFieldErrors({});
+    setVerifyError("");
     setLoading(true);
     try {
-      const session = await AuthService.login({
+      const result = await AuthService.loginChallenge({
         email: account.trim(),
-        password,
+        password: pendingPassword || password,
       });
-      setSession(session.accessToken, session.user, session.expiresAt);
-      toast.success(
-        t("loginModal.welcomeBack").replace(
-          "{nickname}",
-          session.user.nickname,
-        ),
-      );
-      router.push(localeHref("/trade/BTC-USDT"));
+      setChallengeToken(result.challengeToken);
+      setMaskedContact(result.maskedEmail);
+      setDevCode(result.devCode ?? "");
+      setResendCooldown(60);
+      setVerifyOpen(true);
+      toast.success(result.message || t("loginModal.codeSent"));
     } catch (error) {
       const message =
         error instanceof ApiClientError
@@ -109,6 +135,44 @@ export default function LoginPage() {
     } finally {
       setLoading(false);
     }
+  }
+
+  async function completeLogin(code: string) {
+    setVerifyLoading(true);
+    setVerifyError("");
+    try {
+      const session = await AuthService.loginVerify({
+        challengeToken,
+        code,
+      });
+      setSession(session.accessToken, session.user, session.expiresAt);
+      setVerifyOpen(false);
+      toast.success(
+        t("loginModal.welcomeBack").replace("{nickname}", session.user.nickname),
+      );
+      router.push(localeHref("/trade/BTC-USDT"));
+    } catch (error) {
+      const message =
+        error instanceof ApiClientError
+          ? error.message
+          : error instanceof Error
+            ? error.message
+            : t("loginModal.operationFailed");
+      setVerifyError(message);
+    } finally {
+      setVerifyLoading(false);
+    }
+  }
+
+  async function handleResendCode() {
+    if (!pendingAccount || resendCooldown > 0) return;
+    await startLoginChallenge(pendingAccount);
+  }
+
+  async function loginWithAccount(account: string) {
+    setPendingAccount(account);
+    setPendingPassword(password);
+    setCaptchaOpen(true);
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -150,7 +214,8 @@ export default function LoginPage() {
   ];
 
   return (
-    <AuthPageFrame promo={<AuthPromoPanel variant="fees" />}>
+    <>
+    <AuthPageFrame promo={<AuthPromoPanel variant="trust" />}>
       <h1 className="text-2xl font-bold">
         {isZh ? "欢迎使用 Velora" : "Welcome to Velora"}
       </h1>
@@ -316,7 +381,11 @@ export default function LoginPage() {
                   type="button"
                   className="auth-muted text-xs hover:opacity-80"
                   onClick={() =>
-                    toast.info(isZh ? "请联系支持重置" : "Contact support")
+                    toast.info(
+                      isZh
+                        ? "请通过顶部「登录」弹窗中的「找回密码」"
+                        : "Use Forgot password in the login dialog",
+                    )
                   }
                 >
                   {isZh ? "忘记密码？" : "Forgot password?"}
@@ -391,5 +460,33 @@ export default function LoginPage() {
         ))}
       </div>
     </AuthPageFrame>
+
+    <CaptchaModal
+      open={captchaOpen}
+      onClose={() => setCaptchaOpen(false)}
+      title={isZh ? "安全验证" : "Security check"}
+      instruction={isZh ? "请在下图依次点击" : "Tap icons in order"}
+      onSuccess={() => {
+        setCaptchaOpen(false);
+        if (pendingAccount) void startLoginChallenge(pendingAccount);
+      }}
+    />
+
+    <LoginVerifyModal
+      open={verifyOpen}
+      onClose={() => setVerifyOpen(false)}
+      maskedContact={maskedContact}
+      devCode={devCode}
+      loading={verifyLoading}
+      error={verifyError}
+      resendCooldown={resendCooldown}
+      onResend={() => void handleResendCode()}
+      onConfirm={(code) => void completeLogin(code)}
+      title={isZh ? "使用邮箱验证" : "Email verification"}
+      confirmLabel={isZh ? "确认" : "Confirm"}
+      resendLabel={isZh ? "重新发送" : "Resend"}
+      helpLabel={isZh ? "无法验证？" : "Can't verify?"}
+    />
+    </>
   );
 }

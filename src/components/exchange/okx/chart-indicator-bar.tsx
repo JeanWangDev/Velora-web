@@ -113,7 +113,7 @@ export function ChartIndicatorBar({
             ? "cursor-not-allowed text-[#4a4a4a]"
             : active
               ? "text-white"
-              : "text-[#8b95a8] hover:text-white",
+              : "text-[var(--terminal-muted)] hover:text-[var(--terminal-text)]",
           pending === item.key && "opacity-60",
         )}
       >
@@ -130,13 +130,13 @@ export function ChartIndicatorBar({
           <span className="mx-1.5 h-3 w-px shrink-0 bg-[#2a2a2a]" />
           {subItems.map(chip)}
         </div>
-        <span className="shrink-0 text-[10px] text-[#8b95a8]">
+        <span className="shrink-0 text-[10px] text-[var(--terminal-muted)]">
           {locale === "zh" ? "副" : "Sub"}({subCount}/{MAX_SUB_INDICATORS})
         </span>
         <button
           type="button"
           onClick={() => setSettingsOpen(true)}
-          className="shrink-0 rounded p-1 text-[#8b95a8] hover:bg-[#141414] hover:text-white"
+          className="shrink-0 rounded p-1 text-[var(--terminal-muted)] hover:bg-[var(--terminal-panel)] hover:text-[var(--terminal-text)]"
           title={locale === "zh" ? "指标设置" : "Indicator settings"}
         >
           <Settings2 className="h-3.5 w-3.5" />

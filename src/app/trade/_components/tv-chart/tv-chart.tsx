@@ -133,6 +133,7 @@ export default function TVChart({
       theme: isDark ? "Dark" : "Light",
       autosize: true,
       timezone: "Etc/UTC",
+      custom_css_url: "/charting_library/tv-custom.css",
       disabled_features: [
         "use_localstorage_for_settings",
         "header_widget",
@@ -143,7 +144,7 @@ export default function TVChart({
       ],
       enabled_features: [],
       overrides: {
-        "paneProperties.background": isDark ? "#0b1120" : "#ffffff",
+        "paneProperties.background": isDark ? "#000000" : "#ffffff",
         // 隐藏主图品种 OHLC 图例，保留指标图例
         "paneProperties.legendProperties.showLegend": true,
         "paneProperties.legendProperties.showSeriesTitle": false,
@@ -158,12 +159,12 @@ export default function TVChart({
           ? "rgba(148, 163, 184, 0.08)"
           : "rgba(15, 23, 42, 0.06)",
         "scalesProperties.textColor": isDark ? "#cbd5f5" : "#475569",
-        "mainSeriesProperties.candleStyle.upColor": "#22c55e",
-        "mainSeriesProperties.candleStyle.downColor": "#f43f5e",
-        "mainSeriesProperties.candleStyle.borderUpColor": "#22c55e",
-        "mainSeriesProperties.candleStyle.borderDownColor": "#f43f5e",
-        "mainSeriesProperties.candleStyle.wickUpColor": "#22c55e",
-        "mainSeriesProperties.candleStyle.wickDownColor": "#f43f5e",
+        "mainSeriesProperties.candleStyle.upColor": isDark ? "#98D330" : "#22c55e",
+        "mainSeriesProperties.candleStyle.downColor": isDark ? "#E93E8B" : "#f43f5e",
+        "mainSeriesProperties.candleStyle.borderUpColor": isDark ? "#98D330" : "#22c55e",
+        "mainSeriesProperties.candleStyle.borderDownColor": isDark ? "#E93E8B" : "#f43f5e",
+        "mainSeriesProperties.candleStyle.wickUpColor": isDark ? "#98D330" : "#22c55e",
+        "mainSeriesProperties.candleStyle.wickDownColor": isDark ? "#E93E8B" : "#f43f5e",
       },
     });
 
@@ -398,7 +399,7 @@ export default function TVChart({
       <div
         ref={containerRef}
         id={containerId}
-        className="h-full w-full bg-background"
+        className="h-full w-full bg-[var(--terminal-bg)]"
       />
 
       {!tvReady ? (

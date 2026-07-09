@@ -251,7 +251,7 @@ export function IndicatorPanel({ chartControls }: IndicatorPanelProps) {
           type="button"
           onClick={handleApply}
           disabled={submitting || !chartControls}
-          className="rounded-md bg-accent px-4 py-1.5 text-xs font-medium text-white transition hover:opacity-90 disabled:opacity-50"
+          className="rounded-md bg-accent px-4 py-1.5 text-xs font-medium text-background transition hover:opacity-90 disabled:opacity-50"
         >
           {submitting
             ? t("trade.indicatorPanel.applying")

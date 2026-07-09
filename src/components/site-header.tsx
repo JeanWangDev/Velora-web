@@ -8,6 +8,7 @@ import {
   HelpCircle,
   MessageSquare,
   Search,
+  Settings,
 } from "lucide-react";
 import { useState } from "react";
 import { useTranslation, type TranslationKey } from "@/i18n/use-translation";
@@ -16,7 +17,6 @@ import { VeloraLogo } from "@/components/ui/velora-logo";
 import { UserAccountMenu } from "@/components/auth/user-account-menu";
 import { AuthHydrator } from "@/components/auth/auth-hydrator";
 import { TradeModeNav } from "@/components/exchange/okx/trade-mode-nav";
-import { AssetsDropdown } from "@/components/exchange/terminal/assets-dropdown";
 import { NotificationsDropdown } from "@/components/exchange/terminal/notifications-dropdown";
 import { LanguageSwitcher } from "@/components/ui/language-switcher";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
@@ -24,6 +24,7 @@ import { LocaleLink } from "@/components/ui/locale-link";
 import { useAuthStore } from "@/stores/use-auth-store";
 import { stripLocaleFromPath } from "@/i18n/locales";
 import { cn } from "@/lib/cn";
+import { WorkspaceDrawer } from "@/components/exchange/okx/workspace-drawer";
 
 const NAV: { href: string; labelKey: TranslationKey; dropdown?: boolean }[] = [
   { href: "/markets", labelKey: "nav.markets" },
@@ -38,6 +39,7 @@ export function SiteHeader() {
   const pathname = usePathname();
   const barePath = stripLocaleFromPath(pathname);
   const [searchQ, setSearchQ] = useState("");
+  const [workspaceOpen, setWorkspaceOpen] = useState(false);
   const user = useAuthStore((s) => s.user);
   const hydrated = useAuthStore((s) => s.hydrated);
   const isTerminal =
@@ -106,8 +108,6 @@ export function SiteHeader() {
               {et("trade.deposit")}
             </LocaleLink>
 
-            <AssetsDropdown />
-
             {!hydrated ? (
               <div className="h-8 w-8 animate-pulse rounded-full bg-surface-muted" />
             ) : user ? (
@@ -137,6 +137,19 @@ export function SiteHeader() {
                 <HeaderIconBtn icon={MessageSquare} label="Messages" />
                 <NotificationsDropdown />
                 <HeaderIconBtn icon={HelpCircle} label="Help" />
+                {isTerminal && (
+                  <button
+                    type="button"
+                    aria-label="工作区设置"
+                    onClick={() => setWorkspaceOpen((v) => !v)}
+                    className={cn(
+                      "rounded p-2 transition hover:bg-surface-muted",
+                      workspaceOpen ? "text-primary" : "text-muted hover:text-foreground",
+                    )}
+                  >
+                    <Settings className="h-4 w-4" />
+                  </button>
+                )}
               </div>
               <LanguageSwitcher />
               <ThemeToggle />
@@ -144,6 +157,10 @@ export function SiteHeader() {
           </div>
         </div>
       </header>
+      <WorkspaceDrawer
+        open={workspaceOpen}
+        onClose={() => setWorkspaceOpen(false)}
+      />
     </>
   );
 }

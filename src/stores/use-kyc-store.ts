@@ -76,6 +76,10 @@ function mapServerToState(
   };
 }
 
+function isDiditPlaceholder(kyc: ServerKycVerification): boolean {
+  return kyc.fullName === "—" || kyc.idNumber === "—";
+}
+
 export const useKycStore = create<KycState>()(
   persist(
     (set, get) => ({
@@ -94,7 +98,22 @@ export const useKycStore = create<KycState>()(
       hydrateFromServer: async () => {
         try {
           const res = await KycService.getMine();
-          set({ ...mapServerToState(res?.kyc ?? null), hydrated: true });
+          let kyc = res?.kyc ?? null;
+
+          if (
+            kyc?.status === "pending" &&
+            kyc.diditSessionId &&
+            isDiditPlaceholder(kyc)
+          ) {
+            try {
+              const synced = await KycService.syncDidit(kyc.diditSessionId);
+              kyc = synced.kyc;
+            } catch {
+              // 保留 pending 占位态，用户可稍后刷新
+            }
+          }
+
+          set({ ...mapServerToState(kyc), hydrated: true });
         } catch {
           // 后端不可用 / 未登录：保留本地演示态
           set({ hydrated: true });

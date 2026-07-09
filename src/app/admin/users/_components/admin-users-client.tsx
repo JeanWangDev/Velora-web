@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { Loader2, Plus, Search, ShieldAlert } from "lucide-react";
-import { AdminNav } from "@/components/admin/admin-nav";
 import { AppModal } from "@/components/ui/app-modal";
 import { ConfirmModal } from "@/components/ui/confirm-modal";
 import { LoginModal } from "@/components/auth/login-modal";
@@ -174,7 +173,7 @@ export function AdminUsersClient() {
         <button
           type="button"
           onClick={() => setLoginOpen(true)}
-          className="mt-4 rounded-md bg-accent px-4 py-2 text-sm font-medium text-white"
+          className="mt-4 rounded-md bg-accent px-4 py-2 text-sm font-medium text-background"
         >
           {t("site.login")}
         </button>
@@ -197,9 +196,7 @@ export function AdminUsersClient() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6 px-4 py-8 sm:px-6">
-      <AdminNav />
-
+    <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h1 className="text-2xl font-semibold text-foreground">{t("adminUsers.title")}</h1>
@@ -208,7 +205,7 @@ export function AdminUsersClient() {
         <button
           type="button"
           onClick={() => setCreateOpen(true)}
-          className="inline-flex items-center justify-center gap-2 rounded-md bg-accent px-4 py-2 text-sm font-medium text-white hover:opacity-90"
+          className="inline-flex items-center justify-center gap-2 rounded-md bg-accent px-4 py-2 text-sm font-medium text-background hover:opacity-90"
         >
           <Plus className="h-4 w-4" />
           {t("adminUsers.create")}
@@ -289,23 +286,25 @@ export function AdminUsersClient() {
                     {formatTime(row.lastLoginTime, locale)}
                   </td>
                   <td className="px-4 py-3 text-right">
-                    {row.status === 1 ? (
-                      <button
-                        type="button"
-                        onClick={() => setDisableTarget(row)}
-                        className="rounded border border-border px-2 py-1 text-xs text-rose-600 hover:bg-rose-500/5"
-                      >
-                        {t("adminUsers.disable")}
-                      </button>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={() => void handleEnable(row)}
-                        className="rounded border border-border px-2 py-1 text-xs hover:border-accent/40"
-                      >
-                        {t("adminUsers.enable")}
-                      </button>
-                    )}
+                    <div className="flex justify-end gap-2">
+                      {row.status === 1 ? (
+                        <button
+                          type="button"
+                          onClick={() => setDisableTarget(row)}
+                          className="rounded border border-border px-2 py-1 text-xs text-rose-600 hover:bg-rose-500/5"
+                        >
+                          {t("adminUsers.disable")}
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => void handleEnable(row)}
+                          className="rounded border border-border px-2 py-1 text-xs hover:border-accent/40"
+                        >
+                          {t("adminUsers.enable")}
+                        </button>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -405,7 +404,7 @@ export function AdminUsersClient() {
             type="button"
             disabled={createSubmitting}
             onClick={() => void handleCreate()}
-            className="inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
+            className="inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2 text-sm font-medium text-background disabled:opacity-60"
           >
             {createSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
             {t("adminUsers.confirm")}

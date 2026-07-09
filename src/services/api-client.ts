@@ -44,9 +44,9 @@ function getCookie(name: string) {
   return cookie ? decodeURIComponent(cookie.split("=").slice(1).join("=")) : "";
 }
 
-/** 公开读接口 + 登录/注册（401 时不触发「会话失效」） */
+/** 公开读接口 + 登录/注册全流程（401 时展示接口真实错误，不弹「会话失效」） */
 const PUBLIC_AUTH_API_PATH =
-  /\/api\/v1\/(?:auth\/(?:login|register|send-code|forgot-password|reset-password)|events|chart-templates\/(?:public|rankings|starter|detail|track))(?:\/|\?|$)/;
+  /\/api\/v1\/(?:auth\/(?:login(?:\/challenge|\/verify)?|register|send-code|verify-code|forgot-password|reset-password)|events|chart-templates\/(?:public|rankings|starter|detail|track))(?:\/|\?|$)/;
 
 function isPublicAuthApiRequest(config?: Pick<AxiosRequestConfig, "url">) {
   const url = config?.url ?? "";
@@ -60,11 +60,16 @@ function isAuthAttemptRequest(
   return options?.skipAuth === true || isPublicAuthApiRequest(config);
 }
 
+function hadAuthTokenOnRequest(config?: IAxAxiosRequestConfig) {
+  return (config as { _hadAuthToken?: boolean } | undefined)?._hadAuthToken === true;
+}
+
 class ApiClient {
   private axiosInstance: AxiosInstance;
 
   private static instance: ApiClient;
   private static unauthorizedHandler: UnauthorizedHandler | null = null;
+  static _401ToastShown = false;
 
   private constructor(config?: CreateAxiosDefaults) {
     this.axiosInstance = axios.create({
@@ -147,14 +152,20 @@ class ApiClient {
   private processRequestSuccess(config: InternalAxiosRequestConfig) {
     const requestConfig = config as InternalAxiosRequestConfig & {
       skipAuth?: boolean;
+      _hadAuthToken?: boolean;
     };
+
+    requestConfig._hadAuthToken = false;
 
     if (!requestConfig.skipAuth) {
       const token = getCookie(AUTH_COOKIE_NAME);
 
       if (token) {
+        requestConfig._hadAuthToken = true;
         config.headers.set("Authorization", `Bearer ${token}`);
       }
+    } else {
+      config.headers.delete("Authorization");
     }
 
     return config;
@@ -182,7 +193,10 @@ class ApiClient {
         message || "Request failed",
         showErrorToast,
         payload.details,
-        { authAttempt },
+        {
+          authAttempt,
+          hadAuthToken: hadAuthTokenOnRequest(requestConfig),
+        },
       );
     }
 
@@ -190,6 +204,7 @@ class ApiClient {
       const message = resolveNetworkErrorMessage(error, "rest");
       return this.handleStatusException(0, message, showErrorToast, undefined, {
         authAttempt,
+        hadAuthToken: hadAuthTokenOnRequest(requestConfig),
       });
     }
 
@@ -201,7 +216,10 @@ class ApiClient {
       message || "Request failed",
       showErrorToast,
       undefined,
-      { authAttempt },
+      {
+        authAttempt,
+        hadAuthToken: hadAuthTokenOnRequest(requestConfig),
+      },
     );
   }
 
@@ -228,6 +246,7 @@ class ApiClient {
 
       return this.handleStatusException(code, message, showErrorToast, undefined, {
         authAttempt,
+        hadAuthToken: hadAuthTokenOnRequest(requestConfig),
       });
     }
 
@@ -244,6 +263,7 @@ class ApiClient {
     const authAttempt = isAuthAttemptRequest(requestConfig, {
       skipAuth: requestConfig?.skipAuth,
     });
+    const hadAuthToken = hadAuthTokenOnRequest(requestConfig);
 
     if (typeof success === "boolean" && !success) {
       return this.handleStatusException(
@@ -251,7 +271,7 @@ class ApiClient {
         resolvedMessage,
         showErrorToast,
         response.data.details,
-        { authAttempt },
+        { authAttempt, hadAuthToken },
       );
     }
 
@@ -261,7 +281,7 @@ class ApiClient {
         resolvedMessage,
         showErrorToast,
         response.data.details,
-        { authAttempt },
+        { authAttempt, hadAuthToken },
       );
     }
 
@@ -273,24 +293,34 @@ class ApiClient {
     message: string,
     showErrorToast: boolean,
     details?: unknown,
-    options?: { authAttempt?: boolean },
+    options?: { authAttempt?: boolean; hadAuthToken?: boolean },
   ) {
     const resolvedMessage = message?.trim() || "请求失败";
     const isAuthAttempt = options?.authAttempt === true;
+    const hadAuthToken = options?.hadAuthToken === true;
 
-    // 已登录态访问受保护接口返回 401 → 登出 + 固定提示
-    // 登录/注册等公开鉴权接口 → 必须使用接口 body.message（如「密码错误」「该账号不存在，请先注册」）
+    // 仅「曾携带 token 的受保护请求」401 才视为会话失效；未登录访客静默失败
     if (status === 401 && !isAuthAttempt) {
-      ApiClient.unauthorizedHandler?.();
+      if (hadAuthToken) {
+        ApiClient.unauthorizedHandler?.();
 
-      const sessionMessage = "登录状态已失效，请重新登录";
+        const sessionMessage = "登录状态已失效，请重新登录";
 
-      if (showErrorToast) {
-        toast.error(sessionMessage);
+        if (showErrorToast && !ApiClient._401ToastShown) {
+          ApiClient._401ToastShown = true;
+          toast.error(sessionMessage);
+          setTimeout(() => {
+            ApiClient._401ToastShown = false;
+          }, 5000);
+        }
+
+        return Promise.reject(
+          new ApiClientError(status, sessionMessage, details),
+        );
       }
 
       return Promise.reject(
-        new ApiClientError(status, sessionMessage, details),
+        new ApiClientError(status, resolvedMessage, details),
       );
     }
 

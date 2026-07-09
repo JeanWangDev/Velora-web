@@ -10,6 +10,7 @@ import {
   SlidersHorizontal,
 } from "lucide-react";
 import { useExchangeT } from "@/hooks/use-exchange-t";
+import { useHydrated } from "@/hooks/use-hydrated";
 import { useLocale } from "@/i18n/use-translation";
 import type { OrderBook, MarketTrade } from "@/types/exchange";
 import { formatPrice, formatQty } from "@/utils/format-exchange";
@@ -72,8 +73,8 @@ function LayoutPresetIcon({
   return (
     <div
       className={cn(
-        "flex h-12 w-14 flex-col overflow-hidden rounded border-2 bg-[#0a0a0a] p-1",
-        active ? "border-white" : "border-[#333]",
+        "flex h-12 w-14 flex-col overflow-hidden rounded border-2 bg-[var(--terminal-bg)] p-1",
+        active ? "border-[var(--terminal-accent)]" : "border-[var(--terminal-border)]",
       )}
     >
       {kind === "tab" ? (
@@ -82,14 +83,14 @@ function LayoutPresetIcon({
             <span className="border-b border-white text-white">OB</span>
             <span>LT</span>
           </div>
-          <div className="min-h-0 flex-1 rounded-sm bg-[#1c1c1c]" />
+          <div className="min-h-0 flex-1 rounded-sm bg-[var(--terminal-panel)]" />
         </>
       ) : (
         <div className="flex min-h-0 flex-1 flex-col gap-0.5">
-          <div className="flex flex-1 flex-col rounded-sm bg-[#1c1c1c] px-0.5">
+          <div className="flex flex-1 flex-col rounded-sm bg-[var(--terminal-panel)] px-0.5">
             <span className="text-[6px] text-muted">OB</span>
           </div>
-          <div className="flex flex-1 flex-col rounded-sm bg-[#1c1c1c] px-0.5">
+          <div className="flex flex-1 flex-col rounded-sm bg-[var(--terminal-panel)] px-0.5">
             <span className="text-[6px] text-muted">LT</span>
           </div>
         </div>
@@ -104,15 +105,19 @@ export function OkxOrderBookPanel({
   trades,
   lastPrice,
   onLevelClick,
+  bookOnly = false,
 }: {
   symbol: string;
   book: OrderBook;
   trades: MarketTrade[];
   lastPrice: number;
   onLevelClick?: (level: { price: number; qty: number }) => void;
+  /** 宽平模式：右侧已有独立成交列，订单簿只显示深度 */
+  bookOnly?: boolean;
 }) {
   const t = useExchangeT();
   const locale = useLocale();
+  const hydrated = useHydrated();
   const meta = getSymbolMeta(symbol);
   const precision = meta?.pricePrecision ?? 2;
   const qtyPrecision = meta?.qtyPrecision ?? 4;
@@ -193,27 +198,30 @@ export function OkxOrderBookPanel({
     let cumQty = 0;
     return levels.map((l) => {
       cumQty += l.qty;
-      const width = `${Math.min(100, (cumQty / maxCumQty) * 100)}%`;
+      const widthPct = Math.min(
+        100,
+        Math.round((cumQty / maxCumQty) * 10000) / 100,
+      );
       return (
         <button
           key={`${side}-${l.price}`}
           type="button"
           onClick={() => handleLevelClick(l.price, cumQty)}
-          className="relative grid h-[22px] w-full grid-cols-3 items-center gap-1 px-2 text-left text-[11px] hover:bg-[#141414]"
+          className="relative grid h-[22px] w-full grid-cols-3 items-center gap-1 px-2 text-left text-[11px] hover:bg-[var(--terminal-panel)]"
         >
-          {showDepthBars && (
+          {showDepthBars && hydrated && (
             <span
               className={cn(
                 "absolute inset-y-0 right-0",
-                side === "bid" ? "bg-[#98D330]/18" : "bg-[#E93E8B]/18",
+                side === "bid" ? "bg-up/15" : "bg-down/15",
               )}
-              style={{ width }}
+              style={{ width: `${widthPct}%` }}
             />
           )}
           <span
             className={cn(
               "relative font-mono tabular-nums",
-              side === "bid" ? "text-[#98D330]" : "text-[#E93E8B]",
+              side === "bid" ? "text-up" : "text-down",
             )}
           >
             {formatPrice(l.price, precision, locale)}
@@ -234,7 +242,7 @@ export function OkxOrderBookPanel({
 
   const bookBody = (
     <>
-      <div className="flex shrink-0 items-center justify-between border-b border-[#1f1f1f] px-2 py-1.5">
+      <div className="flex shrink-0 items-center justify-between border-b border-[var(--terminal-border)] px-2 py-1.5">
         <div className="flex items-center gap-2">
           {(["both", "ask", "bid"] as const).map((m) => (
             <button
@@ -242,8 +250,8 @@ export function OkxOrderBookPanel({
               type="button"
               onClick={() => setMode(m)}
               className={cn(
-                "rounded p-1 transition hover:bg-[#141414]",
-                mode === m && "bg-[#141414]",
+                "rounded p-1 transition hover:bg-[var(--terminal-panel)]",
+                mode === m && "bg-[var(--terminal-panel)]",
               )}
               title={
                 m === "both"
@@ -272,20 +280,20 @@ export function OkxOrderBookPanel({
               );
               if (idx > 0) setStep(DEPTH_STEPS[idx - 1]);
             }}
-            className="rounded p-0.5 hover:bg-[#141414]"
+            className="rounded p-0.5 hover:bg-[var(--terminal-panel)]"
           >
             <Minus className="h-3 w-3 text-muted" />
           </button>
           <button
             type="button"
             onClick={() => setStepOpen((v) => !v)}
-            className="flex min-w-[2.5rem] items-center justify-center gap-0.5 rounded border border-[#2a2a2a] px-1 py-0.5 font-mono hover:bg-[#141414]"
+            className="flex min-w-[2.5rem] items-center justify-center gap-0.5 rounded border border-[var(--terminal-border)] px-1 py-0.5 font-mono hover:bg-[var(--terminal-panel)]"
           >
             {step}
             <ChevronDown className="h-2.5 w-2.5 text-muted" />
           </button>
           {stepOpen && (
-            <div className="absolute right-0 top-full z-20 mt-1 rounded border border-[#2a2a2a] bg-[#141414] py-1 shadow-lg">
+            <div className="absolute right-0 top-full z-20 mt-1 rounded border border-[var(--terminal-border)] bg-[var(--terminal-panel)] py-1 shadow-lg">
               {DEPTH_STEPS.map((s) => (
                 <button
                   key={s}
@@ -295,7 +303,7 @@ export function OkxOrderBookPanel({
                     setStepOpen(false);
                   }}
                   className={cn(
-                    "block w-full px-3 py-1 text-left font-mono hover:bg-[#1c1c1c]",
+                    "block w-full px-3 py-1 text-left font-mono hover:bg-[var(--terminal-panel)]",
                     step === s && "text-foreground",
                   )}
                 >
@@ -313,14 +321,14 @@ export function OkxOrderBookPanel({
               if (idx >= 0 && idx < DEPTH_STEPS.length - 1)
                 setStep(DEPTH_STEPS[idx + 1]);
             }}
-            className="rounded p-0.5 hover:bg-[#141414]"
+            className="rounded p-0.5 hover:bg-[var(--terminal-panel)]"
           >
             <Plus className="h-3 w-3 text-muted" />
           </button>
         </div>
       </div>
 
-      <div className="grid shrink-0 grid-cols-3 gap-1 px-2 py-1 text-[10px] text-[#8b95a8]">
+      <div className="grid shrink-0 grid-cols-3 gap-1 px-2 py-1 text-[10px] text-[var(--terminal-muted)]">
         <span>
           {locale === "zh" ? "价格" : "Price"}({meta?.quote})
         </span>
@@ -333,7 +341,7 @@ export function OkxOrderBookPanel({
       </div>
 
       {showAvgTotal && (
-        <div className="flex shrink-0 justify-between border-b border-[#1f1f1f] px-2 py-1 text-[10px] text-[#8b95a8]">
+        <div className="flex shrink-0 justify-between border-b border-[var(--terminal-border)] px-2 py-1 text-[10px] text-[var(--terminal-muted)]">
           <span>
             {locale === "zh" ? "均价" : "Avg"}{" "}
             <span className="font-mono text-white">
@@ -368,12 +376,12 @@ export function OkxOrderBookPanel({
         )}
 
         {/* 中间最新价：大号价格 + 右侧法币（OKX 横向布局） */}
-        <div className="flex shrink-0 items-center justify-center gap-2 border-y border-[#1f1f1f] px-2 py-1.5">
-          <span className="inline-flex items-center gap-0.5 font-mono text-lg font-semibold tabular-nums text-[#E93E8B]">
+        <div className="flex shrink-0 items-center justify-center gap-2 border-y border-[var(--terminal-border)] px-2 py-1.5">
+          <span className="inline-flex items-center gap-0.5 font-mono text-lg font-semibold tabular-nums text-down">
             {formatPrice(lastPrice, precision, locale)}
             <ArrowDown className="h-3.5 w-3.5" />
           </span>
-          <span className="font-mono text-xs tabular-nums text-[#8b95a8]">
+          <span className="font-mono text-xs tabular-nums text-[var(--terminal-muted)]">
             ¥{formatPrice(lastPrice * 6.78, 1, locale)}
           </span>
         </div>
@@ -396,27 +404,27 @@ export function OkxOrderBookPanel({
         <div className="shrink-0 px-2 py-2">
           <div className="relative flex h-[22px] w-full overflow-hidden text-[11px] font-medium">
             <div
-              className="flex items-center gap-1.5 bg-[#14301f] pl-1.5 text-[#98D330]"
+              className="flex items-center gap-1.5 bg-up/10 pl-1.5 text-up"
               style={{
                 width: `${buyPct}%`,
                 clipPath:
                   "polygon(0 0, calc(100% - 6px) 0, 100% 100%, 0 100%)",
               }}
             >
-              <span className="flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-[2px] bg-[#98D330] text-[9px] font-bold leading-none text-black">
+              <span className="flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-[2px] bg-up text-[9px] font-bold leading-none text-black">
                 B
               </span>
               <span className="truncate tabular-nums">{buyPct.toFixed(2)}%</span>
             </div>
             <div
-              className="flex flex-1 items-center justify-end gap-1.5 bg-[#30141f] pr-1.5 text-[#E93E8B]"
+              className="flex flex-1 items-center justify-end gap-1.5 bg-down/10 pr-1.5 text-down"
               style={{
                 marginLeft: "-6px",
                 clipPath: "polygon(6px 0, 100% 0, 100% 100%, 0 100%)",
               }}
             >
               <span className="truncate tabular-nums">{sellPct.toFixed(2)}%</span>
-              <span className="flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-[2px] bg-[#E93E8B] text-[9px] font-bold leading-none text-black">
+              <span className="flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-[2px] bg-down text-[9px] font-bold leading-none text-black">
                 S
               </span>
             </div>
@@ -433,10 +441,14 @@ export function OkxOrderBookPanel({
   );
 
   return (
-    <div className="flex h-full min-h-0 flex-col bg-black">
+    <div className="flex h-full min-h-0 flex-col bg-[var(--terminal-bg)]">
       {/* 顶栏：Tab + 设置 */}
-      <div className="relative flex shrink-0 items-center border-b border-[#1f1f1f] px-2">
-        {panelLayout === "tab" ? (
+      <div className="relative flex shrink-0 items-center border-b border-[var(--terminal-border)] px-2">
+        {bookOnly ? (
+          <span className="px-2 py-2 text-xs font-medium text-foreground">
+            {t("trade.orderBookTab")}
+          </span>
+        ) : panelLayout === "tab" ? (
           (
             [
               { key: "book" as const, label: t("trade.orderBookTab") },
@@ -468,49 +480,51 @@ export function OkxOrderBookPanel({
             type="button"
             onClick={() => setSettingsOpen((v) => !v)}
             className={cn(
-              "rounded p-1 hover:bg-[#141414] hover:text-foreground",
-              settingsOpen && "bg-[#141414] text-foreground",
+              "rounded p-1 hover:bg-[var(--terminal-panel)] hover:text-foreground",
+              settingsOpen && "bg-[var(--terminal-panel)] text-foreground",
             )}
             title={locale === "zh" ? "布局设置" : "Layout settings"}
           >
             <SlidersHorizontal className="h-3.5 w-3.5" />
           </button>
-          <button type="button" className="rounded p-1 hover:bg-[#141414] hover:text-foreground">
+          <button type="button" className="rounded p-1 hover:bg-[var(--terminal-panel)] hover:text-foreground">
             <MoreVertical className="h-3.5 w-3.5" />
           </button>
 
           {/* 布局设置弹层（仅前两种布局） */}
           {settingsOpen && (
-            <div className="absolute right-0 top-full z-30 mt-1 w-[260px] rounded-lg border border-[#2a2a2a] bg-[#121212] p-3 shadow-2xl">
-              <div className="mb-3 flex gap-3">
-                {(
-                  [
-                    { key: "tab" as const, label: locale === "zh" ? "标签切换" : "Tabs" },
-                    { key: "stack" as const, label: locale === "zh" ? "上下布局" : "Stack" },
-                  ] as const
-                ).map((item) => (
-                  <button
-                    key={item.key}
-                    type="button"
-                    onClick={() => setPanelLayout(item.key)}
-                    className="flex flex-col items-center gap-1"
-                  >
-                    <LayoutPresetIcon
-                      kind={item.key}
-                      active={panelLayout === item.key}
-                    />
-                    <span className="text-[10px] text-muted">{item.label}</span>
-                  </button>
-                ))}
-              </div>
+            <div className="absolute right-0 top-full z-30 mt-1 w-[260px] rounded-lg border border-[var(--terminal-border)] bg-[var(--terminal-bg)] p-3 shadow-2xl">
+              {!bookOnly && (
+                <div className="mb-3 flex gap-3">
+                  {(
+                    [
+                      { key: "tab" as const, label: locale === "zh" ? "标签切换" : "Tabs" },
+                      { key: "stack" as const, label: locale === "zh" ? "上下布局" : "Stack" },
+                    ] as const
+                  ).map((item) => (
+                    <button
+                      key={item.key}
+                      type="button"
+                      onClick={() => setPanelLayout(item.key)}
+                      className="flex flex-col items-center gap-1"
+                    >
+                      <LayoutPresetIcon
+                        kind={item.key}
+                        active={panelLayout === item.key}
+                      />
+                      <span className="text-[10px] text-muted">{item.label}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
 
-              <div className="space-y-2.5 border-t border-[#2a2a2a] pt-3 text-xs">
+              <div className="space-y-2.5 border-t border-[var(--terminal-border)] pt-3 text-xs">
                 <label className="flex cursor-pointer items-start gap-2">
                   <input
                     type="checkbox"
                     checked={showAvgTotal}
                     onChange={(e) => setShowAvgTotal(e.target.checked)}
-                    className="mt-0.5 rounded border-[#444]"
+                    className="mt-0.5 rounded border-[var(--terminal-border)]"
                   />
                   <span>
                     {locale === "zh"
@@ -523,7 +537,7 @@ export function OkxOrderBookPanel({
                     type="checkbox"
                     checked={showBuySellBar}
                     onChange={(e) => setShowBuySellBar(e.target.checked)}
-                    className="mt-0.5 rounded border-[#444]"
+                    className="mt-0.5 rounded border-[var(--terminal-border)]"
                   />
                   <span>
                     {locale === "zh" ? "显示买卖对比" : "Show buy/sell ratio"}
@@ -534,7 +548,7 @@ export function OkxOrderBookPanel({
                     type="checkbox"
                     checked={showDepthBars}
                     onChange={(e) => setShowDepthBars(e.target.checked)}
-                    className="mt-0.5 rounded border-[#444]"
+                    className="mt-0.5 rounded border-[var(--terminal-border)]"
                   />
                   <span>
                     {locale === "zh"
@@ -544,7 +558,7 @@ export function OkxOrderBookPanel({
                 </label>
               </div>
 
-              <div className="mt-3 flex items-center justify-between border-t border-[#2a2a2a] pt-3 text-xs">
+              <div className="mt-3 flex items-center justify-between border-t border-[var(--terminal-border)] pt-3 text-xs">
                 <span>
                   {locale === "zh"
                     ? "点击订单表带入数量"
@@ -557,15 +571,15 @@ export function OkxOrderBookPanel({
                   onClick={() => setClickFillQty((v) => !v)}
                   className={cn(
                     "relative h-5 w-9 rounded-full transition",
-                    clickFillQty ? "bg-white" : "bg-[#333]",
+                    clickFillQty ? "bg-[var(--terminal-accent)]" : "bg-[var(--terminal-border)]",
                   )}
                 >
                   <span
                     className={cn(
                       "absolute top-0.5 h-4 w-4 rounded-full transition",
                       clickFillQty
-                        ? "left-[18px] bg-black"
-                        : "left-0.5 bg-[#888]",
+                        ? "left-[18px] bg-[var(--terminal-bg)]"
+                        : "left-0.5 bg-[var(--terminal-muted)]",
                     )}
                   />
                 </button>
@@ -575,7 +589,9 @@ export function OkxOrderBookPanel({
         </div>
       </div>
 
-      {panelLayout === "tab" ? (
+      {bookOnly ? (
+        bookBody
+      ) : panelLayout === "tab" ? (
         tab === "book" ? (
           bookBody
         ) : (
@@ -583,11 +599,11 @@ export function OkxOrderBookPanel({
         )
       ) : (
         <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-          <div className="flex min-h-0 flex-[3] flex-col overflow-hidden border-b border-[#1f1f1f]">
+          <div className="flex min-h-0 flex-[3] flex-col overflow-hidden border-b border-[var(--terminal-border)]">
             {bookBody}
           </div>
           <div className="flex min-h-0 flex-[2] flex-col overflow-hidden">
-            <p className="shrink-0 border-b border-[#1f1f1f] px-2 py-1.5 text-xs font-medium">
+            <p className="shrink-0 border-b border-[var(--terminal-border)] px-2 py-1.5 text-xs font-medium">
               {t("trade.recentTrades")}
             </p>
             {tradesBody}
