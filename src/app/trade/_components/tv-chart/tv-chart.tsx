@@ -215,7 +215,15 @@ export default function TVChart({
 
       const controls: TVChartControls = {
         setChartType: (type) => {
-          widget.activeChart().setChartType(type);
+          try {
+            widget.activeChart().setChartType(type);
+          } catch {
+            try {
+              widget.activeChart().setChartType(1);
+            } catch {
+              /* widget 可能已销毁 */
+            }
+          }
         },
         getChartType: () => widget.activeChart().chartType(),
         takeScreenshot: () => {
@@ -295,6 +303,13 @@ export default function TVChart({
         },
         clearPriceLevels: () => {
           clearPriceLevelShapes(widget);
+        },
+        openChartSettings: () => {
+          try {
+            widget.activeChart().executeActionById("chartProperties");
+          } catch {
+            /* widget 可能已销毁 */
+          }
         },
       };
 

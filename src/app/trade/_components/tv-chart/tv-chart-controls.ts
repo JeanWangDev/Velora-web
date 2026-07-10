@@ -21,4 +21,6 @@ export interface TVChartControls {
     resistances: number[];
   }) => void;
   clearPriceLevels: () => void;
+  /** 打开 TradingView 图表设置（K 线颜色、坐标轴等） */
+  openChartSettings: () => void;
 }

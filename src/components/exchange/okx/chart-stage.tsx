@@ -1,15 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Settings } from "lucide-react";
 import { TVChartLoader } from "@/app/trade/_components/tv-chart/tv-chart-loader";
 import { IntervalPicker } from "@/app/trade/_components/interval-picker";
+import { ChartTypePicker } from "@/app/trade/_components/chart-type-picker";
+import { useChartType } from "@/app/trade/_hooks/use-chart-type";
 import type { TVResolution } from "@/app/trade/_types/chart";
 import type { TVChartControls } from "@/app/trade/_components/tv-chart/tv-chart-controls";
 import { veloraSymbolToTv } from "@/app/trade/_components/tv-chart/mock-datafeed";
 import { useExchangeT } from "@/hooks/use-exchange-t";
+import { useLocale } from "@/i18n/use-translation";
 import { getSymbolMeta } from "@/mocks/exchange-data";
 import { NewsModal } from "@/components/exchange/okx/news-modal";
 import { ChartIndicatorBar } from "@/components/exchange/okx/chart-indicator-bar";
+import { toast } from "@/services/toast";
 import { cn } from "@/lib/cn";
 
 type CenterTab = "chart" | "info" | "data" | "news";
@@ -24,11 +29,18 @@ export function ChartStage({
   onIntervalChange: (v: TVResolution) => void;
 }) {
   const t = useExchangeT();
+  const locale = useLocale();
   const [tab, setTab] = useState<CenterTab>("chart");
   const [newsOpen, setNewsOpen] = useState(false);
   const [chartControls, setChartControls] = useState<TVChartControls | null>(null);
+  const { chartType, setChartType } = useChartType();
   const meta = getSymbolMeta(symbol);
   const tvSymbol = veloraSymbolToTv(symbol);
+
+  useEffect(() => {
+    if (!chartControls) return;
+    chartControls.setChartType(chartType);
+  }, [chartControls, chartType]);
 
   const tabs: { key: CenterTab; label: string }[] = [
     { key: "chart", label: t("trade.tabChart") },
@@ -73,6 +85,33 @@ export function ChartStage({
               onChange={onIntervalChange}
               variant="terminal"
             />
+            <span className="mx-0.5 h-4 w-px shrink-0 bg-[var(--terminal-border)]" />
+            <ChartTypePicker
+              value={chartType}
+              onChange={setChartType}
+              disabled={!chartControls}
+              variant="terminal"
+            />
+            <button
+              type="button"
+              disabled={!chartControls}
+              title={t("trade.settings")}
+              aria-label={t("trade.settings")}
+              onClick={() => {
+                if (!chartControls) {
+                  toast.info(locale === "zh" ? "图表加载中…" : "Chart loading…");
+                  return;
+                }
+                chartControls.openChartSettings();
+              }}
+              className={cn(
+                "ml-auto flex h-7 w-7 shrink-0 items-center justify-center rounded border border-[var(--terminal-border)] text-[var(--terminal-muted)] transition",
+                "hover:border-[var(--terminal-border-strong)] hover:text-[var(--terminal-text)]",
+                "disabled:cursor-not-allowed disabled:opacity-40",
+              )}
+            >
+              <Settings className="h-3.5 w-3.5" />
+            </button>
           </div>
 
           {/* K 线区域：overflow 裁剪 TV iframe，避免盖住底部指标栏 */}
