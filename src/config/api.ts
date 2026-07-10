@@ -77,26 +77,18 @@ export function resolveApiOrigin(): string {
   return defaultApiOriginForEnv(getAppEnv());
 }
 
-/** Axios baseURL：本地 dev 走同源 /api/v1 代理，线上直连 API 子域 */
+/** Axios baseURL：浏览器走同源 /api/v1 代理（避免 CORS）；SSR 直连后端 */
 export function getApiBaseUrl(): string {
-  if (process.env.NEXT_PUBLIC_API_BASE_URL) {
-    return trimOrigin(process.env.NEXT_PUBLIC_API_BASE_URL);
-  }
-
   if (typeof window !== "undefined") {
-    if (isLocalHost(window.location.hostname)) return "";
-    return resolveApiOrigin();
+    return "";
   }
-
   return resolveApiOrigin();
 }
 
-/** Web Worker 内必须绝对 URL */
+/** Web Worker 内用当前站点 origin 走同源 API 代理 */
 export function getWorkerApiBaseUrl(): string {
-  if (typeof window !== "undefined" && isLocalHost(window.location.hostname)) {
-    return process.env.NEXT_PUBLIC_API_BASE_URL
-      ? trimOrigin(process.env.NEXT_PUBLIC_API_BASE_URL)
-      : window.location.origin;
+  if (typeof window !== "undefined") {
+    return window.location.origin;
   }
   return resolveApiOrigin();
 }

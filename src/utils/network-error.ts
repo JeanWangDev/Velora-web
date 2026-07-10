@@ -4,7 +4,7 @@ import { getMarketWsUrl, resolveApiOrigin } from "@/config/api";
 function restHint(): string {
   if (typeof window !== "undefined" && window.location.hostname.includes("aipassly.com")) {
     const origin = resolveApiOrigin();
-    return `请确认 ${origin} 可访问，且后端 CLIENT_ORIGINS 已包含当前域名`;
+    return `请确认后端 ${origin} 已启动（pm2 / nginx），且前端 API_PROXY_TARGET 指向该地址`;
   }
   return "请确认 Velora-api 已启动，且前端 API_PROXY_TARGET 配置正确";
 }
