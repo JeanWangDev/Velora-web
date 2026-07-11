@@ -1,5 +1,6 @@
 "use client";
 
+import { isChineseLocale } from "@/i18n/locale-helpers";
 import { ExternalLink, Star } from "lucide-react";
 import { useExchangeT } from "@/hooks/use-exchange-t";
 import { useLocale } from "@/i18n/use-translation";
@@ -147,7 +148,7 @@ export function InstrumentBar({
           </>
         )}
         <StatCell
-          label={locale === "zh" ? `${meta?.base ?? ""} 价格` : `${meta?.base ?? ""} Price`}
+          label={isChineseLocale(locale) ? `${meta?.base ?? ""} 价格` : `${meta?.base ?? ""} Price`}
           value={`¥${formatPrice(ticker.last * 6.78, 1, locale)}`}
           link
         />
@@ -164,7 +165,7 @@ export function InstrumentBar({
           value={`${formatCompact(ticker.volume24h, locale)} ${meta?.base ?? ""}`}
         />
         <StatCell
-          label={locale === "zh" ? "24h 额" : "24h Turnover"}
+          label={isChineseLocale(locale) ? "24h 额" : "24h Turnover"}
           value={`${formatCompact(ticker.quoteVolume24h, locale)} ${meta?.quote ?? ""}`}
         />
         {mode === "futures" && (

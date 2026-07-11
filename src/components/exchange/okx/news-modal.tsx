@@ -6,6 +6,7 @@ import { useLocale } from "@/i18n/use-translation";
 import { MOCK_ANNOUNCEMENTS } from "@/mocks/exchange-data";
 import { formatDateTime } from "@/utils/format-exchange";
 import { cn } from "@/lib/cn";
+import { isChineseLocale } from "@/i18n/locale-helpers";
 
 const MOCK_NEWS = [
   {
@@ -88,10 +89,10 @@ export function NewsModal({
                 )}
               </div>
               <h3 className="text-sm font-medium leading-snug">
-                {locale === "zh" ? item.titleZh : item.titleEn}
+                {isChineseLocale(locale) ? item.titleZh : item.titleEn}
               </h3>
               <p className="mt-1 text-xs text-muted">
-                {locale === "zh" ? item.summaryZh : item.summaryEn}
+                {isChineseLocale(locale) ? item.summaryZh : item.summaryEn}
               </p>
               {"tag" in item && (
                 <span

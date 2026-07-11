@@ -4,6 +4,7 @@ import { KeyRound, Shield, Smartphone } from "lucide-react";
 import { useExchangeT } from "@/hooks/use-exchange-t";
 import { useLocale } from "@/i18n/use-translation";
 import { formatDateTime } from "@/utils/format-exchange";
+import { isChineseLocale } from "@/i18n/locale-helpers";
 
 const MOCK_LOGINS = [
   { ip: "183.**.**.42", device: "Chrome · macOS", ts: Date.now() - 3_600_000 },
@@ -14,7 +15,7 @@ const MOCK_LOGINS = [
 export default function UserSecurityPage() {
   const t = useExchangeT();
   const locale = useLocale();
-  const isZh = locale === "zh";
+  const isZh = isChineseLocale(locale);
 
   return (
     <div className="space-y-5">

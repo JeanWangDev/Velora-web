@@ -4,13 +4,14 @@ import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { useExchangeT } from "@/hooks/use-exchange-t";
 import { useLocale } from "@/i18n/use-translation";
+import { isChineseLocale } from "@/i18n/locale-helpers";
 
 export default function RiskPage() {
   const t = useExchangeT();
   const locale = useLocale();
 
   const items =
-    locale === "zh"
+    isChineseLocale(locale)
       ? [
           "数字资产价格高度波动，可能在短时间内出现大幅涨跌。",
           "杠杆与衍生品（若未来开放）将放大盈亏，可能导致全部本金损失。",

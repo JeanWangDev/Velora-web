@@ -11,6 +11,7 @@ import { CoinIcon } from "@/components/exchange/coin-icon";
 import { PriceChange } from "@/components/exchange/price-change";
 import { formatPrice, formatCompact } from "@/utils/format-exchange";
 import { useLocale } from "@/i18n/use-translation";
+import { isChineseLocale } from "@/i18n/locale-helpers";
 
 type Cat = "watch" | "all" | "main" | "meme" | "platform" | "ai" | "new";
 type SortKey = "pair" | "price" | "change" | "turnover";
@@ -142,10 +143,10 @@ export function MarketSidePanel({ currentSymbol }: { currentSymbol: string }) {
 
       {/* 列头 */}
       <div className="grid shrink-0 grid-cols-[minmax(0,1.4fr)_minmax(64px,auto)_minmax(52px,auto)_minmax(56px,auto)] items-center gap-x-1.5 border-b border-[var(--terminal-border)] px-2 py-1.5">
-        <SortHead k="pair" label={locale === "zh" ? "名称" : "Name"} sortKey={sortKey} sortAsc={sortAsc} onToggle={toggleSort} />
-        <SortHead k="price" label={locale === "zh" ? "最新价" : "Price"} className="justify-end" sortKey={sortKey} sortAsc={sortAsc} onToggle={toggleSort} />
-        <SortHead k="change" label={locale === "zh" ? "涨跌幅" : "24H%"} className="justify-end" sortKey={sortKey} sortAsc={sortAsc} onToggle={toggleSort} />
-        <SortHead k="turnover" label={locale === "zh" ? "成交额" : "Vol"} className="justify-end" sortKey={sortKey} sortAsc={sortAsc} onToggle={toggleSort} />
+        <SortHead k="pair" label={isChineseLocale(locale) ? "名称" : "Name"} sortKey={sortKey} sortAsc={sortAsc} onToggle={toggleSort} />
+        <SortHead k="price" label={isChineseLocale(locale) ? "最新价" : "Price"} className="justify-end" sortKey={sortKey} sortAsc={sortAsc} onToggle={toggleSort} />
+        <SortHead k="change" label={isChineseLocale(locale) ? "涨跌幅" : "24H%"} className="justify-end" sortKey={sortKey} sortAsc={sortAsc} onToggle={toggleSort} />
+        <SortHead k="turnover" label={isChineseLocale(locale) ? "成交额" : "Vol"} className="justify-end" sortKey={sortKey} sortAsc={sortAsc} onToggle={toggleSort} />
       </div>
 
       {/* 列表 */}

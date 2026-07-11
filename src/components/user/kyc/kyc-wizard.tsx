@@ -1,5 +1,6 @@
 "use client";
 
+import { isChineseLocale } from "@/i18n/locale-helpers";
 import { useCallback, useState } from "react";
 import { Sparkles } from "lucide-react";
 import { useExchangeT } from "@/hooks/use-exchange-t";
@@ -53,7 +54,7 @@ const fieldClass =
 export function KycWizard({ onComplete, onCancel, autoApprove = false }: KycWizardProps) {
   const t = useExchangeT();
   const locale = useLocale();
-  const isZh = locale === "zh";
+  const isZh = isChineseLocale(locale);
   const user = useAuthStore((s) => s.user);
 
   const [step, setStep] = useState<KycWizardStep>("select-type");

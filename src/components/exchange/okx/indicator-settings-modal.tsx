@@ -1,5 +1,6 @@
 "use client";
 
+import { isChineseLocale } from "@/i18n/locale-helpers";
 import { useEffect, useMemo, useState } from "react";
 import { X } from "lucide-react";
 import {
@@ -68,7 +69,7 @@ export function IndicatorSettingsModal({
           const nextSubs = prev.filter((x) => subIds.has(x));
           if (!prev.includes(id) && nextSubs.length >= MAX_SUB_INDICATORS) {
             toast.info(
-              locale === "zh"
+              isChineseLocale(locale)
                 ? `副指标最多 ${MAX_SUB_INDICATORS} 个`
                 : `Max ${MAX_SUB_INDICATORS} sub-indicators`,
             );
@@ -120,15 +121,15 @@ export function IndicatorSettingsModal({
         <div className="flex items-center justify-between border-b border-[var(--terminal-border)] px-4 py-3">
           <div className="flex items-center gap-3">
             <h2 className="text-sm font-semibold">
-              {locale === "zh" ? "指标" : "Indicators"}
+              {isChineseLocale(locale) ? "指标" : "Indicators"}
             </h2>
             {(
               [
-                { key: "main" as const, label: locale === "zh" ? "主指标" : "Main" },
+                { key: "main" as const, label: isChineseLocale(locale) ? "主指标" : "Main" },
                 {
                   key: "sub" as const,
                   label:
-                    locale === "zh"
+                    isChineseLocale(locale)
                       ? `副指标(${subDraftCount}/${MAX_SUB_INDICATORS})`
                       : `Sub (${subDraftCount}/${MAX_SUB_INDICATORS})`,
                 },
@@ -174,10 +175,10 @@ export function IndicatorSettingsModal({
                     onChange={(e) => toggle(id, e.target.checked)}
                     className="rounded border-[var(--terminal-border)]"
                   />
-                  <span>{locale === "zh" ? item.labelZh : item.labelEn}</span>
+                  <span>{isChineseLocale(locale) ? item.labelZh : item.labelEn}</span>
                   {def && (
                     <span className="ml-auto truncate text-[10px] text-muted">
-                      {locale === "zh" ? def.labelZh : def.labelEn}
+                      {isChineseLocale(locale) ? def.labelZh : def.labelEn}
                     </span>
                   )}
                 </label>
@@ -190,9 +191,9 @@ export function IndicatorSettingsModal({
                   className="flex items-center gap-2 px-2 py-1.5 text-xs text-muted/40"
                 >
                   <input type="checkbox" disabled className="rounded" />
-                  {locale === "zh" ? item.labelZh : item.labelEn}
+                  {isChineseLocale(locale) ? item.labelZh : item.labelEn}
                   <span className="ml-auto text-[10px]">
-                    {locale === "zh" ? "即将上线" : "Soon"}
+                    {isChineseLocale(locale) ? "即将上线" : "Soon"}
                   </span>
                 </div>
               ),
@@ -203,21 +204,21 @@ export function IndicatorSettingsModal({
             {selectedDef ? (
               <>
                 <h3 className="font-medium">
-                  {locale === "zh" ? selectedDef.labelZh : selectedDef.labelEn}
+                  {isChineseLocale(locale) ? selectedDef.labelZh : selectedDef.labelEn}
                 </h3>
                 <p className="mt-3 leading-relaxed text-muted">
-                  {locale === "zh" ? "指标说明" : "Description"} · TradingView{" "}
+                  {isChineseLocale(locale) ? "指标说明" : "Description"} · TradingView{" "}
                   {selectedDef.tvStudyName}
                 </p>
                 <p className="mt-2 text-[11px] text-muted/80">
-                  {locale === "zh"
+                  {isChineseLocale(locale)
                     ? "参数与颜色可在 TradingView 图表内右键指标进一步调整。"
                     : "Adjust parameters via TradingView chart context menu."}
                 </p>
               </>
             ) : (
               <p className="text-muted">
-                {locale === "zh"
+                {isChineseLocale(locale)
                   ? "勾选左侧指标，确认后应用到 K 线。"
                   : "Select indicators on the left, then confirm."}
               </p>
@@ -231,7 +232,7 @@ export function IndicatorSettingsModal({
             onClick={reset}
             className="rounded px-4 py-1.5 text-xs text-muted hover:text-foreground"
           >
-            {locale === "zh" ? "重置" : "Reset"}
+            {isChineseLocale(locale) ? "重置" : "Reset"}
           </button>
           <button
             type="button"
@@ -239,7 +240,7 @@ export function IndicatorSettingsModal({
             onClick={confirm}
             className="rounded-full bg-foreground px-5 py-1.5 text-xs font-medium text-background disabled:opacity-50"
           >
-            {locale === "zh" ? "确认" : "Confirm"}
+            {isChineseLocale(locale) ? "确认" : "Confirm"}
           </button>
         </div>
       </div>

@@ -16,6 +16,7 @@ import { NewsModal } from "@/components/exchange/okx/news-modal";
 import { ChartIndicatorBar } from "@/components/exchange/okx/chart-indicator-bar";
 import { toast } from "@/services/toast";
 import { cn } from "@/lib/cn";
+import { isChineseLocale } from "@/i18n/locale-helpers";
 
 type CenterTab = "chart" | "info" | "data" | "news";
 
@@ -99,7 +100,7 @@ export function ChartStage({
               aria-label={t("trade.settings")}
               onClick={() => {
                 if (!chartControls) {
-                  toast.info(locale === "zh" ? "图表加载中…" : "Chart loading…");
+                  toast.info(isChineseLocale(locale) ? "图表加载中…" : "Chart loading…");
                   return;
                 }
                 chartControls.openChartSettings();

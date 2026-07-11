@@ -11,13 +11,14 @@ import { KycService } from "@/services/kyc-service";
 import { toast } from "@/services/toast";
 import { useKycStore } from "@/stores/use-kyc-store";
 import { cn } from "@/lib/cn";
+import { isChineseLocale } from "@/i18n/locale-helpers";
 
 type PageView = "status" | "verify";
 
 export default function UserKycPage() {
   const t = useExchangeT();
   const locale = useLocale();
-  const isZh = locale === "zh";
+  const isZh = isChineseLocale(locale);
 
   const status = useKycStore((s) => s.status);
   const profile = useKycStore((s) => s.profile);

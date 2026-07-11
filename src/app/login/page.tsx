@@ -1,5 +1,6 @@
 "use client";
 
+import { isChineseLocale } from "@/i18n/locale-helpers";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ChevronDown, Eye, EyeOff, QrCode, Search } from "lucide-react";
@@ -37,7 +38,7 @@ type LoginTab = "phone" | "email" | "qr";
 export default function LoginPage() {
   const t = useTranslation();
   const locale = useLocale();
-  const isZh = locale === "zh";
+  const isZh = isChineseLocale(locale);
   const router = useRouter();
   const localeHref = useLocaleHref();
   const setSession = useAuthStore((s) => s.setSession);

@@ -10,6 +10,7 @@ import { MOCK_ANNOUNCEMENTS } from "@/mocks/exchange-data";
 import { NotificationService, type UserNotification } from "@/services/notification-service";
 import { useAuthStore } from "@/stores/use-auth-store";
 import { formatDateTime } from "@/utils/format-exchange";
+import { isChineseLocale } from "@/i18n/locale-helpers";
 
 export function NotificationsDropdown() {
   const t = useExchangeT();
@@ -142,7 +143,7 @@ export function NotificationsDropdown() {
                   onClick={() => setOpen(false)}
                 >
                   <p className="text-xs font-medium line-clamp-1">
-                    {locale === "zh" ? ann.titleZh : ann.titleEn}
+                    {isChineseLocale(locale) ? ann.titleZh : ann.titleEn}
                   </p>
                   <p className="mt-0.5 text-[10px] text-muted">
                     {mounted ? formatDateTime(ann.publishedAt, locale) : "--"}

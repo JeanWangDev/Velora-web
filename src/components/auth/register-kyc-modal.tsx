@@ -1,5 +1,6 @@
 "use client";
 
+import { isChineseLocale } from "@/i18n/locale-helpers";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { Check, Eye, EyeOff, X } from "lucide-react";
@@ -78,7 +79,7 @@ export function RegisterKycModal({
   variant = "modal",
 }: RegisterKycModalProps) {
   const locale = useLocale();
-  const isZh = locale === "zh";
+  const isZh = isChineseLocale(locale);
   const [step, setStep] = useState<KycStep>("location");
   const [country, setCountry] = useState("");
   const [email, setEmail] = useState("");

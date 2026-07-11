@@ -1,8 +1,6 @@
-import type { Locale } from "@/i18n/dictionaries";
-
 /**
  * URL 语言标识（如 /zh-CN/trade/BTC-USDT）。
- * UI 文案目前完整支持 zh / en，其余语言先回退到 en。
+ * UI 文案支持 17 种语言（见 messages/）。
  */
 export const URL_LOCALES = [
   "zh-CN",
@@ -55,13 +53,13 @@ export function isUrlLocale(value: string): value is UrlLocale {
   return (URL_LOCALES as readonly string[]).includes(value);
 }
 
-/** URL 语言 → 字典语言（仅 zh / en 有完整文案） */
-export function urlLocaleToDict(locale: UrlLocale): Locale {
-  return locale === "zh-CN" || locale === "zh-TW" ? "zh" : "en";
+/** URL 语言标识即字典语言（17 种完整文案） */
+export function urlLocaleToDict(locale: UrlLocale): UrlLocale {
+  return locale;
 }
 
-export function dictToUrlLocale(locale: Locale): UrlLocale {
-  return locale === "en" ? "en" : "zh-CN";
+export function dictToUrlLocale(locale: UrlLocale): UrlLocale {
+  return locale;
 }
 
 export function getUrlLocaleFromPath(pathname: string): UrlLocale | null {

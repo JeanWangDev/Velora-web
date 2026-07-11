@@ -1,5 +1,6 @@
 "use client";
 
+import { isChineseLocale } from "@/i18n/locale-helpers";
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
@@ -556,14 +557,14 @@ function DeskShell({
               >
                 {t("trade.deskLogin")}
               </button>
-              {locale === "zh" ? "或" : " or "}
+              {isChineseLocale(locale) ? "或" : " or "}
               <Link
                 href="/register"
                 className="text-[var(--terminal-accent)] hover:underline"
               >
                 {t("trade.deskRegister")}
               </Link>
-              {locale === "zh" ? "开始交易" : " to start trading"}
+              {isChineseLocale(locale) ? "开始交易" : " to start trading"}
             </p>
           </div>
         ) : (

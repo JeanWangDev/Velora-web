@@ -11,6 +11,8 @@ import { getIndicatorById } from "@/app/trade/_config/indicators";
 import type { TVChartControls } from "@/app/trade/_components/tv-chart/tv-chart-controls";
 import { IndicatorSettingsModal } from "@/components/exchange/okx/indicator-settings-modal";
 import { useLocale } from "@/i18n/use-translation";
+import { isChineseLocale } from "@/i18n/locale-helpers";
+import type { Locale } from "@/i18n/types";
 import { toast } from "@/services/toast";
 import { cn } from "@/lib/cn";
 
@@ -48,7 +50,7 @@ export function ChartIndicatorBar({
     async (item: QuickIndicatorItem) => {
       if (!item.indicatorId || item.disabled) return;
       if (!chartControls) {
-        toast.info(locale === "zh" ? "图表加载中…" : "Chart loading…");
+        toast.info(isChineseLocale(locale) ? "图表加载中…" : "Chart loading…");
         return;
       }
 
@@ -64,7 +66,7 @@ export function ChartIndicatorBar({
         );
         if (activeSubs.length >= MAX_SUB_INDICATORS) {
           toast.info(
-            locale === "zh"
+            isChineseLocale(locale)
               ? `副指标最多 ${MAX_SUB_INDICATORS} 个`
               : `Max ${MAX_SUB_INDICATORS} sub-indicators`,
           );
@@ -83,7 +85,7 @@ export function ChartIndicatorBar({
         toast.error(
           error instanceof Error
             ? error.message
-            : locale === "zh"
+            : isChineseLocale(locale)
               ? "指标切换失败"
               : "Failed to toggle indicator",
         );
@@ -99,7 +101,7 @@ export function ChartIndicatorBar({
 
   const chip = (item: QuickIndicatorItem) => {
     const active = item.indicatorId ? appliedSet.has(item.indicatorId) : false;
-    const label = locale === "zh" ? item.labelZh : item.labelEn;
+    const label = isChineseLocale(locale) ? item.labelZh : item.labelEn;
     return (
       <button
         key={item.key}
@@ -131,13 +133,13 @@ export function ChartIndicatorBar({
           {subItems.map(chip)}
         </div>
         <span className="shrink-0 text-[10px] text-[var(--terminal-muted)]">
-          {locale === "zh" ? "副" : "Sub"}({subCount}/{MAX_SUB_INDICATORS})
+          {isChineseLocale(locale) ? "副" : "Sub"}({subCount}/{MAX_SUB_INDICATORS})
         </span>
         <button
           type="button"
           onClick={() => setSettingsOpen(true)}
           className="shrink-0 rounded p-1 text-[var(--terminal-muted)] hover:bg-[var(--terminal-panel)] hover:text-[var(--terminal-text)]"
-          title={locale === "zh" ? "指标设置" : "Indicator settings"}
+          title={isChineseLocale(locale) ? "指标设置" : "Indicator settings"}
         >
           <Settings2 className="h-3.5 w-3.5" />
         </button>
@@ -152,9 +154,9 @@ export function ChartIndicatorBar({
   );
 }
 
-function defLabel(item: QuickIndicatorItem, locale: "zh" | "en") {
+function defLabel(item: QuickIndicatorItem, locale: Locale) {
   if (!item.indicatorId) return item.labelZh;
   const def = getIndicatorById(item.indicatorId);
   if (!def) return item.labelZh;
-  return locale === "zh" ? def.labelZh : def.labelEn;
+  return isChineseLocale(locale) ? def.labelZh : def.labelEn;
 }

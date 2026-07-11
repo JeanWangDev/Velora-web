@@ -1,4 +1,5 @@
 import type { EventListItem } from "@/app/news/_types/event";
+import { isChineseLocale } from "@/i18n/locale-helpers";
 
 const SOURCE_LABELS: Record<string, string> = {
   rss_coindesk: "CoinDesk",
@@ -29,7 +30,7 @@ export function formatRelativeTime(ms: number, locale: string): string {
   const hour = Math.floor(min / 60);
   const day = Math.floor(hour / 24);
 
-  const rtf = new Intl.RelativeTimeFormat(locale === "zh" ? "zh-Hans" : "en", {
+  const rtf = new Intl.RelativeTimeFormat(isChineseLocale(locale) ? "zh-Hans" : "en", {
     numeric: "auto",
   });
 
@@ -40,7 +41,7 @@ export function formatRelativeTime(ms: number, locale: string): string {
 }
 
 export function formatEventType(type: string, locale: string): string {
-  const zh = locale === "zh";
+  const zh = isChineseLocale(locale);
   const map: Record<string, string> = {
     news: zh ? "资讯" : "News",
     liquidation: zh ? "爆仓" : "Liquidation",
@@ -52,7 +53,7 @@ export function formatSentiment(
   sentiment: string,
   locale: string,
 ): { label: string; className: string } {
-  const zh = locale === "zh";
+  const zh = isChineseLocale(locale);
   if (sentiment === "bullish") {
     return {
       label: zh ? "偏多" : "Bullish",

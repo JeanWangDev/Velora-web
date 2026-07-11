@@ -17,6 +17,7 @@ import type { TVDatafeed } from "@/types/charting-library";
 import type { TVChartControls } from "@/app/trade/_components/tv-chart/tv-chart-controls";
 import { getIndicatorById } from "@/app/trade/_config/indicators";
 import { useLocale, useTranslation } from "@/i18n/use-translation";
+import { getThirdPartyLocale } from "@/i18n/locale-helpers";
 import { applyChartEventMarkers } from "@/app/trade/_components/tv-chart/chart-event-markers";
 import {
   applyPriceLevelShapes,
@@ -101,7 +102,7 @@ export default function TVChart({
   const t = useTranslation();
 
   const isDark = resolvedTheme === "dark";
-  const tvLocale = locale === "zh" ? "zh" : "en";
+  const tvLocale = getThirdPartyLocale(locale);
 
   // interval / theme / locale 变化时销毁并重建 widget；symbol 单独用 setSymbol 切换
   useEffect(() => {

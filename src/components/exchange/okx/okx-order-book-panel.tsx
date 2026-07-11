@@ -1,5 +1,6 @@
 "use client";
 
+import { isChineseLocale } from "@/i18n/locale-helpers";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowDown,
@@ -255,14 +256,14 @@ export function OkxOrderBookPanel({
               )}
               title={
                 m === "both"
-                  ? locale === "zh"
+                  ? isChineseLocale(locale)
                     ? "买卖盘"
                     : "Both"
                   : m === "ask"
-                    ? locale === "zh"
+                    ? isChineseLocale(locale)
                       ? "卖盘"
                       : "Asks"
-                    : locale === "zh"
+                    : isChineseLocale(locale)
                       ? "买盘"
                       : "Bids"
               }
@@ -330,20 +331,20 @@ export function OkxOrderBookPanel({
 
       <div className="grid shrink-0 grid-cols-3 gap-1 px-2 py-1 text-[10px] text-[var(--terminal-muted)]">
         <span>
-          {locale === "zh" ? "价格" : "Price"}({meta?.quote})
+          {isChineseLocale(locale) ? "价格" : "Price"}({meta?.quote})
         </span>
         <span className="text-right">
-          {locale === "zh" ? "数量" : "Amount"}({meta?.base})
+          {isChineseLocale(locale) ? "数量" : "Amount"}({meta?.base})
         </span>
         <span className="text-right">
-          {locale === "zh" ? "合计" : "Total"}({meta?.base})
+          {isChineseLocale(locale) ? "合计" : "Total"}({meta?.base})
         </span>
       </div>
 
       {showAvgTotal && (
         <div className="flex shrink-0 justify-between border-b border-[var(--terminal-border)] px-2 py-1 text-[10px] text-[var(--terminal-muted)]">
           <span>
-            {locale === "zh" ? "均价" : "Avg"}{" "}
+            {isChineseLocale(locale) ? "均价" : "Avg"}{" "}
             <span className="font-mono text-white">
               {formatPrice(
                 mode === "bid" ? avgBidPrice : avgAskPrice,
@@ -353,7 +354,7 @@ export function OkxOrderBookPanel({
             </span>
           </span>
           <span>
-            {locale === "zh" ? "合计" : "Total"}{" "}
+            {isChineseLocale(locale) ? "合计" : "Total"}{" "}
             <span className="font-mono text-white">
               {formatQty(mode === "bid" ? bidVol : askVol, qtyPrecision)}{" "}
               {meta?.base}
@@ -483,7 +484,7 @@ export function OkxOrderBookPanel({
               "rounded p-1 hover:bg-[var(--terminal-panel)] hover:text-foreground",
               settingsOpen && "bg-[var(--terminal-panel)] text-foreground",
             )}
-            title={locale === "zh" ? "布局设置" : "Layout settings"}
+            title={isChineseLocale(locale) ? "布局设置" : "Layout settings"}
           >
             <SlidersHorizontal className="h-3.5 w-3.5" />
           </button>
@@ -498,8 +499,8 @@ export function OkxOrderBookPanel({
                 <div className="mb-3 flex gap-3">
                   {(
                     [
-                      { key: "tab" as const, label: locale === "zh" ? "标签切换" : "Tabs" },
-                      { key: "stack" as const, label: locale === "zh" ? "上下布局" : "Stack" },
+                      { key: "tab" as const, label: isChineseLocale(locale) ? "标签切换" : "Tabs" },
+                      { key: "stack" as const, label: isChineseLocale(locale) ? "上下布局" : "Stack" },
                     ] as const
                   ).map((item) => (
                     <button
@@ -527,7 +528,7 @@ export function OkxOrderBookPanel({
                     className="mt-0.5 rounded border-[var(--terminal-border)]"
                   />
                   <span>
-                    {locale === "zh"
+                    {isChineseLocale(locale)
                       ? "显示均价和合计数量"
                       : "Show avg price & total qty"}
                   </span>
@@ -540,7 +541,7 @@ export function OkxOrderBookPanel({
                     className="mt-0.5 rounded border-[var(--terminal-border)]"
                   />
                   <span>
-                    {locale === "zh" ? "显示买卖对比" : "Show buy/sell ratio"}
+                    {isChineseLocale(locale) ? "显示买卖对比" : "Show buy/sell ratio"}
                   </span>
                 </label>
                 <label className="flex cursor-pointer items-start gap-2">
@@ -551,7 +552,7 @@ export function OkxOrderBookPanel({
                     className="mt-0.5 rounded border-[var(--terminal-border)]"
                   />
                   <span>
-                    {locale === "zh"
+                    {isChineseLocale(locale)
                       ? "显示订单表背景色块"
                       : "Show depth background"}
                   </span>
@@ -560,7 +561,7 @@ export function OkxOrderBookPanel({
 
               <div className="mt-3 flex items-center justify-between border-t border-[var(--terminal-border)] pt-3 text-xs">
                 <span>
-                  {locale === "zh"
+                  {isChineseLocale(locale)
                     ? "点击订单表带入数量"
                     : "Click to fill quantity"}
                 </span>

@@ -4,13 +4,14 @@ import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { useExchangeT } from "@/hooks/use-exchange-t";
 import { useLocale } from "@/i18n/use-translation";
+import { isChineseLocale } from "@/i18n/locale-helpers";
 
 export default function TermsPage() {
   const t = useExchangeT();
   const locale = useLocale();
 
   const sections =
-    locale === "zh"
+    isChineseLocale(locale)
       ? [
           {
             title: "1. 服务说明",

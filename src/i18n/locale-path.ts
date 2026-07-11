@@ -12,7 +12,7 @@ import {
   type UrlLocale,
 } from "@/i18n/locales";
 import { useLocale, useSetLocale } from "@/i18n/use-translation";
-import type { Locale } from "@/i18n/dictionaries";
+import type { Locale } from "@/i18n/types";
 
 function readLocaleCookie(): UrlLocale | null {
   if (typeof document === "undefined") return null;

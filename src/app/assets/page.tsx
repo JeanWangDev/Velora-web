@@ -1,5 +1,6 @@
 "use client";
 
+import { isChineseLocale } from "@/i18n/locale-helpers";
 import { useEffect, useMemo, useState } from "react";
 import { ArrowDownToLine, ArrowRight, ArrowLeftRight, ArrowUpFromLine, Wallet } from "lucide-react";
 import { LocaleLink } from "@/components/ui/locale-link";
@@ -41,7 +42,7 @@ function assetUsdValue(
 export default function AssetsPage() {
   const t = useExchangeT();
   const locale = useLocale();
-  const isZh = locale === "zh";
+  const isZh = isChineseLocale(locale);
   const balancesByAccount = useTradingStore((s) => s.balancesByAccount);
   const getAccountBalances = useTradingStore((s) => s.getAccountBalances);
   const tickers = useMarketStore((s) => s.tickers);

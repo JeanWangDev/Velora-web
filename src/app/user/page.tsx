@@ -1,5 +1,6 @@
 "use client";
 
+import { isChineseLocale } from "@/i18n/locale-helpers";
 import { useEffect, useMemo } from "react";
 import {
   ArrowRight,
@@ -36,7 +37,7 @@ function assetUsdValue(
 export default function UserOverviewPage() {
   const t = useExchangeT();
   const locale = useLocale();
-  const isZh = locale === "zh";
+  const isZh = isChineseLocale(locale);
   const user = useAuthStore((s) => s.user)!;
   const kycStatus = useKycStore((s) => s.status);
   const balances = useTradingStore((s) => s.balances);

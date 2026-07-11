@@ -6,6 +6,7 @@ import { useExchangeT } from "@/hooks/use-exchange-t";
 import { useLocale } from "@/i18n/use-translation";
 import { MOCK_ANNOUNCEMENTS } from "@/mocks/exchange-data";
 import { formatDateTime } from "@/utils/format-exchange";
+import { isChineseLocale } from "@/i18n/locale-helpers";
 
 type Cat = "all" | "maintenance" | "listing" | "risk";
 
@@ -66,10 +67,10 @@ export default function AnnouncementsPage() {
               </time>
             </div>
             <h2 className="font-medium">
-              {locale === "zh" ? ann.titleZh : ann.titleEn}
+              {isChineseLocale(locale) ? ann.titleZh : ann.titleEn}
             </h2>
             <p className="mt-1 line-clamp-2 text-sm text-muted">
-              {locale === "zh" ? ann.summaryZh : ann.summaryEn}
+              {isChineseLocale(locale) ? ann.summaryZh : ann.summaryEn}
             </p>
             <span className="mt-3 inline-block text-sm text-primary">
               {t("announcements.readMore")} →

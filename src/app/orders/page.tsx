@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import type { Locale } from "@/i18n/types";
 import { useExchangeT } from "@/hooks/use-exchange-t";
 import { useLocale } from "@/i18n/use-translation";
 import { useTradingStore } from "@/stores/use-trading-store";
@@ -109,7 +110,7 @@ function OrdersTable({
 }: {
   rows: ReturnType<typeof useTradingStore.getState>["openOrders"];
   empty: string;
-  locale: "zh" | "en";
+  locale: Locale;
   t: (k: string) => string;
   onCancel: (id: string) => void | Promise<void>;
 }) {
@@ -193,7 +194,7 @@ function HistoryTable({
 }: {
   rows: ReturnType<typeof useTradingStore.getState>["orderHistory"];
   empty: string;
-  locale: "zh" | "en";
+  locale: Locale;
   t: (k: string) => string;
 }) {
   if (rows.length === 0) return <EmptyState message={empty} />;
@@ -254,7 +255,7 @@ function TradesTable({
 }: {
   rows: ReturnType<typeof useTradingStore.getState>["userTrades"];
   empty: string;
-  locale: "zh" | "en";
+  locale: Locale;
   t: (k: string) => string;
 }) {
   if (rows.length === 0) return <EmptyState message={empty} />;

@@ -7,6 +7,7 @@ import { useExchangeT } from "@/hooks/use-exchange-t";
 import { useLocale } from "@/i18n/use-translation";
 import { MOCK_ANNOUNCEMENTS } from "@/mocks/exchange-data";
 import { formatDateTime } from "@/utils/format-exchange";
+import { isChineseLocale } from "@/i18n/locale-helpers";
 
 export default function AnnouncementDetailPage() {
   const params = useParams();
@@ -33,10 +34,10 @@ export default function AnnouncementDetailPage() {
           {t(`announcements.${ann.category}`)}
         </p>
         <h1 className="mt-2 text-2xl font-semibold tracking-tight">
-          {locale === "zh" ? ann.titleZh : ann.titleEn}
+          {isChineseLocale(locale) ? ann.titleZh : ann.titleEn}
         </h1>
         <div className="prose prose-sm mt-6 max-w-none text-foreground/90 dark:prose-invert">
-          <p>{locale === "zh" ? ann.contentZh : ann.contentEn}</p>
+          <p>{isChineseLocale(locale) ? ann.contentZh : ann.contentEn}</p>
         </div>
       </article>
     </div>

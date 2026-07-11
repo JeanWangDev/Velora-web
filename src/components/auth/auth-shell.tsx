@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import { useLocale } from "@/i18n/use-translation";
+import { isChineseLocale } from "@/i18n/locale-helpers";
 
 /** 左侧营销区：垂直居中，内容成组对齐 */
 export function AuthPromoPanel({
@@ -10,7 +11,7 @@ export function AuthPromoPanel({
   variant?: "fees" | "trust";
 }) {
   const locale = useLocale();
-  const isZh = locale === "zh";
+  const isZh = isChineseLocale(locale);
 
   if (variant === "trust") {
     return (

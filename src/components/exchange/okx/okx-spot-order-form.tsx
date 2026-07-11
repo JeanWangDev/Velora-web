@@ -15,6 +15,7 @@ import { OkxAmountSlider } from "@/components/exchange/okx/okx-amount-slider";
 import { DepositMethodModal } from "@/components/exchange/okx/deposit-method-modal";
 import { LoginModal } from "@/components/auth/login-modal";
 import { useAuthStore } from "@/stores/use-auth-store";
+import { isChineseLocale } from "@/i18n/locale-helpers";
 
 type FormMode = "limit" | "market" | "tpsl";
 
@@ -297,7 +298,7 @@ function OkxSideForm({
     : lastPrice * 0.996;
 
   const minQtyPh =
-    locale === "zh"
+    isChineseLocale(locale)
       ? `${t("trade.minQuantity")} ${minQty} ${meta?.base}`
       : `Min ${minQty} ${meta?.base}`;
 
@@ -365,7 +366,7 @@ function OkxSideForm({
               onClick={() => setTpslOpen((v) => !v)}
               className="flex h-9 w-full items-center justify-between rounded-lg border border-[var(--terminal-border)] bg-[var(--terminal-panel)] px-2.5 text-[11px] text-[var(--terminal-muted)]"
             >
-              <span>{locale === "zh" ? "单向/双向" : "Mode"}</span>
+              <span>{isChineseLocale(locale) ? "单向/双向" : "Mode"}</span>
               <span className="flex items-center gap-1 text-[var(--terminal-text)]">
                 {tpslMode === "one" ? t("trade.oneWay") : t("trade.twoWay")}
                 <ChevronDown className="h-3 w-3" />

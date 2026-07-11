@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback } from "react";
-import { dictionaries, type Dictionary, type Locale } from "./dictionaries";
+import { dictionaries } from "@/i18n/dictionaries";
+import type { Dictionary, Locale } from "@/i18n/types";
 import { useLocaleStore } from "./locale-store";
 
 // ─── Type-safe dotted key paths ──────────────────────────────────────────────
@@ -32,7 +33,7 @@ function lookup(dict: Dictionary, key: string): string {
 
 // ─── Public hooks ────────────────────────────────────────────────────────────
 
-/** Returns the current active locale (e.g. "zh", "en"). */
+/** Returns the current active locale (UrlLocale, e.g. "zh-CN", "en"). */
 export function useLocale(): Locale {
   return useLocaleStore((s) => s.locale);
 }

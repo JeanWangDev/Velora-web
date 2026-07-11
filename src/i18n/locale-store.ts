@@ -2,7 +2,7 @@
 
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import type { Locale } from "./dictionaries";
+import type { Locale } from "./types";
 
 interface LocaleState {
   locale: Locale;
@@ -17,12 +17,21 @@ interface LocaleState {
 export const useLocaleStore = create<LocaleState>()(
   persist(
     (set) => ({
-      locale: "zh",
+      locale: "zh-CN" as Locale,
       setLocale: (locale) => set({ locale }),
     }),
     {
       name: "velora-locale",
       storage: createJSONStorage(() => localStorage),
+      migrate: (persisted) => {
+        const state = persisted as LocaleState | undefined;
+        if (!state) return { locale: "zh-CN" as Locale, setLocale: () => {} };
+        if ((state.locale as string) === "zh") {
+          return { ...state, locale: "zh-CN" };
+        }
+        return state;
+      },
+      version: 1,
     },
   ),
 );

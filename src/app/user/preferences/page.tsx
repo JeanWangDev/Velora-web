@@ -1,5 +1,6 @@
 "use client";
 
+import { isChineseLocale } from "@/i18n/locale-helpers";
 import { useTheme } from "next-themes";
 import { useExchangeT } from "@/hooks/use-exchange-t";
 import { useHydrated } from "@/hooks/use-hydrated";
@@ -7,7 +8,7 @@ import {
   useLocale,
   useSetLocale,
 } from "@/i18n/use-translation";
-import type { Locale } from "@/i18n/dictionaries";
+import type { Locale } from "@/i18n/types";
 import {
   usePreferencesStore,
   type RiseFallMode,
@@ -15,7 +16,8 @@ import {
 } from "@/stores/use-preferences-store";
 
 const LOCALES: Array<{ code: Locale; label: string }> = [
-  { code: "zh", label: "中文" },
+  { code: "zh-CN", label: "简体中文" },
+  { code: "zh-TW", label: "繁體中文" },
   { code: "en", label: "English" },
 ];
 
@@ -72,7 +74,7 @@ export default function UserPreferencesPage() {
                   active={theme === th.value}
                   onClick={() => setTheme(th.value)}
                 >
-                  {locale === "zh" ? th.labelZh : th.labelEn}
+                  {isChineseLocale(locale) ? th.labelZh : th.labelEn}
                 </Chip>
               ))}
             </div>
@@ -104,7 +106,7 @@ export default function UserPreferencesPage() {
                 active={timezone === tz.value}
                 onClick={() => setTimezone(tz.value)}
               >
-                {locale === "zh" ? tz.labelZh : tz.labelEn}
+                {isChineseLocale(locale) ? tz.labelZh : tz.labelEn}
               </Chip>
             ))}
           </div>

@@ -7,6 +7,7 @@ import { useHydrated } from "@/hooks/use-hydrated";
 import { useLocale } from "@/i18n/use-translation";
 import { useSwitchUrlLocale, useUrlLocale } from "@/i18n/locale-path";
 import { URL_LOCALE_LABELS, URL_LOCALES } from "@/i18n/locales";
+import { isChineseLocale } from "@/i18n/locale-helpers";
 import {
   usePreferencesStore,
   type FiatCurrency,
@@ -80,7 +81,7 @@ export function LanguageSwitcher() {
     c.toLowerCase().includes(curQ.trim().toLowerCase()),
   );
 
-  const isZh = dictLocale === "zh";
+  const isZh = isChineseLocale(dictLocale);
 
   const panel =
     open && mounted
