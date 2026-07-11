@@ -1,0 +1,1946 @@
+{
+  "Trade with Clarity": {
+    "fr": "Tradez en toute clarté",
+    "pt": "Negocie com clareza"
+  },
+  "Signed out": {
+    "fr": "Déconnecté",
+    "pt": "Sessão encerrada"
+  },
+  "Edit Profile": {
+    "fr": "Modifier le profil",
+    "pt": "Editar Perfil"
+  },
+  "Account menu": {
+    "fr": "Menu compte",
+    "pt": "Menu da conta"
+  },
+  "Symbol Admin": {
+    "fr": "Gestion des paires",
+    "pt": "Admin de Pares"
+  },
+  "User Admin": {
+    "fr": "Gestion des utilisateurs",
+    "pt": "Admin de Usuários"
+  },
+  "KYC Review": {
+    "fr": "Vérification KYC",
+    "pt": "Revisão KYC"
+  },
+  "Lowest Trading Fees": {
+    "fr": "Frais de trading les plus bas",
+    "pt": "Menores Taxas de Negociação"
+  },
+  "Professional Crypto Exchange": {
+    "fr": "Plateforme crypto professionnelle",
+    "pt": "Exchange de Cripto Profissional"
+  },
+  "Register now": {
+    "fr": "S'inscrire maintenant",
+    "pt": "Cadastre-se agora"
+  },
+  "Start trading": {
+    "fr": "Commencer à trader",
+    "pt": "Começar a negociar"
+  },
+  "Explore markets": {
+    "fr": "Explorer les marchés",
+    "pt": "Explorar mercados"
+  },
+  "Create Account": {
+    "fr": "Créer un compte",
+    "pt": "Criar Conta"
+  },
+  "View more": {
+    "fr": "Voir plus",
+    "pt": "Ver mais"
+  },
+  "Trending Markets": {
+    "fr": "Marchés tendance",
+    "pt": "Mercados em Alta"
+  },
+  "Why Choose Velora": {
+    "fr": "Pourquoi choisir Velora",
+    "pt": "Por Que Escolher a Velora"
+  },
+  "Lowest Fees in the Market": {
+    "fr": "Frais les plus bas du marché",
+    "pt": "Menores Taxas do Mercado"
+  },
+  "Asset Security": {
+    "fr": "Sécurité des actifs",
+    "pt": "Segurança de Ativos"
+  },
+  "Lightning Matching": {
+    "fr": "Matching ultra-rapide",
+    "pt": "Matching Ultrarrápido"
+  },
+  "Zero Withdrawal Fees": {
+    "fr": "Retraits sans frais",
+    "pt": "Saque Sem Taxas"
+  },
+  "Lowest Fees": {
+    "fr": "Frais les plus bas",
+    "pt": "Menores Taxas"
+  },
+  "24/7 Support": {
+    "fr": "Support 24h/24",
+    "pt": "Suporte 24/7"
+  },
+  "Trade Anywhere": {
+    "fr": "Tradez partout",
+    "pt": "Negocie em Qualquer Lugar"
+  },
+  "Frequently Asked Questions": {
+    "fr": "Questions fréquentes",
+    "pt": "Perguntas Frequentes"
+  },
+  "What is Velora?": {
+    "fr": "Qu'est-ce que Velora ?",
+    "pt": "O que é a Velora?"
+  },
+  "How do I deposit crypto?": {
+    "fr": "Comment déposer des cryptos ?",
+    "pt": "Como depositar cripto?"
+  },
+  "How are trading fees calculated?": {
+    "fr": "Comment sont calculés les frais de trading ?",
+    "pt": "Como as taxas de negociação são calculadas?"
+  },
+  "Join the Velora Community": {
+    "fr": "Rejoignez la communauté Velora",
+    "pt": "Junte-se à Comunidade Velora"
+  },
+  "About Us": {
+    "fr": "À propos",
+    "pt": "Sobre Nós"
+  },
+  "Last Price": {
+    "fr": "Dernier prix",
+    "pt": "Último Preço"
+  },
+  "24h Change": {
+    "fr": "Variation 24h",
+    "pt": "Variação 24h"
+  },
+  "Loading Velora chart…": {
+    "fr": "Chargement du graphique Velora…",
+    "pt": "Carregando gráfico Velora…"
+  },
+  "Save as new": {
+    "fr": "Enregistrer sous",
+    "pt": "Salvar como novo"
+  },
+  "+ New Template": {
+    "fr": "+ Nouveau modèle",
+    "pt": "+ Novo Modelo"
+  },
+  "Snapshot": {
+    "fr": "Capture",
+    "pt": "Captura"
+  },
+  "Zoom in": {
+    "fr": "Zoom avant",
+    "pt": "Aumentar zoom"
+  },
+  "Zoom out": {
+    "fr": "Zoom arrière",
+    "pt": "Diminuir zoom"
+  },
+  "24h High": {
+    "fr": "Plus haut 24h",
+    "pt": "Máxima 24h"
+  },
+  "24h Low": {
+    "fr": "Plus bas 24h",
+    "pt": "Mínima 24h"
+  },
+  "24h Volume": {
+    "fr": "Volume 24h",
+    "pt": "Volume 24h"
+  },
+  "24h Turnover": {
+    "fr": "Chiffre d'affaires 24h",
+    "pt": "Volume Financeiro 24h"
+  },
+  "Select interval": {
+    "fr": "Sélectionner l'intervalle",
+    "pt": "Selecionar intervalo"
+  },
+  "Week / Month": {
+    "fr": "Semaine / Mois",
+    "pt": "Semana / Mês"
+  },
+  "Chart events": {
+    "fr": "Événements du graphique",
+    "pt": "Eventos do gráfico"
+  },
+  "S/R levels": {
+    "fr": "Niveaux S/R",
+    "pt": "Níveis S/R"
+  },
+  "Market brief": {
+    "fr": "Résumé marché",
+    "pt": "Resumo de mercado"
+  },
+  "On-chain trade": {
+    "fr": "Trading on-chain",
+    "pt": "Negociação on-chain"
+  },
+  "BSC dry run": {
+    "fr": "Test BSC",
+    "pt": "Simulação BSC"
+  },
+  "On-chain contract trading": {
+    "fr": "Trading contractuel on-chain",
+    "pt": "Negociação de contratos on-chain"
+  },
+  "Switch account": {
+    "fr": "Changer de compte",
+    "pt": "Trocar conta"
+  },
+  "Use testnet": {
+    "fr": "Utiliser le testnet",
+    "pt": "Usar testnet"
+  },
+  "Not connected": {
+    "fr": "Non connecté",
+    "pt": "Não conectado"
+  },
+  "Network pending": {
+    "fr": "Réseau en attente",
+    "pt": "Rede pendente"
+  },
+  "Test order": {
+    "fr": "Ordre test",
+    "pt": "Ordem de teste"
+  },
+  "On-chain pair": {
+    "fr": "Paire on-chain",
+    "pt": "Par on-chain"
+  },
+  "Slippage%": {
+    "fr": "Slippage %",
+    "pt": "Slippage %"
+  },
+  "Sign test order": {
+    "fr": "Signer l'ordre test",
+    "pt": "Assinar ordem de teste"
+  },
+  "Submit testnet order": {
+    "fr": "Soumettre l'ordre testnet",
+    "pt": "Enviar ordem na testnet"
+  },
+  "Signing…": {
+    "fr": "Signature…",
+    "pt": "Assinando…"
+  },
+  "Test order intent signed": {
+    "fr": "Intention d'ordre test signée",
+    "pt": "Intenção de ordem de teste assinada"
+  },
+  "Testnet order submitted": {
+    "fr": "Ordre testnet soumis",
+    "pt": "Ordem na testnet enviada"
+  },
+  "Testnet order confirmed": {
+    "fr": "Ordre testnet confirmé",
+    "pt": "Ordem na testnet confirmada"
+  },
+  "Testnet transaction failed": {
+    "fr": "Transaction testnet échouée",
+    "pt": "Transação na testnet falhou"
+  },
+  "On-chain status": {
+    "fr": "Statut on-chain",
+    "pt": "Status on-chain"
+  },
+  "No wallet detected": {
+    "fr": "Aucun portefeuille détecté",
+    "pt": "Nenhuma carteira detectada"
+  },
+  "Wallet connected": {
+    "fr": "Portefeuille connecté",
+    "pt": "Carteira conectada"
+  },
+  "Wallet connection failed": {
+    "fr": "Échec de connexion du portefeuille",
+    "pt": "Falha na conexão da carteira"
+  },
+  "Switched to BSC Testnet": {
+    "fr": "Basculé sur BSC Testnet",
+    "pt": "Mudou para BSC Testnet"
+  },
+  "Network switch failed": {
+    "fr": "Échec du changement de réseau",
+    "pt": "Falha ao trocar de rede"
+  },
+  "Connect a wallet first": {
+    "fr": "Connectez d'abord un portefeuille",
+    "pt": "Conecte uma carteira primeiro"
+  },
+  "Switch to BSC Testnet first": {
+    "fr": "Passez d'abord sur BSC Testnet",
+    "pt": "Mude para BSC Testnet primeiro"
+  },
+  "Enter a valid margin and leverage": {
+    "fr": "Saisissez une marge et un levier valides",
+    "pt": "Informe uma margem e alavancagem válidas"
+  },
+  "Test order signed": {
+    "fr": "Ordre test signé",
+    "pt": "Ordem de teste assinada"
+  },
+  "Test order failed": {
+    "fr": "Échec de l'ordre test",
+    "pt": "Falha na ordem de teste"
+  },
+  "Real execution TODO": {
+    "fr": "Exécution réelle — TODO",
+    "pt": "Execução real — TODO"
+  },
+  "Pro mode (raw factors)": {
+    "fr": "Mode pro (facteurs bruts)",
+    "pt": "Modo Pro (fatores brutos)"
+  },
+  "Details": {
+    "fr": "Détails",
+    "pt": "Detalhes"
+  },
+  "Loading market brief…": {
+    "fr": "Chargement du résumé marché…",
+    "pt": "Carregando resumo de mercado…"
+  },
+  "Failed to load market brief": {
+    "fr": "Échec du chargement du résumé marché",
+    "pt": "Falha ao carregar resumo de mercado"
+  },
+  "Hide top brief bar": {
+    "fr": "Masquer la barre de résumé",
+    "pt": "Ocultar barra superior de resumo"
+  },
+  "Show market brief bar": {
+    "fr": "Afficher la barre de résumé",
+    "pt": "Exibir barra de resumo de mercado"
+  },
+  "Price guide": {
+    "fr": "Guide de prix",
+    "pt": "Guia de preços"
+  },
+  "Take profit": {
+    "fr": "Prise de profits",
+    "pt": "Realizar lucro"
+  },
+  "Latest related news": {
+    "fr": "Dernières actualités liées",
+    "pt": "Últimas notícias relacionadas"
+  },
+  "Lean bullish": {
+    "fr": "Plutôt haussier",
+    "pt": "Tendência de alta"
+  },
+  "Overall bullish": {
+    "fr": "Globalement haussier",
+    "pt": "Geralmente de alta"
+  },
+  "Overall bearish": {
+    "fr": "Globalement baissier",
+    "pt": "Geralmente de baixa"
+  },
+  "Overall neutral": {
+    "fr": "Globalement neutre",
+    "pt": "Geralmente neutro"
+  },
+  "Action: wait": {
+    "fr": "Action : attendre",
+    "pt": "Ação: aguardar"
+  },
+  "Action: caution, size small": {
+    "fr": "Action : prudence, petite taille",
+    "pt": "Ação: cautela, posição pequena"
+  },
+  "Action: light long ok": {
+    "fr": "Action : petit long possible",
+    "pt": "Ação: long leve ok"
+  },
+  "Action: reduce / avoid chasing": {
+    "fr": "Action : réduire / éviter de courir après",
+    "pt": "Ação: reduzir / evitar perseguir"
+  },
+  "Stronger vs last": {
+    "fr": "Plus fort qu'avant",
+    "pt": "Mais forte que antes"
+  },
+  "Weaker vs last": {
+    "fr": "Plus faible qu'avant",
+    "pt": "Mais fraco que antes"
+  },
+  "Same as last": {
+    "fr": "Identique à avant",
+    "pt": "Igual ao anterior"
+  },
+  "Trend up": {
+    "fr": "Tendance haussière",
+    "pt": "Tendência de alta"
+  },
+  "Trend down": {
+    "fr": "Tendance baissière",
+    "pt": "Tendência de baixa"
+  },
+  "Enable S/R levels": {
+    "fr": "Activer les niveaux S/R",
+    "pt": "Ativar níveis S/R"
+  },
+  "Calculating…": {
+    "fr": "Calcul…",
+    "pt": "Calculando…"
+  },
+  "Last price": {
+    "fr": "Dernier prix",
+    "pt": "Último preço"
+  },
+  "Research notes panel (Phase 2)": {
+    "fr": "Panneau notes de recherche (Phase 2)",
+    "pt": "Painel de notas de pesquisa (Fase 2)"
+  },
+  "Template manager (Phase 2)": {
+    "fr": "Gestionnaire de modèles (Phase 2)",
+    "pt": "Gerenciador de modelos (Fase 2)"
+  },
+  "Select all": {
+    "fr": "Tout sélectionner",
+    "pt": "Selecionar tudo"
+  },
+  "Adding…": {
+    "fr": "Ajout…",
+    "pt": "Adicionando…"
+  },
+  "Chart is not ready yet": {
+    "fr": "Le graphique n'est pas encore prêt",
+    "pt": "O gráfico ainda não está pronto"
+  },
+  "Failed to apply indicators": {
+    "fr": "Échec de l'application des indicateurs",
+    "pt": "Falha ao aplicar indicadores"
+  },
+  "Search indicators…": {
+    "fr": "Rechercher des indicateurs…",
+    "pt": "Buscar indicadores…"
+  },
+  "No indicators match your search": {
+    "fr": "Aucun indicateur ne correspond à votre recherche",
+    "pt": "Nenhum indicador corresponde à sua busca"
+  },
+  "No bound events for this pair": {
+    "fr": "Aucun événement lié pour cette paire",
+    "pt": "Nenhum evento vinculado a este par"
+  },
+  "Save chart template": {
+    "fr": "Enregistrer le modèle de graphique",
+    "pt": "Salvar modelo de gráfico"
+  },
+  "Template name": {
+    "fr": "Nom du modèle",
+    "pt": "Nome do modelo"
+  },
+  "e.g. BTC trend set": {
+    "fr": "ex. ensemble tendance BTC",
+    "pt": "ex.: conjunto de tendência BTC"
+  },
+  "Enter a template name": {
+    "fr": "Saisissez un nom de modèle",
+    "pt": "Informe um nome para o modelo"
+  },
+  "My template": {
+    "fr": "Mon modèle",
+    "pt": "Meu modelo"
+  },
+  "Save reference pair": {
+    "fr": "Enregistrer la paire de référence",
+    "pt": "Salvar par de referência"
+  },
+  "Indicators to save": {
+    "fr": "Indicateurs à enregistrer",
+    "pt": "Indicadores a salvar"
+  },
+  "Template saved": {
+    "fr": "Modèle enregistré",
+    "pt": "Modelo salvo"
+  },
+  "Failed to save": {
+    "fr": "Échec de l'enregistrement",
+    "pt": "Falha ao salvar"
+  },
+  "Sign in to save templates": {
+    "fr": "Connectez-vous pour enregistrer des modèles",
+    "pt": "Entre para salvar modelos"
+  },
+  "Failed to load templates": {
+    "fr": "Échec du chargement des modèles",
+    "pt": "Falha ao carregar modelos"
+  },
+  "No templates yet": {
+    "fr": "Aucun modèle pour l'instant",
+    "pt": "Nenhum modelo ainda"
+  },
+  "Official presets": {
+    "fr": "Préréglages officiels",
+    "pt": "Presets oficiais"
+  },
+  "Ref pair": {
+    "fr": "Paire réf.",
+    "pt": "Par ref."
+  },
+  "Template applied": {
+    "fr": "Modèle appliqué",
+    "pt": "Modelo aplicado"
+  },
+  "Failed to apply": {
+    "fr": "Échec de l'application",
+    "pt": "Falha ao aplicar"
+  },
+  "Delete template": {
+    "fr": "Supprimer le modèle",
+    "pt": "Excluir modelo"
+  },
+  "Delete this template?": {
+    "fr": "Supprimer ce modèle ?",
+    "pt": "Excluir este modelo?"
+  },
+  "Template deleted": {
+    "fr": "Modèle supprimé",
+    "pt": "Modelo excluído"
+  },
+  "Failed to delete": {
+    "fr": "Échec de la suppression",
+    "pt": "Falha ao excluir"
+  },
+  "Empty template": {
+    "fr": "Modèle vide",
+    "pt": "Modelo vazio"
+  },
+  "Template updated": {
+    "fr": "Modèle mis à jour",
+    "pt": "Modelo atualizado"
+  },
+  "Set as default": {
+    "fr": "Définir par défaut",
+    "pt": "Definir como padrão"
+  },
+  "Default template updated": {
+    "fr": "Modèle par défaut mis à jour",
+    "pt": "Modelo padrão atualizado"
+  },
+  "Failed to set default": {
+    "fr": "Échec de la définition par défaut",
+    "pt": "Falha ao definir padrão"
+  },
+  "Already the default template": {
+    "fr": "Déjà le modèle par défaut",
+    "pt": "Já é o modelo padrão"
+  },
+  "No changes to save": {
+    "fr": "Aucune modification à enregistrer",
+    "pt": "Nenhuma alteração para salvar"
+  },
+  "Save to current template": {
+    "fr": "Enregistrer dans le modèle actuel",
+    "pt": "Salvar no modelo atual"
+  },
+  "Save as new template": {
+    "fr": "Enregistrer comme nouveau modèle",
+    "pt": "Salvar como novo modelo"
+  },
+  "Switch to empty": {
+    "fr": "Passer au vide",
+    "pt": "Mudar para vazio"
+  },
+  "Switch to empty template": {
+    "fr": "Passer au modèle vide",
+    "pt": "Mudar para modelo vazio"
+  },
+  "Switched to empty template": {
+    "fr": "Passé au modèle vide",
+    "pt": "Mudou para modelo vazio"
+  },
+  "Already using empty template": {
+    "fr": "Modèle vide déjà utilisé",
+    "pt": "Já está usando modelo vazio"
+  },
+  "Use empty template": {
+    "fr": "Utiliser un modèle vide",
+    "pt": "Usar modelo vazio"
+  },
+  "Popular templates": {
+    "fr": "Modèles populaires",
+    "pt": "Modelos populares"
+  },
+  "Templates for {symbol} only": {
+    "fr": "Modèles pour {symbol} uniquement",
+    "pt": "Modelos apenas para {symbol}"
+  },
+  "Chart Templates": {
+    "fr": "Modèles de graphique",
+    "pt": "Modelos de Gráfico"
+  },
+  "Search by name, pair, or ID": {
+    "fr": "Rechercher par nom, paire ou ID",
+    "pt": "Buscar por nome, par ou ID"
+  },
+  "Showing templates for all pairs": {
+    "fr": "Affichage des modèles pour toutes les paires",
+    "pt": "Exibindo modelos de todos os pares"
+  },
+  "Show all pairs": {
+    "fr": "Afficher toutes les paires",
+    "pt": "Mostrar todos os pares"
+  },
+  "Sign in to view your templates": {
+    "fr": "Connectez-vous pour voir vos modèles",
+    "pt": "Entre para ver seus modelos"
+  },
+  "Open Trade": {
+    "fr": "Ouvrir Trading",
+    "pt": "Abrir Negociar"
+  },
+  "Apply on Trade": {
+    "fr": "Appliquer dans Trading",
+    "pt": "Aplicar em Negociar"
+  },
+  "Template ID": {
+    "fr": "ID du modèle",
+    "pt": "ID do Modelo"
+  },
+  "Reference pair": {
+    "fr": "Paire de référence",
+    "pt": "Par de referência"
+  },
+  "Any pair": {
+    "fr": "Toute paire",
+    "pt": "Qualquer par"
+  },
+  "Enter a new template name": {
+    "fr": "Saisissez un nouveau nom de modèle",
+    "pt": "Informe um novo nome para o modelo"
+  },
+  "Template renamed": {
+    "fr": "Modèle renommé",
+    "pt": "Modelo renomeado"
+  },
+  "Failed to rename": {
+    "fr": "Échec du renommage",
+    "pt": "Falha ao renomear"
+  },
+  "Set default": {
+    "fr": "Définir par défaut",
+    "pt": "Definir padrão"
+  },
+  "Copy as private": {
+    "fr": "Copier en privé",
+    "pt": "Copiar como privado"
+  },
+  "Copy as private template": {
+    "fr": "Copier comme modèle privé",
+    "pt": "Copiar como modelo privado"
+  },
+  "Name for your private copy": {
+    "fr": "Nom de votre copie privée",
+    "pt": "Nome da sua cópia privada"
+  },
+  "Copied to My Templates": {
+    "fr": "Copié dans Mes modèles",
+    "pt": "Copiado para Meus Modelos"
+  },
+  "Failed to copy": {
+    "fr": "Échec de la copie",
+    "pt": "Falha ao copiar"
+  },
+  "Sign in to copy templates": {
+    "fr": "Connectez-vous pour copier des modèles",
+    "pt": "Entre para copiar modelos"
+  },
+  "View mine": {
+    "fr": "Voir les miens",
+    "pt": "Ver meus"
+  },
+  "Rename template": {
+    "fr": "Renommer le modèle",
+    "pt": "Renomear modelo"
+  },
+  "Enter template name": {
+    "fr": "Saisir le nom du modèle",
+    "pt": "Informe o nome do modelo"
+  },
+  "This week": {
+    "fr": "Cette semaine",
+    "pt": "Esta semana"
+  },
+  "This month": {
+    "fr": "Ce mois",
+    "pt": "Este mês"
+  },
+  " applies": {
+    "fr": " applications",
+    "pt": " aplicações"
+  },
+  " copies": {
+    "fr": " copies",
+    "pt": " cópias"
+  },
+  "{apply} · {copy}": {
+    "fr": "{apply} · {copy}",
+    "pt": "{apply} · {copy}"
+  },
+  "Polaris · Market Intelligence": {
+    "fr": "Polaris · Intelligence marché",
+    "pt": "Polaris · Inteligência de Mercado"
+  },
+  "Open Workspace": {
+    "fr": "Ouvrir l'espace de travail",
+    "pt": "Abrir Workspace"
+  },
+  "Browse Indicators": {
+    "fr": "Parcourir les indicateurs",
+    "pt": "Explorar Indicadores"
+  },
+  "Why Polaris": {
+    "fr": "Pourquoi Polaris",
+    "pt": "Por Que Polaris"
+  },
+  "Multi-source aggregation": {
+    "fr": "Agrégation multi-sources",
+    "pt": "Agregação multi-fonte"
+  },
+  "Saveable research templates": {
+    "fr": "Modèles de recherche enregistrables",
+    "pt": "Modelos de pesquisa salváveis"
+  },
+  "Annotate & publish": {
+    "fr": "Annoter et publier",
+    "pt": "Anotar e publicar"
+  },
+  "Ready to get started?": {
+    "fr": "Prêt à commencer ?",
+    "pt": "Pronto para começar?"
+  },
+  "Try Polaris": {
+    "fr": "Essayer Polaris",
+    "pt": "Experimentar Polaris"
+  },
+  "News Feed": {
+    "fr": "Fil d'actualités",
+    "pt": "Feed de Notícias"
+  },
+  "No events yet": {
+    "fr": "Aucun événement pour l'instant",
+    "pt": "Nenhum evento ainda"
+  },
+  "Live feed": {
+    "fr": "Flux en direct",
+    "pt": "Feed ao vivo"
+  },
+  "Failed to load": {
+    "fr": "Échec du chargement",
+    "pt": "Falha ao carregar"
+  },
+  "Back to feed": {
+    "fr": "Retour au fil",
+    "pt": "Voltar ao feed"
+  },
+  "Read original": {
+    "fr": "Lire l'original",
+    "pt": "Ler original"
+  },
+  "View on chart": {
+    "fr": "Voir sur le graphique",
+    "pt": "Ver no gráfico"
+  },
+  "Indicator Library": {
+    "fr": "Bibliothèque d'indicateurs",
+    "pt": "Biblioteca de Indicadores"
+  },
+  "Symbol management": {
+    "fr": "Gestion des paires",
+    "pt": "Gerenciamento de pares"
+  },
+  "Admin access required": {
+    "fr": "Accès administrateur requis",
+    "pt": "Acesso de administrador necessário"
+  },
+  "Please sign in first": {
+    "fr": "Veuillez vous connecter d'abord",
+    "pt": "Entre primeiro"
+  },
+  "Add pair": {
+    "fr": "Ajouter une paire",
+    "pt": "Adicionar par"
+  },
+  "Pair disabled": {
+    "fr": "Paire désactivée",
+    "pt": "Par desativado"
+  },
+  "Failed to disable": {
+    "fr": "Échec de la désactivation",
+    "pt": "Falha ao desativar"
+  },
+  "Failed to create": {
+    "fr": "Échec de la création",
+    "pt": "Falha ao criar"
+  },
+  "Add trading pair": {
+    "fr": "Ajouter une paire de trading",
+    "pt": "Adicionar par de negociação"
+  },
+  "Edit trading pair": {
+    "fr": "Modifier une paire de trading",
+    "pt": "Editar par de negociação"
+  },
+  "Base asset": {
+    "fr": "Actif de base",
+    "pt": "Ativo base"
+  },
+  "Display name": {
+    "fr": "Nom d'affichage",
+    "pt": "Nome de exibição"
+  },
+  "Sort order": {
+    "fr": "Ordre de tri",
+    "pt": "Ordem de exibição"
+  },
+  "Default pair": {
+    "fr": "Paire par défaut",
+    "pt": "Par padrão"
+  },
+  "No trading pairs": {
+    "fr": "Aucune paire de trading",
+    "pt": "Nenhum par de negociação"
+  },
+  "User management": {
+    "fr": "Gestion des utilisateurs",
+    "pt": "Gerenciamento de usuários"
+  },
+  "Search email or nickname": {
+    "fr": "Rechercher e-mail ou pseudo",
+    "pt": "Buscar e-mail ou apelido"
+  },
+  "New user": {
+    "fr": "Nouvel utilisateur",
+    "pt": "Novo usuário"
+  },
+  "Last login": {
+    "fr": "Dernière connexion",
+    "pt": "Último login"
+  },
+  "Disable this user?": {
+    "fr": "Désactiver cet utilisateur ?",
+    "pt": "Desativar este usuário?"
+  },
+  "User enabled": {
+    "fr": "Utilisateur activé",
+    "pt": "Usuário ativado"
+  },
+  "User disabled": {
+    "fr": "Utilisateur désactivé",
+    "pt": "Usuário desativado"
+  },
+  "Failed to update status": {
+    "fr": "Échec de la mise à jour du statut",
+    "pt": "Falha ao atualizar status"
+  },
+  "Role updated": {
+    "fr": "Rôle mis à jour",
+    "pt": "Função atualizada"
+  },
+  "Failed to update role": {
+    "fr": "Échec de la mise à jour du rôle",
+    "pt": "Falha ao atualizar função"
+  },
+  "User created": {
+    "fr": "Utilisateur créé",
+    "pt": "Usuário criado"
+  },
+  "No users": {
+    "fr": "Aucun utilisateur",
+    "pt": "Nenhum usuário"
+  },
+  "{total} total": {
+    "fr": "{total} au total",
+    "pt": "{total} no total"
+  },
+  "Sign in with an admin account": {
+    "fr": "Connectez-vous avec un compte administrateur",
+    "pt": "Entre com uma conta de administrador"
+  },
+  "Failed to load operations": {
+    "fr": "Échec du chargement des opérations",
+    "pt": "Falha ao carregar operações"
+  },
+  "Failed to load balances": {
+    "fr": "Échec du chargement des soldes",
+    "pt": "Falha ao carregar saldos"
+  },
+  "Operation failed": {
+    "fr": "Opération échouée",
+    "pt": "Operação falhou"
+  },
+  "Select a target user first": {
+    "fr": "Sélectionnez d'abord un utilisateur cible",
+    "pt": "Selecione um usuário alvo primeiro"
+  },
+  "Enter a valid amount": {
+    "fr": "Saisissez un montant valide",
+    "pt": "Informe um valor válido"
+  },
+  "Fund operation": {
+    "fr": "Opération de fonds",
+    "pt": "Operação de fundos"
+  },
+  "Target user": {
+    "fr": "Utilisateur cible",
+    "pt": "Usuário alvo"
+  },
+  "e.g. internal test credit": {
+    "fr": "ex. crédit test interne",
+    "pt": "ex.: crédito de teste interno"
+  },
+  "User balances": {
+    "fr": "Soldes utilisateur",
+    "pt": "Saldos do usuário"
+  },
+  "No balances": {
+    "fr": "Aucun solde",
+    "pt": "Sem saldos"
+  },
+  "Operation log": {
+    "fr": "Journal des opérations",
+    "pt": "Log de operações"
+  },
+  "User ID": {
+    "fr": "ID utilisateur",
+    "pt": "ID do usuário"
+  },
+  "All types": {
+    "fr": "Tous les types",
+    "pt": "Todos os tipos"
+  },
+  "No operations yet": {
+    "fr": "Aucune opération pour l'instant",
+    "pt": "Nenhuma operação ainda"
+  },
+  "Op No.": {
+    "fr": "N° op.",
+    "pt": "Nº da Op."
+  },
+  "Loading plans…": {
+    "fr": "Chargement des offres…",
+    "pt": "Carregando planos…"
+  },
+  "Failed to load membership info": {
+    "fr": "Échec du chargement des informations d'abonnement",
+    "pt": "Falha ao carregar informações da assinatura"
+  },
+  "Current status": {
+    "fr": "Statut actuel",
+    "pt": "Status atual"
+  },
+  "You are a Pro member": {
+    "fr": "Vous êtes membre Pro",
+    "pt": "Você é membro Pro"
+  },
+  "You are on the free plan": {
+    "fr": "Vous êtes sur l'offre gratuite",
+    "pt": "Você está no plano gratuito"
+  },
+  "Pro active until {date}": {
+    "fr": "Pro actif jusqu'au {date}",
+    "pt": "Pro ativo até {date}"
+  },
+  "Creating order…": {
+    "fr": "Création de la commande…",
+    "pt": "Criando pedido…"
+  },
+  "Failed to create order": {
+    "fr": "Échec de la création de la commande",
+    "pt": "Falha ao criar pedido"
+  },
+  "Complete payment": {
+    "fr": "Finaliser le paiement",
+    "pt": "Concluir pagamento"
+  },
+  "Expires at": {
+    "fr": "Expire le",
+    "pt": "Expira em"
+  },
+  "Copy address": {
+    "fr": "Copier l'adresse",
+    "pt": "Copiar endereço"
+  },
+  "Address copied": {
+    "fr": "Adresse copiée",
+    "pt": "Endereço copiado"
+  },
+  "Copy failed": {
+    "fr": "Échec de la copie",
+    "pt": "Falha ao copiar"
+  },
+  "Unlock all VIP trading pairs": {
+    "fr": "Débloquer toutes les paires VIP",
+    "pt": "Desbloqueie todos os pares VIP de negociação"
+  },
+  "Higher template save limits": {
+    "fr": "Limites d'enregistrement de modèles plus élevées",
+    "pt": "Limites maiores para salvar modelos"
+  },
+  "Full real-time market access": {
+    "fr": "Accès complet au marché en temps réel",
+    "pt": "Acesso completo ao mercado em tempo real"
+  },
+  "Order No.": {
+    "fr": "N° de commande",
+    "pt": "Nº do Pedido"
+  },
+  "Pay USDT on the TRC20 network": {
+    "fr": "Payez en USDT sur le réseau TRC20",
+    "pt": "Pague USDT na rede TRC20"
+  },
+  "Tap amount or address to copy": {
+    "fr": "Appuyez sur le montant ou l'adresse pour copier",
+    "pt": "Toque no valor ou endereço para copiar"
+  },
+  "Amount copied": {
+    "fr": "Montant copié",
+    "pt": "Valor copiado"
+  },
+  "My Orders": {
+    "fr": "Mes commandes",
+    "pt": "Meus Pedidos"
+  },
+  "My orders": {
+    "fr": "Mes commandes",
+    "pt": "Meus pedidos"
+  },
+  "Pay now": {
+    "fr": "Payer maintenant",
+    "pt": "Pagar agora"
+  },
+  "View details": {
+    "fr": "Voir les détails",
+    "pt": "Ver detalhes"
+  },
+  "Loading…": {
+    "fr": "Chargement…",
+    "pt": "Carregando…"
+  },
+  "Failed to load orders": {
+    "fr": "Échec du chargement des commandes",
+    "pt": "Falha ao carregar pedidos"
+  },
+  "Please sign in": {
+    "fr": "Veuillez vous connecter",
+    "pt": "Entre primeiro"
+  },
+  "No orders yet": {
+    "fr": "Aucune commande pour l'instant",
+    "pt": "Nenhum pedido ainda"
+  },
+  "Order details": {
+    "fr": "Détails de la commande",
+    "pt": "Detalhes do pedido"
+  },
+  "Billing cycle": {
+    "fr": "Cycle de facturation",
+    "pt": "Ciclo de cobrança"
+  },
+  "Order info": {
+    "fr": "Informations commande",
+    "pt": "Informações do pedido"
+  },
+  "Order no.": {
+    "fr": "N° de commande",
+    "pt": "Nº do pedido"
+  },
+  "Paid at": {
+    "fr": "Payée le",
+    "pt": "Pago em"
+  },
+  "Payment method": {
+    "fr": "Mode de paiement",
+    "pt": "Forma de pagamento"
+  },
+  "Order total": {
+    "fr": "Total commande",
+    "pt": "Total do pedido"
+  },
+  "Cancel order": {
+    "fr": "Annuler la commande",
+    "pt": "Cancelar pedido"
+  },
+  "Cancel this order?": {
+    "fr": "Annuler cette commande ?",
+    "pt": "Cancelar este pedido?"
+  },
+  "Order cancelled": {
+    "fr": "Ordre annulé",
+    "pt": "Ordem cancelada"
+  },
+  "Failed to cancel order": {
+    "fr": "Échec de l'annulation",
+    "pt": "Falha ao cancelar pedido"
+  },
+  "Cancelling…": {
+    "fr": "Annulation…",
+    "pt": "Cancelando…"
+  },
+  "{days} days": {
+    "fr": "{days} jours",
+    "pt": "{days} dias"
+  },
+  "Pay order": {
+    "fr": "Payer la commande",
+    "pt": "Pagar pedido"
+  },
+  "USDT payment network: TRC20": {
+    "fr": "Réseau de paiement USDT : TRC20",
+    "pt": "Rede de pagamento USDT: TRC20"
+  },
+  "On-chain deposit confirmed": {
+    "fr": "Dépôt on-chain confirmé",
+    "pt": "Depósito on-chain confirmado"
+  },
+  "Payment successful": {
+    "fr": "Paiement réussi",
+    "pt": "Pagamento realizado"
+  },
+  "Order expired": {
+    "fr": "Commande expirée",
+    "pt": "Pedido expirado"
+  },
+  "Subscribe again": {
+    "fr": "S'abonner à nouveau",
+    "pt": "Assinar novamente"
+  },
+  "Back to orders": {
+    "fr": "Retour aux commandes",
+    "pt": "Voltar aos pedidos"
+  },
+  "Back to order details": {
+    "fr": "Retour aux détails de la commande",
+    "pt": "Voltar aos detalhes do pedido"
+  },
+  "Order not found": {
+    "fr": "Commande introuvable",
+    "pt": "Pedido não encontrado"
+  },
+  "Strategy Market": {
+    "fr": "Marché des stratégies",
+    "pt": "Mercado de Estratégias"
+  },
+  "My strategies": {
+    "fr": "Mes stratégies",
+    "pt": "Minhas estratégias"
+  },
+  "Create strategy": {
+    "fr": "Créer une stratégie",
+    "pt": "Criar estratégia"
+  },
+  "Publishing…": {
+    "fr": "Publication…",
+    "pt": "Publicando…"
+  },
+  "Strategy created": {
+    "fr": "Stratégie créée",
+    "pt": "Estratégia criada"
+  },
+  "Failed to create strategy": {
+    "fr": "Échec de la création de la stratégie",
+    "pt": "Falha ao criar estratégia"
+  },
+  "Strategy key (lowercase)": {
+    "fr": "Clé stratégie (minuscules)",
+    "pt": "Chave da estratégia (minúsculas)"
+  },
+  "Chart template": {
+    "fr": "Modèle de graphique",
+    "pt": "Modelo de gráfico"
+  },
+  "No template": {
+    "fr": "Aucun modèle",
+    "pt": "Sem modelo"
+  },
+  "Tags (comma-separated)": {
+    "fr": "Tags (séparés par des virgules)",
+    "pt": "Tags (separadas por vírgula)"
+  },
+  "Monthly follow fee (USDT)": {
+    "fr": "Frais de suivi mensuels (USDT)",
+    "pt": "Taxa mensal de follow (USDT)"
+  },
+  "Billing period (days)": {
+    "fr": "Période de facturation (jours)",
+    "pt": "Período de cobrança (dias)"
+  },
+  "Public on marketplace": {
+    "fr": "Public sur la place de marché",
+    "pt": "Público no marketplace"
+  },
+  "Draft (only you)": {
+    "fr": "Brouillon (vous seul)",
+    "pt": "Rascunho (somente você)"
+  },
+  "Follow fee": {
+    "fr": "Frais de suivi",
+    "pt": "Taxa de follow"
+  },
+  "Processing…": {
+    "fr": "Traitement…",
+    "pt": "Processando…"
+  },
+  "This is your published strategy": {
+    "fr": "Ceci est votre stratégie publiée",
+    "pt": "Esta é sua estratégia publicada"
+  },
+  "No records yet": {
+    "fr": "Aucun enregistrement",
+    "pt": "Nenhum registro ainda"
+  },
+  "Failed to load strategies": {
+    "fr": "Échec du chargement des stratégies",
+    "pt": "Falha ao carregar estratégias"
+  },
+  "Back to strategies": {
+    "fr": "Retour aux stratégies",
+    "pt": "Voltar às estratégias"
+  },
+  "Strategy not found": {
+    "fr": "Stratégie introuvable",
+    "pt": "Estratégia não encontrada"
+  },
+  "Live signal": {
+    "fr": "Signal en direct",
+    "pt": "Sinal ao vivo"
+  },
+  "Loading signal…": {
+    "fr": "Chargement du signal…",
+    "pt": "Carregando sinal…"
+  },
+  "Signal unavailable": {
+    "fr": "Signal indisponible",
+    "pt": "Sinal indisponível"
+  },
+  "Current signal": {
+    "fr": "Signal actuel",
+    "pt": "Sinal atual"
+  },
+  "Open chart": {
+    "fr": "Ouvrir le graphique",
+    "pt": "Abrir gráfico"
+  },
+  "Valid until {date}": {
+    "fr": "Valide jusqu'au {date}",
+    "pt": "Válido até {date}"
+  },
+  "Creator earnings": {
+    "fr": "Revenus créateur",
+    "pt": "Ganhos do criador"
+  },
+  "Failed to load earnings": {
+    "fr": "Échec du chargement des revenus",
+    "pt": "Falha ao carregar ganhos"
+  },
+  "Amount (USDT)": {
+    "fr": "Montant (USDT)",
+    "pt": "Valor (USDT)"
+  },
+  "TRC20 address": {
+    "fr": "Adresse TRC20",
+    "pt": "Endereço TRC20"
+  },
+  "Withdrawal submitted": {
+    "fr": "Retrait soumis",
+    "pt": "Saque enviado"
+  },
+  "Withdrawal failed": {
+    "fr": "Échec du retrait",
+    "pt": "Falha no saque"
+  },
+  "OKX live copy": {
+    "fr": "Copy trading OKX en direct",
+    "pt": "Copy trading ao vivo OKX"
+  },
+  "Order size (USDT)": {
+    "fr": "Taille d'ordre (USDT)",
+    "pt": "Tamanho da ordem (USDT)"
+  },
+  "Enable live copy": {
+    "fr": "Activer le copy en direct",
+    "pt": "Ativar copy ao vivo"
+  },
+  "Stop live copy": {
+    "fr": "Arrêter le copy en direct",
+    "pt": "Parar copy ao vivo"
+  },
+  "Live copy enabled": {
+    "fr": "Copy en direct activé",
+    "pt": "Copy ao vivo ativado"
+  },
+  "Live copy stopped": {
+    "fr": "Copy en direct arrêté",
+    "pt": "Copy ao vivo parado"
+  },
+  "Live copy action failed": {
+    "fr": "Échec de l'action copy en direct",
+    "pt": "Falha na ação de copy ao vivo"
+  },
+  "Connect OKX API first": {
+    "fr": "Connectez d'abord l'API OKX",
+    "pt": "Conecte a API OKX primeiro"
+  },
+  "Manage OKX connection": {
+    "fr": "Gérer la connexion OKX",
+    "pt": "Gerenciar conexão OKX"
+  },
+  "Exchange connections": {
+    "fr": "Connexions exchange",
+    "pt": "Conexões de exchange"
+  },
+  "Connect OKX": {
+    "fr": "Connecter OKX",
+    "pt": "Conectar OKX"
+  },
+  "OKX connected": {
+    "fr": "OKX connecté",
+    "pt": "OKX conectado"
+  },
+  "Connection failed": {
+    "fr": "Échec de la connexion",
+    "pt": "Falha na conexão"
+  },
+  "OKX disconnected": {
+    "fr": "OKX déconnecté",
+    "pt": "OKX desconectado"
+  },
+  "Disconnect failed": {
+    "fr": "Échec de la déconnexion",
+    "pt": "Falha ao desconectar"
+  },
+  "OKX API connected": {
+    "fr": "API OKX connectée",
+    "pt": "API OKX conectada"
+  },
+  "Payment orders": {
+    "fr": "Commandes de paiement",
+    "pt": "Pedidos de pagamento"
+  },
+  "Admin sign-in required": {
+    "fr": "Connexion administrateur requise",
+    "pt": "Login de administrador necessário"
+  },
+  "Access denied": {
+    "fr": "Accès refusé",
+    "pt": "Acesso negado"
+  },
+  "No orders": {
+    "fr": "Aucune commande",
+    "pt": "Nenhum pedido"
+  },
+  "Order no / address / tx hash": {
+    "fr": "N° commande / adresse / hash tx",
+    "pt": "Nº do pedido / endereço / hash da tx"
+  },
+  "No KYC records": {
+    "fr": "Aucun dossier KYC",
+    "pt": "Nenhum registro KYC"
+  },
+  "ID type": {
+    "fr": "Type de pièce",
+    "pt": "Tipo de documento"
+  },
+  "ID number": {
+    "fr": "N° de pièce",
+    "pt": "Nº do documento"
+  },
+  "ID card": {
+    "fr": "Carte d'identité",
+    "pt": "RG/ID"
+  },
+  "Reject reason": {
+    "fr": "Motif de rejet",
+    "pt": "Motivo da rejeição"
+  },
+  "Optional reason for rejection": {
+    "fr": "Motif de rejet (facultatif)",
+    "pt": "Motivo opcional para rejeição"
+  },
+  "Action failed, please retry": {
+    "fr": "Action échouée, veuillez réessayer",
+    "pt": "Ação falhou, tente novamente"
+  },
+  "Valid until": {
+    "fr": "Valide jusqu'au",
+    "pt": "Válido até"
+  },
+  "Saving…": {
+    "fr": "Enregistrement…",
+    "pt": "Salvando…"
+  },
+  "Profile updated": {
+    "fr": "Profil mis à jour",
+    "pt": "Perfil atualizado"
+  },
+  "Failed to save profile": {
+    "fr": "Échec de l'enregistrement du profil",
+    "pt": "Falha ao salvar perfil"
+  },
+  "Nickname is required": {
+    "fr": "Le pseudo est requis",
+    "pt": "Apelido é obrigatório"
+  },
+  "Forgot Password": {
+    "fr": "Mot de passe oublié",
+    "pt": "Esqueci a Senha"
+  },
+  "Reset Password": {
+    "fr": "Réinitialiser le mot de passe",
+    "pt": "Redefinir Senha"
+  },
+  "Continue with your email": {
+    "fr": "Continuer avec votre e-mail",
+    "pt": "Continue com seu e-mail"
+  },
+  "New password": {
+    "fr": "Nouveau mot de passe",
+    "pt": "Nova senha"
+  },
+  "Confirm password": {
+    "fr": "Confirmer le mot de passe",
+    "pt": "Confirmar senha"
+  },
+  "6-digit email code": {
+    "fr": "Code e-mail à 6 chiffres",
+    "pt": "Código de 6 dígitos por e-mail"
+  },
+  "Send code": {
+    "fr": "Envoyer le code",
+    "pt": "Enviar código"
+  },
+  "Resend in {seconds}s": {
+    "fr": "Renvoyer dans {seconds}s",
+    "pt": "Reenviar em {seconds}s"
+  },
+  "Code sent — valid for 10 minutes": {
+    "fr": "Code envoyé — valide 10 minutes",
+    "pt": "Código enviado — válido por 10 minutos"
+  },
+  "Dev verification code": {
+    "fr": "Code de vérification dev",
+    "pt": "Código de verificação dev"
+  },
+  "Confirm reset": {
+    "fr": "Confirmer la réinitialisation",
+    "pt": "Confirmar redefinição"
+  },
+  "Working…": {
+    "fr": "Traitement…",
+    "pt": "Processando…"
+  },
+  "Welcome back, {nickname}": {
+    "fr": "Bon retour, {nickname}",
+    "pt": "Bem-vindo de volta, {nickname}"
+  },
+  "Account created, {nickname}": {
+    "fr": "Compte créé, {nickname}",
+    "pt": "Conta criada, {nickname}"
+  },
+  "Password reset successfully": {
+    "fr": "Mot de passe réinitialisé avec succès",
+    "pt": "Senha redefinida com sucesso"
+  },
+  "No account yet? Sign up": {
+    "fr": "Pas encore de compte ? S'inscrire",
+    "pt": "Ainda não tem conta? Cadastre-se"
+  },
+  "Search pairs": {
+    "fr": "Rechercher des paires",
+    "pt": "Buscar pares"
+  },
+  "24h Vol": {
+    "fr": "Vol. 24h",
+    "pt": "Vol. 24h"
+  },
+  "Order Book": {
+    "fr": "Carnet d'ordres",
+    "pt": "Livro de Ofertas"
+  },
+  "Open Orders": {
+    "fr": "Ordres ouverts",
+    "pt": "Ordens Abertas"
+  },
+  "Order History": {
+    "fr": "Historique des ordres",
+    "pt": "Histórico de Ordens"
+  },
+  "Trade History": {
+    "fr": "Historique des trades",
+    "pt": "Histórico de Negociações"
+  },
+  "Cancel All": {
+    "fr": "Tout annuler",
+    "pt": "Cancelar Todas"
+  },
+  "Place Order": {
+    "fr": "Passer l'ordre",
+    "pt": "Enviar Ordem"
+  },
+  "Trade Dock": {
+    "fr": "Panneau trading",
+    "pt": "Painel de negociação"
+  },
+  "Insufficient balance": {
+    "fr": "Solde insuffisant",
+    "pt": "Saldo insuficiente"
+  },
+  "Order placed": {
+    "fr": "Ordre passé",
+    "pt": "Ordem enviada"
+  },
+  "Trading halted": {
+    "fr": "Trading suspendu",
+    "pt": "Negociação suspensa"
+  },
+  "Command Palette": {
+    "fr": "Palette de commandes",
+    "pt": "Paleta de Comandos"
+  },
+  "Search symbols or actions…": {
+    "fr": "Rechercher symboles ou actions…",
+    "pt": "Buscar símbolos ou ações…"
+  },
+  "Easy buy and sell": {
+    "fr": "Achat et vente simplifiés",
+    "pt": "Compra e venda fácil"
+  },
+  "Perpetual with leverage": {
+    "fr": "Perpétuels avec levier",
+    "pt": "Perpétuo com alavancagem"
+  },
+  "Trade Types": {
+    "fr": "Types de trading",
+    "pt": "Tipos de Negociação"
+  },
+  "Open Long": {
+    "fr": "Ouvrir Long",
+    "pt": "Abrir Long"
+  },
+  "Open Short": {
+    "fr": "Ouvrir Short",
+    "pt": "Abrir Short"
+  },
+  "Mark Price": {
+    "fr": "Prix de référence",
+    "pt": "Preço de Marcação"
+  },
+  "Index Price": {
+    "fr": "Prix indice",
+    "pt": "Preço Índice"
+  },
+  "Funding Rate": {
+    "fr": "Taux de financement",
+    "pt": "Taxa de Funding"
+  },
+  "Margin Ratio": {
+    "fr": "Ratio de marge",
+    "pt": "Índice de Margem"
+  },
+  "Trading Data": {
+    "fr": "Données de trading",
+    "pt": "Dados de Negociação"
+  },
+  "Network Stable": {
+    "fr": "Réseau stable",
+    "pt": "Rede Estável"
+  },
+  "Reconnecting…": {
+    "fr": "Reconnexion…",
+    "pt": "Reconectando…"
+  },
+  "Best Price": {
+    "fr": "Meilleur prix",
+    "pt": "Melhor Preço"
+  },
+  "Fee Rate": {
+    "fr": "Taux de frais",
+    "pt": "Taxa"
+  },
+  "Max Buy": {
+    "fr": "Achat max",
+    "pt": "Máx. Compra"
+  },
+  "Max Sell": {
+    "fr": "Vente max",
+    "pt": "Máx. Venda"
+  },
+  "Trigger Price": {
+    "fr": "Prix de déclenchement",
+    "pt": "Preço de Gatilho"
+  },
+  "Min Qty": {
+    "fr": "Qté min",
+    "pt": "Qtd. Mín."
+  },
+  "Highest Buy": {
+    "fr": "Achat le plus haut",
+    "pt": "Maior Compra"
+  },
+  "Lowest Sell": {
+    "fr": "Vente la plus basse",
+    "pt": "Menor Venda"
+  },
+  "TP/SL order submitted": {
+    "fr": "Ordre TP/SL soumis",
+    "pt": "Ordem TP/SL enviada"
+  },
+  "Select deposit method": {
+    "fr": "Sélectionner le mode de dépôt",
+    "pt": "Selecionar método de depósito"
+  },
+  "Transfer funds": {
+    "fr": "Transférer des fonds",
+    "pt": "Transferir fundos"
+  },
+  "Deposit crypto": {
+    "fr": "Déposer des cryptos",
+    "pt": "Depositar cripto"
+  },
+  "Quick buy": {
+    "fr": "Achat rapide",
+    "pt": "Compra rápida"
+  },
+  "100+ payment methods, 0 fees": {
+    "fr": "100+ modes de paiement, 0 frais",
+    "pt": "Mais de 100 formas de pagamento, 0 taxas"
+  },
+  "Redeem earn": {
+    "fr": "Racheter earn",
+    "pt": "Resgatar earn"
+  },
+  "Redeem funds from earn products": {
+    "fr": "Racheter des fonds des produits earn",
+    "pt": "Resgate fundos de produtos earn"
+  },
+  "Limit | Market": {
+    "fr": "Limite | Marché",
+    "pt": "Limite | Mercado"
+  },
+  "Advanced limit": {
+    "fr": "Limite avancée",
+    "pt": "Limite avançado"
+  },
+  "Trailing TP/SL": {
+    "fr": "TP/SL trailing",
+    "pt": "TP/SL trailing"
+  },
+  "All trade types": {
+    "fr": "Tous les types",
+    "pt": "Todos os tipos"
+  },
+  "By order time": {
+    "fr": "Par heure d'ordre",
+    "pt": "Por hora da ordem"
+  },
+  "Current symbol": {
+    "fr": "Symbole actuel",
+    "pt": "Símbolo atual"
+  },
+  "Hide cancelled": {
+    "fr": "Masquer annulés",
+    "pt": "Ocultar canceladas"
+  },
+  "for more.": {
+    "fr": "pour en voir plus.",
+    "pt": "para ver mais."
+  },
+  "Log in to trade": {
+    "fr": "Connectez-vous pour trader",
+    "pt": "Entre para negociar"
+  },
+  "Total Balance": {
+    "fr": "Solde total",
+    "pt": "Saldo Total"
+  },
+  "Transaction History": {
+    "fr": "Historique des transactions",
+    "pt": "Histórico de Transações"
+  },
+  "Demo deposit credited": {
+    "fr": "Dépôt démo crédité",
+    "pt": "Depósito demo creditado"
+  },
+  "Demo withdrawal submitted": {
+    "fr": "Retrait démo soumis",
+    "pt": "Saque demo enviado"
+  },
+  "Withdrawals coming soon": {
+    "fr": "Retraits bientôt disponibles",
+    "pt": "Saques em breve"
+  },
+  "Unfreeze": {
+    "fr": "Dégel",
+    "pt": "Descongelamento"
+  },
+  "Demo Credit": {
+    "fr": "Crédit démo",
+    "pt": "Crédito Demo"
+  },
+  "No records": {
+    "fr": "Aucun enregistrement",
+    "pt": "Nenhum registro"
+  },
+  "View profile": {
+    "fr": "Voir le profil",
+    "pt": "Ver perfil"
+  },
+  "Verify to earn up to 100 USDT": {
+    "fr": "Vérifiez-vous pour gagner jusqu'à 100 USDT",
+    "pt": "Verifique e ganhe até 100 USDT"
+  },
+  "Verify now": {
+    "fr": "Vérifier maintenant",
+    "pt": "Verificar agora"
+  },
+  "Protect your account": {
+    "fr": "Protégez votre compte",
+    "pt": "Proteja sua conta"
+  },
+  "Boost security": {
+    "fr": "Renforcer la sécurité",
+    "pt": "Aumentar segurança"
+  },
+  "Password, 2FA, and login history": {
+    "fr": "Mot de passe, 2FA et historique de connexion",
+    "pt": "Senha, 2FA e histórico de login"
+  },
+  "Identity Verification": {
+    "fr": "Vérification d'identité",
+    "pt": "Verificação de Identidade"
+  },
+  "Under review": {
+    "fr": "En cours d'examen",
+    "pt": "Em análise"
+  },
+  "Enable withdrawals": {
+    "fr": "Activer les retraits",
+    "pt": "Habilitar saques"
+  },
+  "Higher account limits": {
+    "fr": "Limites de compte plus élevées",
+    "pt": "Limites de conta maiores"
+  },
+  "Stronger security & compliance": {
+    "fr": "Sécurité et conformité renforcées",
+    "pt": "Maior segurança e conformidade"
+  },
+  "Start verification": {
+    "fr": "Commencer la vérification",
+    "pt": "Iniciar verificação"
+  },
+  "Name as shown on your ID": {
+    "fr": "Nom tel qu'indiqué sur votre pièce",
+    "pt": "Nome conforme consta no documento"
+  },
+  "Nationality / Region": {
+    "fr": "Nationalité / Région",
+    "pt": "Nacionalidade / Região"
+  },
+  "Driver license": {
+    "fr": "Permis de conduire",
+    "pt": "CNH"
+  },
+  "Enter your ID number": {
+    "fr": "Saisissez votre numéro de pièce",
+    "pt": "Informe o número do documento"
+  },
+  "Upload ID photo": {
+    "fr": "Téléverser la photo d'identité",
+    "pt": "Enviar foto do documento"
+  },
+  "ID photo selected": {
+    "fr": "Photo d'identité sélectionnée",
+    "pt": "Foto do documento selecionada"
+  },
+  "Choose file": {
+    "fr": "Choisir un fichier",
+    "pt": "Escolher arquivo"
+  },
+  "Submit for review": {
+    "fr": "Soumettre pour examen",
+    "pt": "Enviar para análise"
+  },
+  "Identity verification required": {
+    "fr": "Vérification d'identité requise",
+    "pt": "Verificação de identidade necessária"
+  },
+  "Demo: Approve": {
+    "fr": "Démo : Approuver",
+    "pt": "Demo: Aprovar"
+  },
+  "Demo: Reject": {
+    "fr": "Démo : Rejeter",
+    "pt": "Demo: Rejeitar"
+  },
+  "Submitted for review": {
+    "fr": "Soumis pour examen",
+    "pt": "Enviado para análise"
+  },
+  "Submitting…": {
+    "fr": "Soumission…",
+    "pt": "Enviando…"
+  },
+  "Enter your full name": {
+    "fr": "Saisissez votre nom complet",
+    "pt": "Informe seu nome completo"
+  },
+  "Upload an ID photo": {
+    "fr": "Téléversez une photo d'identité",
+    "pt": "Envie uma foto do documento"
+  },
+  "Sign in to verify your identity": {
+    "fr": "Connectez-vous pour vérifier votre identité",
+    "pt": "Entre para verificar sua identidade"
+  },
+  "Select ID type": {
+    "fr": "Sélectionner le type de pièce",
+    "pt": "Selecionar tipo de documento"
+  },
+  "Chinese Resident ID Card": {
+    "fr": "Carte d'identité résident chinoise",
+    "pt": "Carteira de Identidade Chinesa"
+  },
+  "Upload ID photos": {
+    "fr": "Téléverser les photos d'identité",
+    "pt": "Enviar fotos do documento"
+  },
+  "Keep all corners visible": {
+    "fr": "Gardez tous les coins visibles",
+    "pt": "Mantenha todos os cantos visíveis"
+  },
+  "Avoid glare and obstruction": {
+    "fr": "Évitez reflets et obstruction",
+    "pt": "Evite reflexos e obstruções"
+  },
+  "Ensure the image is clear": {
+    "fr": "Assurez-vous que l'image est nette",
+    "pt": "Garanta que a imagem esteja nítida"
+  },
+  "Upload portrait side of ID": {
+    "fr": "Téléverser le côté portrait de la pièce",
+    "pt": "Enviar lado com foto do documento"
+  },
+  "Upload passport bio page": {
+    "fr": "Téléverser la page d'identité du passeport",
+    "pt": "Enviar página de dados do passaporte"
+  },
+  "Upload or drag and drop": {
+    "fr": "Téléverser ou glisser-déposer",
+    "pt": "Enviar ou arrastar e soltar"
+  },
+  "Or scan with your phone": {
+    "fr": "Ou scanner avec votre téléphone",
+    "pt": "Ou escanear com o celular"
+  },
+  "PNG / JPEG / WEBP, max 5 MB": {
+    "fr": "PNG / JPEG / WEBP, max 5 Mo",
+    "pt": "PNG / JPEG / WEBP, máx. 5 MB"
+  },
+  "Confirm personal details": {
+    "fr": "Confirmer les informations personnelles",
+    "pt": "Confirmar dados pessoais"
+  },
+  "File must be 5 MB or smaller": {
+    "fr": "Le fichier doit faire 5 Mo maximum",
+    "pt": "O arquivo deve ter no máximo 5 MB"
+  },
+  "Upload the portrait side": {
+    "fr": "Téléversez le côté portrait",
+    "pt": "Envie o lado com foto"
+  },
+  "Upload the national emblem side": {
+    "fr": "Téléversez le côté emblème national",
+    "pt": "Envie o verso do documento"
+  },
+  "Recognizing your document": {
+    "fr": "Reconnaissance de votre document",
+    "pt": "Reconhecendo seu documento"
+  },
+  "Detecting document edges…": {
+    "fr": "Détection des bords du document…",
+    "pt": "Detectando bordas do documento…"
+  },
+  "Reading name and ID number…": {
+    "fr": "Lecture du nom et du numéro…",
+    "pt": "Lendo nome e número do documento…"
+  },
+  "Validating document…": {
+    "fr": "Validation du document…",
+    "pt": "Validando documento…"
+  },
+  "Recognition complete": {
+    "fr": "Reconnaissance terminée",
+    "pt": "Reconhecimento concluído"
+  },
+  "Identity verification": {
+    "fr": "Vérification d'identité",
+    "pt": "Verificação de identidade"
+  },
+  "Continue to verification": {
+    "fr": "Continuer vers la vérification",
+    "pt": "Continuar para verificação"
+  },
+  "Syncing verification result…": {
+    "fr": "Synchronisation du résultat de vérification…",
+    "pt": "Sincronizando resultado da verificação…"
+  },
+  "Verification result synced": {
+    "fr": "Résultat de vérification synchronisé",
+    "pt": "Resultado da verificação sincronizado"
+  },
+  "Change Password": {
+    "fr": "Changer le mot de passe",
+    "pt": "Alterar Senha"
+  },
+  "Login History": {
+    "fr": "Historique de connexion",
+    "pt": "Histórico de Login"
+  },
+  "Price Colors": {
+    "fr": "Couleurs des prix",
+    "pt": "Cores de Preço"
+  },
+  "Green up / Red down": {
+    "fr": "Vert hausse / Rouge baisse",
+    "pt": "Verde alta / Vermelho baixa"
+  },
+  "Red up / Green down": {
+    "fr": "Rouge hausse / Vert baisse",
+    "pt": "Vermelho alta / Verde baixa"
+  },
+  "Read more": {
+    "fr": "Lire la suite",
+    "pt": "Ler mais"
+  },
+  "Terms of Service": {
+    "fr": "Conditions d'utilisation",
+    "pt": "Termos de Serviço"
+  },
+  "Risk Disclosure": {
+    "fr": "Avertissement sur les risques",
+    "pt": "Divulgação de Riscos"
+  },
+  "No data": {
+    "fr": "Aucune donnée",
+    "pt": "Sem dados"
+  },
+  "Coming soon": {
+    "fr": "Bientôt disponible",
+    "pt": "Em breve"
+  }
+}
