@@ -1026,7 +1026,8 @@ export const fr = {
         "main": "Principales",
         "new": "Nouvelles",
         "ai": "IA",
-        "meme": "Meme"
+        "meme": "Meme",
+        "platform": "Plateforme"
       }
     },
     "assets": {

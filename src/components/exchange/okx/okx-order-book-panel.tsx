@@ -1,6 +1,5 @@
 "use client";
 
-import { isChineseLocale } from "@/i18n/locale-helpers";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowDown,
@@ -256,16 +255,10 @@ export function OkxOrderBookPanel({
               )}
               title={
                 m === "both"
-                  ? isChineseLocale(locale)
-                    ? "买卖盘"
-                    : "Both"
+                  ? t("trade.orderBook")
                   : m === "ask"
-                    ? isChineseLocale(locale)
-                      ? "卖盘"
-                      : "Asks"
-                    : isChineseLocale(locale)
-                      ? "买盘"
-                      : "Bids"
+                    ? t("trade.sell")
+                    : t("trade.buy")
               }
             >
               <DepthModeIcon mode={m} active={mode === m} />
@@ -331,20 +324,20 @@ export function OkxOrderBookPanel({
 
       <div className="grid shrink-0 grid-cols-3 gap-1 px-2 py-1 text-[10px] text-[var(--terminal-muted)]">
         <span>
-          {isChineseLocale(locale) ? "价格" : "Price"}({meta?.quote})
+          {t("trade.price")}({meta?.quote})
         </span>
         <span className="text-right">
-          {isChineseLocale(locale) ? "数量" : "Amount"}({meta?.base})
+          {t("trade.amount")}({meta?.base})
         </span>
         <span className="text-right">
-          {isChineseLocale(locale) ? "合计" : "Total"}({meta?.base})
+          {t("trade.total")}({meta?.base})
         </span>
       </div>
 
       {showAvgTotal && (
         <div className="flex shrink-0 justify-between border-b border-[var(--terminal-border)] px-2 py-1 text-[10px] text-[var(--terminal-muted)]">
           <span>
-            {isChineseLocale(locale) ? "均价" : "Avg"}{" "}
+            {t("trade.bestPrice")}{" "}
             <span className="font-mono text-white">
               {formatPrice(
                 mode === "bid" ? avgBidPrice : avgAskPrice,
@@ -354,7 +347,7 @@ export function OkxOrderBookPanel({
             </span>
           </span>
           <span>
-            {isChineseLocale(locale) ? "合计" : "Total"}{" "}
+            {t("trade.total")}{" "}
             <span className="font-mono text-white">
               {formatQty(mode === "bid" ? bidVol : askVol, qtyPrecision)}{" "}
               {meta?.base}
@@ -484,7 +477,7 @@ export function OkxOrderBookPanel({
               "rounded p-1 hover:bg-[var(--terminal-panel)] hover:text-foreground",
               settingsOpen && "bg-[var(--terminal-panel)] text-foreground",
             )}
-            title={isChineseLocale(locale) ? "布局设置" : "Layout settings"}
+            title={t("trade.settings")}
           >
             <SlidersHorizontal className="h-3.5 w-3.5" />
           </button>
@@ -499,8 +492,8 @@ export function OkxOrderBookPanel({
                 <div className="mb-3 flex gap-3">
                   {(
                     [
-                      { key: "tab" as const, label: isChineseLocale(locale) ? "标签切换" : "Tabs" },
-                      { key: "stack" as const, label: isChineseLocale(locale) ? "上下布局" : "Stack" },
+                      { key: "tab" as const, label: t("trade.tradeTab") },
+                      { key: "stack" as const, label: t("trade.toolsTab") },
                     ] as const
                   ).map((item) => (
                     <button
@@ -528,9 +521,7 @@ export function OkxOrderBookPanel({
                     className="mt-0.5 rounded border-[var(--terminal-border)]"
                   />
                   <span>
-                    {isChineseLocale(locale)
-                      ? "显示均价和合计数量"
-                      : "Show avg price & total qty"}
+                    {`${t("trade.bestPrice")} / ${t("trade.total")}`}
                   </span>
                 </label>
                 <label className="flex cursor-pointer items-start gap-2">
@@ -541,7 +532,7 @@ export function OkxOrderBookPanel({
                     className="mt-0.5 rounded border-[var(--terminal-border)]"
                   />
                   <span>
-                    {isChineseLocale(locale) ? "显示买卖对比" : "Show buy/sell ratio"}
+                    {`${t("trade.buy")} / ${t("trade.sell")}`}
                   </span>
                 </label>
                 <label className="flex cursor-pointer items-start gap-2">
@@ -552,18 +543,14 @@ export function OkxOrderBookPanel({
                     className="mt-0.5 rounded border-[var(--terminal-border)]"
                   />
                   <span>
-                    {isChineseLocale(locale)
-                      ? "显示订单表背景色块"
-                      : "Show depth background"}
+                    {t("trade.orderBook")}
                   </span>
                 </label>
               </div>
 
               <div className="mt-3 flex items-center justify-between border-t border-[var(--terminal-border)] pt-3 text-xs">
                 <span>
-                  {isChineseLocale(locale)
-                    ? "点击订单表带入数量"
-                    : "Click to fill quantity"}
+                  {t("trade.amount")}
                 </span>
                 <button
                   type="button"

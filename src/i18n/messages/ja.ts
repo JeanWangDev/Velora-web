@@ -1026,7 +1026,8 @@ export const ja = {
         "main": "メイン",
         "new": "新規",
         "ai": "AI",
-        "meme": "ミーム"
+        "meme": "ミーム",
+        "platform": "プラットフォーム"
       }
     },
     "assets": {

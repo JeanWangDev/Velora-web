@@ -1026,7 +1026,8 @@ export const th = {
         "main": "หลัก",
         "new": "ใหม่",
         "ai": "AI",
-        "meme": "Meme"
+        "meme": "Meme",
+        "platform": "Platform"
       }
     },
     "assets": {

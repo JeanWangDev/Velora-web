@@ -1026,7 +1026,8 @@ export const zhTW = {
         "main": "主流",
         "new": "新幣",
         "ai": "AI",
-        "meme": "Meme"
+        "meme": "Meme",
+        "platform": "平台幣"
       }
     },
     "assets": {

@@ -1026,7 +1026,8 @@ export const uk = {
         "main": "Основні",
         "new": "Нові",
         "ai": "AI",
-        "meme": "Meme"
+        "meme": "Meme",
+        "platform": "Платформа"
       }
     },
     "assets": {

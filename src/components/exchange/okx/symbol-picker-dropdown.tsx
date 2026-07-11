@@ -1,6 +1,5 @@
 "use client";
 
-import { isChineseLocale } from "@/i18n/locale-helpers";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { ChevronDown, ChevronRight, Search, Star } from "lucide-react";
@@ -140,7 +139,7 @@ export function SymbolPickerDropdown({
     { key: "meme", label: t("trade.categories.meme") },
     {
       key: "platform",
-      label: isChineseLocale(locale) ? "平台币" : "Platform",
+      label: t("trade.categories.platform"),
     },
     { key: "ai", label: t("trade.categories.ai") },
     { key: "new", label: t("trade.categories.new") },
@@ -197,7 +196,7 @@ export function SymbolPickerDropdown({
           <div
             ref={panelRef}
             role="dialog"
-            aria-label={isChineseLocale(locale) ? "选择交易对" : "Select pair"}
+            aria-label={t("markets.search")}
             className="fixed z-[200] flex flex-col overflow-hidden rounded-lg border border-[var(--terminal-border)] bg-[var(--terminal-bg)] shadow-2xl"
             style={{
               top: pos.top,
@@ -214,11 +213,7 @@ export function SymbolPickerDropdown({
                   autoFocus
                   value={q}
                   onChange={(e) => setQ(e.target.value)}
-                  placeholder={
-                    isChineseLocale(locale)
-                      ? "输入币种或合约地址"
-                      : "Search coin or address"
-                  }
+                  placeholder={t("trade.commandHint")}
                   className="w-full rounded-md border border-[var(--terminal-border)] bg-[var(--terminal-panel)] py-2 pl-9 pr-3 text-xs text-[var(--terminal-text)] outline-none placeholder:text-[var(--terminal-muted)]"
                 />
               </div>
@@ -259,9 +254,7 @@ export function SymbolPickerDropdown({
               <SortHead
                 k="pair"
                 label={
-                  mode === "futures"
-                    ? isChineseLocale(locale) ? "合约" : "Perp"
-                    : isChineseLocale(locale) ? "现货" : "Spot"
+                  mode === "futures" ? t("trade.futures") : t("trade.spot")
                 }
                 sortKey={sortKey}
                 sortAsc={sortAsc}
@@ -269,7 +262,7 @@ export function SymbolPickerDropdown({
               />
               <SortHead
                 k="price"
-                label={isChineseLocale(locale) ? "最新价" : "Last"}
+                label={t("markets.price")}
                 className="justify-end"
                 sortKey={sortKey}
                 sortAsc={sortAsc}
@@ -277,7 +270,7 @@ export function SymbolPickerDropdown({
               />
               <SortHead
                 k="change"
-                label={isChineseLocale(locale) ? "24H涨跌幅" : "24H %"}
+                label={t("markets.change")}
                 className="justify-end"
                 sortKey={sortKey}
                 sortAsc={sortAsc}
@@ -285,7 +278,7 @@ export function SymbolPickerDropdown({
               />
               <SortHead
                 k="turnover"
-                label={isChineseLocale(locale) ? "成交额" : "Turnover"}
+                label={t("markets.volume")}
                 className="justify-end"
                 sortKey={sortKey}
                 sortAsc={sortAsc}

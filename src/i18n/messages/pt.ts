@@ -1026,7 +1026,8 @@ export const pt = {
         "main": "Principais",
         "new": "Novos",
         "ai": "IA",
-        "meme": "Meme"
+        "meme": "Meme",
+        "platform": "Plataforma"
       }
     },
     "assets": {

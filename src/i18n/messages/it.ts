@@ -1026,7 +1026,8 @@ export const it = {
         "main": "Principali",
         "new": "Nuovi",
         "ai": "AI",
-        "meme": "Meme"
+        "meme": "Meme",
+        "platform": "Piattaforma"
       }
     },
     "assets": {

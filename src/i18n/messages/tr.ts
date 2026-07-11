@@ -1026,7 +1026,8 @@ export const tr = {
         "main": "Ana",
         "new": "Yeni",
         "ai": "AI",
-        "meme": "Meme"
+        "meme": "Meme",
+        "platform": "Platform"
       }
     },
     "assets": {

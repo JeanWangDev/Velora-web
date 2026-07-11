@@ -1026,7 +1026,8 @@ export const ar = {
         "main": "رئيسي",
         "new": "جديد",
         "ai": "ذكاء اصطناعي",
-        "meme": "ميم"
+        "meme": "ميم",
+        "platform": "منصة"
       }
     },
     "assets": {

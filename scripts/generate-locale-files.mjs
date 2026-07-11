@@ -43,7 +43,11 @@ export const ${constName} = ${json} satisfies typeof en;
 }
 
 function main() {
-  for (const [file, constName] of Object.entries(LOCALES)) {
+  const only = process.argv.slice(2).filter((a) => !a.startsWith("-"));
+  const entries = Object.entries(LOCALES).filter(
+    ([file]) => only.length === 0 || only.includes(file),
+  );
+  for (const [file, constName] of entries) {
     const jsonPath = path.join(dataDir, `${file}.json`);
     if (!fs.existsSync(jsonPath)) {
       console.warn(`SKIP missing ${jsonPath}`);

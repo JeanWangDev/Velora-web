@@ -1,9 +1,8 @@
 "use client";
 
-import { isChineseLocale } from "@/i18n/locale-helpers";
 import { ExternalLink, Star } from "lucide-react";
 import { useExchangeT } from "@/hooks/use-exchange-t";
-import { useLocale } from "@/i18n/use-translation";
+import { useLocale, useTranslation } from "@/i18n/use-translation";
 import { useWatchlistStore } from "@/stores/use-watchlist-store";
 import { getSymbolMeta } from "@/stores/use-symbol-registry";
 import type { Ticker } from "@/types/exchange";
@@ -56,6 +55,7 @@ export function InstrumentBar({
   mode?: TradeMode;
 }) {
   const t = useExchangeT();
+  const tt = useTranslation();
   const locale = useLocale();
   const layout = useLayoutStore((s) => s.layout);
   // 标准版右侧已有币对列表，宽平模式左侧已有市场面板 → 隐藏下拉
@@ -148,7 +148,7 @@ export function InstrumentBar({
           </>
         )}
         <StatCell
-          label={isChineseLocale(locale) ? `${meta?.base ?? ""} 价格` : `${meta?.base ?? ""} Price`}
+          label={`${meta?.base ?? ""} ${t("trade.price")}`}
           value={`¥${formatPrice(ticker.last * 6.78, 1, locale)}`}
           link
         />
@@ -165,7 +165,7 @@ export function InstrumentBar({
           value={`${formatCompact(ticker.volume24h, locale)} ${meta?.base ?? ""}`}
         />
         <StatCell
-          label={isChineseLocale(locale) ? "24h 额" : "24h Turnover"}
+          label={tt("trade.ticker.quoteVol24h")}
           value={`${formatCompact(ticker.quoteVolume24h, locale)} ${meta?.quote ?? ""}`}
         />
         {mode === "futures" && (

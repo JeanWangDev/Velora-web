@@ -11,7 +11,7 @@ import { CoinIcon } from "@/components/exchange/coin-icon";
 import { PriceChange } from "@/components/exchange/price-change";
 import { formatPrice, formatCompact } from "@/utils/format-exchange";
 import { useLocale } from "@/i18n/use-translation";
-import { isChineseLocale } from "@/i18n/locale-helpers";
+import { useExchangeT } from "@/hooks/use-exchange-t";
 
 type Cat = "watch" | "all" | "main" | "meme" | "platform" | "ai" | "new";
 type SortKey = "pair" | "price" | "change" | "turnover";
@@ -47,6 +47,7 @@ function SortHead({
 export function MarketSidePanel({ currentSymbol }: { currentSymbol: string }) {
   const router = useRouter();
   const locale = useLocale();
+  const t = useExchangeT();
   const [search, setSearch] = useState("");
   const [cat, setCat] = useState<Cat>("all");
   const [sortKey, setSortKey] = useState<SortKey>("turnover");
@@ -61,13 +62,13 @@ export function MarketSidePanel({ currentSymbol }: { currentSymbol: string }) {
   };
 
   const cats: { key: Cat; label: string; star?: boolean }[] = [
-    { key: "watch", label: "自选", star: true },
-    { key: "all",      label: "全部" },
-    { key: "main",     label: "主流" },
-    { key: "meme",     label: "Meme" },
-    { key: "platform", label: "平台币" },
-    { key: "ai",       label: "AI" },
-    { key: "new",      label: "新币" },
+    { key: "watch", label: t("markets.watchlist"), star: true },
+    { key: "all", label: t("trade.categories.all") },
+    { key: "main", label: t("trade.categories.main") },
+    { key: "meme", label: t("trade.categories.meme") },
+    { key: "platform", label: t("trade.categories.platform") },
+    { key: "ai", label: t("trade.categories.ai") },
+    { key: "new", label: t("trade.categories.new") },
   ];
 
   const rows = useMemo(() => {
@@ -107,7 +108,7 @@ export function MarketSidePanel({ currentSymbol }: { currentSymbol: string }) {
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="搜索"
+            placeholder={t("markets.search")}
             className="w-full rounded-md border border-[var(--terminal-border)] bg-[var(--terminal-panel)] py-1.5 pl-8 pr-3 text-xs text-[var(--terminal-text)] outline-none placeholder:text-[var(--terminal-muted)]"
           />
         </div>
@@ -143,16 +144,16 @@ export function MarketSidePanel({ currentSymbol }: { currentSymbol: string }) {
 
       {/* 列头 */}
       <div className="grid shrink-0 grid-cols-[minmax(0,1.4fr)_minmax(64px,auto)_minmax(52px,auto)_minmax(56px,auto)] items-center gap-x-1.5 border-b border-[var(--terminal-border)] px-2 py-1.5">
-        <SortHead k="pair" label={isChineseLocale(locale) ? "名称" : "Name"} sortKey={sortKey} sortAsc={sortAsc} onToggle={toggleSort} />
-        <SortHead k="price" label={isChineseLocale(locale) ? "最新价" : "Price"} className="justify-end" sortKey={sortKey} sortAsc={sortAsc} onToggle={toggleSort} />
-        <SortHead k="change" label={isChineseLocale(locale) ? "涨跌幅" : "24H%"} className="justify-end" sortKey={sortKey} sortAsc={sortAsc} onToggle={toggleSort} />
-        <SortHead k="turnover" label={isChineseLocale(locale) ? "成交额" : "Vol"} className="justify-end" sortKey={sortKey} sortAsc={sortAsc} onToggle={toggleSort} />
+        <SortHead k="pair" label={t("markets.pair")} sortKey={sortKey} sortAsc={sortAsc} onToggle={toggleSort} />
+        <SortHead k="price" label={t("markets.price")} className="justify-end" sortKey={sortKey} sortAsc={sortAsc} onToggle={toggleSort} />
+        <SortHead k="change" label={t("markets.change")} className="justify-end" sortKey={sortKey} sortAsc={sortAsc} onToggle={toggleSort} />
+        <SortHead k="turnover" label={t("markets.volume")} className="justify-end" sortKey={sortKey} sortAsc={sortAsc} onToggle={toggleSort} />
       </div>
 
       {/* 列表 */}
       <div className="min-h-0 flex-1 overflow-y-auto">
         {rows.length === 0 && (
-          <p className="px-3 py-8 text-center text-xs text-[var(--terminal-muted)]">暂无数据</p>
+          <p className="px-3 py-8 text-center text-xs text-[var(--terminal-muted)]">{t("common.noData")}</p>
         )}
         {rows.map((s) => {
           const tk = tickers[s.symbol];

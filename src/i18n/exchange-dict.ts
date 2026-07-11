@@ -117,6 +117,7 @@ export const exchangeZh = {
       new: "新币",
       ai: "AI",
       meme: "Meme",
+      platform: "平台币",
     },
   },
   assets: {
@@ -429,6 +430,7 @@ export const exchangeEn: typeof exchangeZh = {
       new: "New",
       ai: "AI",
       meme: "Meme",
+      platform: "Platform",
     },
   },
   assets: {

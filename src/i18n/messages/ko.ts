@@ -1026,7 +1026,8 @@ export const ko = {
         "main": "메인",
         "new": "신규",
         "ai": "AI",
-        "meme": "밈"
+        "meme": "밈",
+        "platform": "플랫폼"
       }
     },
     "assets": {
