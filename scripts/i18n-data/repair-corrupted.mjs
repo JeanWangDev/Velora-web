@@ -175,6 +175,7 @@ function applyGlossary(flat, locale) {
 function needsRebuild(code, raw) {
   if (INVALID_RE.test(raw) || QUOTA_RE.test(raw)) return true;
   if (code === "ru" && !/[А-Яа-яЁё]/.test(raw.slice(0, 8000))) return true;
+  if ((code === "es" || code === "id") && /[\u4e00-\u9fff]/.test(raw.slice(0, 4000))) return true;
   return false;
 }
 
