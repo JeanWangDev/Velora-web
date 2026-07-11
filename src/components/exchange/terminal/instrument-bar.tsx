@@ -4,7 +4,7 @@ import { ExternalLink, Star } from "lucide-react";
 import { useExchangeT } from "@/hooks/use-exchange-t";
 import { useLocale } from "@/i18n/use-translation";
 import { useWatchlistStore } from "@/stores/use-watchlist-store";
-import { getSymbolMeta } from "@/mocks/exchange-data";
+import { getSymbolMeta } from "@/stores/use-symbol-registry";
 import type { Ticker } from "@/types/exchange";
 import {
   formatCompact,

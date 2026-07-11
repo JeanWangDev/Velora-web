@@ -5,9 +5,12 @@ const BASE = "/api/v1/account";
 
 export interface ServerBalance {
   currency: string;
+  accountType?: AccountType;
   available: number;
   frozen: number;
 }
+
+export type AccountType = "funding" | "trading" | "futures";
 
 export interface ServerLedgerEntry {
   id: number;
@@ -20,10 +23,11 @@ export interface ServerLedgerEntry {
 }
 
 export class AccountService {
-  static getBalances() {
+  static getBalances(accountType?: AccountType) {
     return apiClient.sendRequest<{ balances: ServerBalance[] }>({
       url: `${BASE}/balances`,
       method: "GET",
+      params: accountType ? { accountType } : undefined,
       showErrorToast: false,
     });
   }

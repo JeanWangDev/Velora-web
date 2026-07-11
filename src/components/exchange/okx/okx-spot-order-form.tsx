@@ -5,10 +5,11 @@ import { ChevronDown, ChevronRight, ChevronUp, HelpCircle, Menu, SlidersHorizont
 import { useExchangeT } from "@/hooks/use-exchange-t";
 import { useLocale } from "@/i18n/use-translation";
 import { useTradingStore } from "@/stores/use-trading-store";
-import { getSymbolMeta } from "@/mocks/exchange-data";
+import { getSymbolMeta } from "@/stores/use-symbol-registry";
 import type { OrderSide } from "@/types/exchange";
 import { formatPrice } from "@/utils/format-exchange";
 import { toast } from "@/services/toast";
+import { SpotService } from "@/services/spot-service";
 import { cn } from "@/lib/cn";
 import { OkxAmountSlider } from "@/components/exchange/okx/okx-amount-slider";
 import { DepositMethodModal } from "@/components/exchange/okx/deposit-method-modal";
@@ -218,7 +219,39 @@ function OkxSideForm({
     if (submitting) return;
 
     if (mode === "tpsl") {
-      toast.success(t("trade.tpslOrderPlaced"));
+      const quantity = Number(qty);
+      const trigger = Number(triggerPrice);
+      if (!(quantity > 0) || !(trigger > 0)) {
+        toast.error(t("trade.insufficient"));
+        return;
+      }
+      const algoType =
+        side === "sell"
+          ? trigger < lastPrice
+            ? "stop_loss"
+            : "take_profit"
+          : trigger > lastPrice
+            ? "take_profit"
+            : "stop_loss";
+      setSubmitting(true);
+      try {
+        await SpotService.placeAlgoOrder({
+          symbol,
+          side,
+          algoType,
+          triggerPrice: trigger,
+          orderPrice: price ? Number(price) : null,
+          quantity,
+        });
+        toast.success(t("trade.tpslOrderPlaced"));
+        setQty("");
+        setTriggerPrice("");
+        setPrice("");
+      } catch {
+        toast.error(t("trade.insufficient"));
+      } finally {
+        setSubmitting(false);
+      }
       return;
     }
 

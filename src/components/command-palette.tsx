@@ -4,8 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Search } from "lucide-react";
 import { useExchangeT } from "@/hooks/use-exchange-t";
-import { MOCK_SYMBOLS } from "@/mocks/exchange-data";
-import { useMockMarketStore } from "@/stores/use-mock-market-store";
+import { getSpotSymbols } from "@/stores/use-symbol-registry";
+import { useMarketStore } from "@/stores/use-market-store";
 import { displayPair } from "@/utils/format-exchange";
 import { PriceChange } from "@/components/exchange/price-change";
 
@@ -14,7 +14,7 @@ export function CommandPalette() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
-  const tickers = useMockMarketStore((s) => s.tickers);
+  const tickers = useMarketStore((s) => s.tickers);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -46,7 +46,7 @@ export function CommandPalette() {
       { label: t("user.security"), href: "/user/security" },
       { label: t("user.preferences"), href: "/user/preferences" },
     ];
-    const symbols = MOCK_SYMBOLS.filter(
+    const symbols = getSpotSymbols().filter(
       (s) =>
         !q ||
         s.symbol.toLowerCase().includes(q.toLowerCase()) ||

@@ -4,8 +4,8 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Search, Star } from "lucide-react";
 import { cn } from "@/lib/cn";
-import { MOCK_SYMBOLS } from "@/mocks/exchange-data";
-import { useMockMarketStore } from "@/stores/use-mock-market-store";
+import { getSpotSymbols } from "@/stores/use-symbol-registry";
+import { useMarketStore } from "@/stores/use-market-store";
 import { useWatchlistStore } from "@/stores/use-watchlist-store";
 import { formatPrice, formatPercent } from "@/utils/format-exchange";
 import { useLocale } from "@/i18n/use-translation";
@@ -19,13 +19,13 @@ export function SymbolListPanel({ currentSymbol }: { currentSymbol: string }) {
   const router = useRouter();
   const locale = useLocale();
   const [search, setSearch] = useState("");
-  const tickers = useMockMarketStore((s) => s.tickers);
+  const tickers = useMarketStore((s) => s.tickers);
   const isWatched = useWatchlistStore((s) => s.isWatched);
   const toggle = useWatchlistStore((s) => s.toggle);
 
   const rows = useMemo(() => {
     const q = search.toUpperCase();
-    return MOCK_SYMBOLS.filter((s) =>
+    return getSpotSymbols().filter((s) =>
       !q || s.base.includes(q) || s.symbol.includes(q),
     ).map((s) => ({ ...s, ticker: tickers[s.symbol] }));
   }, [search, tickers]);

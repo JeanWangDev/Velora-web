@@ -3,6 +3,7 @@
 import { create } from "zustand";
 import {
   AccountService,
+  type AccountType as AcctType,
   type ServerBalance,
   type ServerLedgerEntry,
 } from "@/services/account-service";
@@ -33,6 +34,7 @@ interface PlaceOrderInput {
 
 interface TradingState {
   balances: Balance[];
+  balancesByAccount: Record<AcctType, Balance[]>;
   openOrders: ExchangeOrder[];
   orderHistory: ExchangeOrder[];
   userTrades: UserTrade[];
@@ -40,6 +42,7 @@ interface TradingState {
   loaded: boolean;
   hydrate: () => Promise<void>;
   refreshBalances: () => Promise<void>;
+  getAccountBalances: (accountType: AcctType) => Balance[];
   refreshOrders: () => Promise<void>;
   clearForLogout: () => void;
   placeOrder: (input: PlaceOrderInput) => Promise<{ ok: boolean; message?: string }>;
@@ -48,7 +51,22 @@ interface TradingState {
 }
 
 function toBalance(b: ServerBalance): Balance {
-  return { currency: b.currency, available: b.available, frozen: b.frozen };
+  return {
+    currency: b.currency,
+    accountType: (b.accountType ?? "trading") as Balance["accountType"],
+    available: b.available,
+    frozen: b.frozen,
+  };
+}
+
+async function loadAllBalances(): Promise<Record<AcctType, Balance[]>> {
+  const types: AcctType[] = ["funding", "trading", "futures"];
+  const results = await Promise.all(types.map((t) => AccountService.getBalances(t)));
+  const map = {} as Record<AcctType, Balance[]>;
+  types.forEach((t, i) => {
+    map[t] = results[i].balances.map(toBalance);
+  });
+  return map;
 }
 
 function toOrder(o: ServerSpotOrder): ExchangeOrder {
@@ -94,6 +112,7 @@ function toLedger(l: ServerLedgerEntry): LedgerEntry {
 
 export const useTradingStore = create<TradingState>()((set, get) => ({
   balances: [],
+  balancesByAccount: { funding: [], trading: [], futures: [] },
   openOrders: [],
   orderHistory: [],
   userTrades: [],
@@ -103,6 +122,7 @@ export const useTradingStore = create<TradingState>()((set, get) => ({
   clearForLogout: () =>
     set({
       balances: [],
+      balancesByAccount: { funding: [], trading: [], futures: [] },
       openOrders: [],
       orderHistory: [],
       userTrades: [],
@@ -124,15 +144,16 @@ export const useTradingStore = create<TradingState>()((set, get) => ({
     }
 
     try {
-      const [balances, open, history, trades, ledger] = await Promise.all([
-        AccountService.getBalances(),
+      const [byAccount, open, history, trades, ledger] = await Promise.all([
+        loadAllBalances(),
         SpotService.openOrders(),
         SpotService.historyOrders({ pageSize: 100 }),
         SpotService.trades({ pageSize: 100 }),
         AccountService.getLedger({ pageSize: 100 }),
       ]);
       set({
-        balances: balances.balances.map(toBalance),
+        balancesByAccount: byAccount,
+        balances: byAccount.trading,
         openOrders: open.data.map(toOrder),
         orderHistory: history.data.map(toOrder),
         userTrades: trades.data.map(toTrade),
@@ -148,12 +169,14 @@ export const useTradingStore = create<TradingState>()((set, get) => ({
   refreshBalances: async () => {
     if (!useAuthStore.getState().user) return;
     try {
-      const res = await AccountService.getBalances();
-      set({ balances: res.balances.map(toBalance) });
+      const byAccount = await loadAllBalances();
+      set({ balancesByAccount: byAccount, balances: byAccount.trading });
     } catch {
       /* ignore */
     }
   },
+
+  getAccountBalances: (accountType) => get().balancesByAccount[accountType] ?? [],
 
   refreshOrders: async () => {
     if (!useAuthStore.getState().user) return;

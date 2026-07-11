@@ -9,8 +9,8 @@ import { useExchangeT } from "@/hooks/use-exchange-t";
 import { useHydrated } from "@/hooks/use-hydrated";
 import { useLocale } from "@/i18n/use-translation";
 import { LocaleLink } from "@/components/ui/locale-link";
-import { MOCK_SYMBOLS } from "@/mocks/exchange-data";
-import { useMockMarketStore } from "@/stores/use-mock-market-store";
+import { getSpotSymbols } from "@/stores/use-symbol-registry";
+import { useMarketStore } from "@/stores/use-market-store";
 import { useWatchlistStore } from "@/stores/use-watchlist-store";
 import type { TradeMode } from "@/stores/use-trade-mode-store";
 import {
@@ -78,7 +78,7 @@ export function SymbolPickerDropdown({
   const mounted = useHydrated();
   const triggerRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
-  const tickers = useMockMarketStore((s) => s.tickers);
+  const tickers = useMarketStore((s) => s.tickers);
   const watchlist = useWatchlistStore((s) => s.symbols);
   const toggleWatch = useWatchlistStore((s) => s.toggle);
   const basePath = mode === "futures" ? "/futures" : "/trade";
@@ -146,7 +146,7 @@ export function SymbolPickerDropdown({
   ];
 
   const rows = useMemo(() => {
-    let list = MOCK_SYMBOLS.filter((s) => {
+    let list = getSpotSymbols().filter((s) => {
       if (cat === "watch" && !watchlist.includes(s.symbol)) return false;
       if (
         cat === "main" &&
@@ -366,7 +366,7 @@ export function SymbolPickerDropdown({
         )
       : null;
 
-  const current = MOCK_SYMBOLS.find((s) => s.symbol === symbol);
+  const current = getSpotSymbols().find((s) => s.symbol === symbol);
 
   return (
     <>

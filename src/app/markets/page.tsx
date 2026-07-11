@@ -5,8 +5,8 @@ import Link from "next/link";
 import { Search, Star } from "lucide-react";
 import { useExchangeT } from "@/hooks/use-exchange-t";
 import { useLocale } from "@/i18n/use-translation";
-import { MOCK_SYMBOLS } from "@/mocks/exchange-data";
-import { useMockMarketStore } from "@/stores/use-mock-market-store";
+import { getSpotSymbols } from "@/stores/use-symbol-registry";
+import { useMarketStore } from "@/stores/use-market-store";
 import { useWatchlistStore } from "@/stores/use-watchlist-store";
 import { getSymbolMeta } from "@/mocks/exchange-data";
 import {
@@ -21,12 +21,12 @@ export default function MarketsPage() {
   const locale = useLocale();
   const [q, setQ] = useState("");
   const [tab, setTab] = useState<"all" | "watch">("all");
-  const tickers = useMockMarketStore((s) => s.tickers);
+  const tickers = useMarketStore((s) => s.tickers);
   const watchlist = useWatchlistStore((s) => s.symbols);
   const toggle = useWatchlistStore((s) => s.toggle);
 
   const rows = useMemo(() => {
-    return MOCK_SYMBOLS.filter((s) => {
+    return getSpotSymbols().filter((s) => {
       if (tab === "watch" && !watchlist.includes(s.symbol)) return false;
       if (!q) return true;
       const qq = q.toLowerCase();

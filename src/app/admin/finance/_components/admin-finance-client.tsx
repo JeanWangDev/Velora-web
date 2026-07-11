@@ -5,11 +5,11 @@ import { useCallback, useEffect, useState } from "react";
 import { Loader2, Minus, Plus, Search, ShieldAlert } from "lucide-react";
 import { LoginModal } from "@/components/auth/login-modal";
 import { useLocale, useTranslation } from "@/i18n/use-translation";
-import {
-  AdminFinanceService,
+import { AdminFinanceService,
   type AdminFinanceOp,
   type AdminUserBalances,
 } from "@/services/admin-finance-service";
+import { AdminWithdrawService } from "@/services/admin-withdraw-service";
 import { AdminUsersService } from "@/services/admin-users-service";
 import { useAuthStore } from "@/stores/use-auth-store";
 import { toast } from "@/services/toast";
@@ -56,6 +56,15 @@ export function AdminFinanceClient() {
     mode: "credit" as "credit" | "debit",
   });
   const [submitting, setSubmitting] = useState(false);
+
+  const [depositForm, setDepositForm] = useState({
+    userId: "",
+    currency: "USDT",
+    chain: "TRC20",
+    amount: "",
+    txHash: "",
+  });
+  const [depositSubmitting, setDepositSubmitting] = useState(false);
 
   const pageSize = 20;
 
@@ -158,6 +167,35 @@ export function AdminFinanceClient() {
 
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
+  const submitDepositConfirm = async () => {
+    const userId = Number(depositForm.userId);
+    const amount = Number(depositForm.amount);
+    if (!Number.isFinite(userId) || userId <= 0) {
+      toast.error("请填写有效用户 ID");
+      return;
+    }
+    if (!(amount > 0) || !depositForm.txHash.trim()) {
+      toast.error("请填写金额与链上 TxHash");
+      return;
+    }
+    setDepositSubmitting(true);
+    try {
+      await AdminWithdrawService.confirmDeposit({
+        userId,
+        currency: depositForm.currency.trim().toUpperCase(),
+        chain: depositForm.chain,
+        amount,
+        txHash: depositForm.txHash.trim(),
+      });
+      toast.success("充币已确认并入账资金账户");
+      setDepositForm((f) => ({ ...f, amount: "", txHash: "" }));
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "确认失败");
+    } finally {
+      setDepositSubmitting(false);
+    }
+  };
+
   if (!hydrated) {
     return (
       <div className="flex justify-center py-20 text-muted">
@@ -201,6 +239,56 @@ export function AdminFinanceClient() {
         <h1 className="text-2xl font-semibold text-foreground">{t("adminFinance.title")}</h1>
         <p className="mt-1 text-sm text-muted">{t("adminFinance.subtitle")}</p>
       </div>
+
+      <section className="rounded-xl border border-border bg-surface p-5 shadow-sm">
+        <h2 className="mb-3 text-sm font-semibold">链上充币确认入账</h2>
+        <p className="mb-4 text-xs text-muted">
+          用户链上转账后，管理员核对 TxHash 后确认入账至资金账户（funding）。
+        </p>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+          <input
+            value={depositForm.userId}
+            onChange={(e) => setDepositForm((f) => ({ ...f, userId: e.target.value }))}
+            placeholder="用户 ID"
+            className="rounded-lg border border-border bg-background px-3 py-2 text-sm"
+          />
+          <input
+            value={depositForm.currency}
+            onChange={(e) => setDepositForm((f) => ({ ...f, currency: e.target.value }))}
+            placeholder="币种"
+            className="rounded-lg border border-border bg-background px-3 py-2 text-sm"
+          />
+          <select
+            value={depositForm.chain}
+            onChange={(e) => setDepositForm((f) => ({ ...f, chain: e.target.value }))}
+            className="rounded-lg border border-border bg-background px-3 py-2 text-sm"
+          >
+            <option value="TRC20">TRC20</option>
+            <option value="ERC20">ERC20</option>
+            <option value="BEP20">BEP20</option>
+          </select>
+          <input
+            value={depositForm.amount}
+            onChange={(e) => setDepositForm((f) => ({ ...f, amount: e.target.value }))}
+            placeholder="数量"
+            className="rounded-lg border border-border bg-background px-3 py-2 text-sm"
+          />
+          <input
+            value={depositForm.txHash}
+            onChange={(e) => setDepositForm((f) => ({ ...f, txHash: e.target.value }))}
+            placeholder="TxHash"
+            className="rounded-lg border border-border bg-background px-3 py-2 text-sm"
+          />
+        </div>
+        <button
+          type="button"
+          disabled={depositSubmitting}
+          onClick={() => void submitDepositConfirm()}
+          className="mt-3 rounded-lg bg-accent px-4 py-2 text-sm font-medium text-background disabled:opacity-50"
+        >
+          确认入账
+        </button>
+      </section>
 
       <div className="grid gap-6 lg:grid-cols-2">
         {/* 操作表单 */}

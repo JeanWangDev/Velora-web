@@ -4,9 +4,9 @@ import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { ChevronRight, Search, Star } from "lucide-react";
 import { cn } from "@/lib/cn";
-import { useMockMarketStore } from "@/stores/use-mock-market-store";
+import { useMarketStore } from "@/stores/use-market-store";
 import { useWatchlistStore } from "@/stores/use-watchlist-store";
-import { MOCK_SYMBOLS } from "@/mocks/exchange-data";
+import { getSpotSymbols } from "@/stores/use-symbol-registry";
 import { CoinIcon } from "@/components/exchange/coin-icon";
 import { PriceChange } from "@/components/exchange/price-change";
 import { formatPrice, formatCompact } from "@/utils/format-exchange";
@@ -50,7 +50,7 @@ export function MarketSidePanel({ currentSymbol }: { currentSymbol: string }) {
   const [cat, setCat] = useState<Cat>("all");
   const [sortKey, setSortKey] = useState<SortKey>("turnover");
   const [sortAsc, setSortAsc] = useState(false);
-  const tickers = useMockMarketStore((s) => s.tickers);
+  const tickers = useMarketStore((s) => s.tickers);
   const watchlist = useWatchlistStore((s) => s.symbols);
   const toggle = useWatchlistStore((s) => s.toggle);
 
@@ -70,7 +70,7 @@ export function MarketSidePanel({ currentSymbol }: { currentSymbol: string }) {
   ];
 
   const rows = useMemo(() => {
-    let list = MOCK_SYMBOLS.filter((s) => {
+    let list = getSpotSymbols().filter((s) => {
       if (cat === "watch" && !watchlist.includes(s.symbol)) return false;
       if (cat === "main" && !["BTC-USDT","ETH-USDT","SOL-USDT"].includes(s.symbol)) return false;
       if (cat === "new" && !["DOGE-USDT","XRP-USDT"].includes(s.symbol)) return false;

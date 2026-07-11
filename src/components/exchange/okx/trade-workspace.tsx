@@ -12,7 +12,11 @@ import { TickerTape } from "@/components/exchange/terminal/ticker-tape";
 import { MarketSidePanel } from "@/components/exchange/terminal/market-side-panel";
 import { RecentTradesPanel } from "@/components/exchange/terminal/recent-trades-panel";
 import { useExchangeT } from "@/hooks/use-exchange-t";
-import { useMockMarketStore } from "@/stores/use-mock-market-store";
+import {
+  startMarketDepthPolling,
+  stopMarketDepthPolling,
+  useMarketStore,
+} from "@/stores/use-market-store";
 import { useTradingStore } from "@/stores/use-trading-store";
 import { useTerminalStore } from "@/stores/use-terminal-store";
 import { useLayoutStore, type LayoutPreset } from "@/stores/use-layout-store";
@@ -332,9 +336,15 @@ export function TradeWorkspace({ symbol, mode }: { symbol: string; mode: TradeMo
     return () => window.clearInterval(timer);
   }, [authHydrated, user]);
 
-  const tickers = useMockMarketStore((s) => s.tickers);
-  const orderBooks = useMockMarketStore((s) => s.orderBooks);
-  const recentTrades = useMockMarketStore((s) => s.recentTrades);
+  useEffect(() => {
+    useMarketStore.getState().initSymbol(symbol);
+    startMarketDepthPolling(symbol, 2000);
+    return () => stopMarketDepthPolling();
+  }, [symbol]);
+
+  const tickers = useMarketStore((s) => s.tickers);
+  const orderBooks = useMarketStore((s) => s.orderBooks);
+  const recentTrades = useMarketStore((s) => s.recentTrades);
   const ticker = tickers[symbol];
   const book = orderBooks[symbol];
   const trades = recentTrades[symbol] ?? [];
@@ -398,7 +408,7 @@ export function TradeWorkspace({ symbol, mode }: { symbol: string; mode: TradeMo
       </div>
 
       <BottomDeskResizer containerRef={rootRef} />
-      <BottomDesk symbol={symbol} />
+      <BottomDesk symbol={symbol} mode={mode} />
       <TickerTape />
     </div>
   );

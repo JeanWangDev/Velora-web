@@ -49,6 +49,7 @@ export class MarketDataService {
     return apiClient.sendRequest<IKline[]>({
       url: `${BASE}/klines`,
       method: "GET",
+      skipAuth: true,
       params: {
         exchange: params.exchange ?? DEFAULT_EXCHANGE,
         symbol: params.symbol,
@@ -84,7 +85,22 @@ export class MarketDataService {
     return apiClient.sendRequest<ITicker24h>({
       url: `${BASE}/ticker`,
       method: "GET",
+      skipAuth: true,
       params: { exchange, symbol },
+    });
+  }
+
+  static getDepth(symbol: string, limit = 50, exchange: string = DEFAULT_EXCHANGE) {
+    return apiClient.sendRequest<{
+      symbol: string;
+      bids: { price: number; quantity: number }[];
+      asks: { price: number; quantity: number }[];
+      lastUpdateId: number;
+    }>({
+      url: `${BASE}/depth`,
+      method: "GET",
+      params: { exchange, symbol, limit },
+      skipAuth: true,
     });
   }
 

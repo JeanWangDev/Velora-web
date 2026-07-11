@@ -6,7 +6,7 @@ import { ChevronDown, Wallet } from "lucide-react";
 import { useExchangeT } from "@/hooks/use-exchange-t";
 import { useHydrated } from "@/hooks/use-hydrated";
 import { useLocale } from "@/i18n/use-translation";
-import { useMockMarketStore } from "@/stores/use-mock-market-store";
+import { useMarketStore } from "@/stores/use-market-store";
 import { useMockTradingStore } from "@/stores/use-mock-trading-store";
 import { formatCompact } from "@/utils/format-exchange";
 
@@ -15,7 +15,7 @@ const STABLE = new Set(["USDT", "USDC"]);
 function toUsd(
   currency: string,
   amount: number,
-  tickers: ReturnType<typeof useMockMarketStore.getState>["tickers"],
+  tickers: ReturnType<typeof useMarketStore.getState>["tickers"],
 ) {
   if (STABLE.has(currency)) return amount;
   return amount * (tickers[`${currency}-USDT`]?.last ?? 0);
@@ -29,7 +29,7 @@ export function AssetsDropdown() {
   // 挂载前渲染稳定占位符以避免 SSR/CSR 内容不一致的 hydration 警告。
   const mounted = useHydrated();
   const balances = useMockTradingStore((s) => s.balances);
-  const tickers = useMockMarketStore((s) => s.tickers);
+  const tickers = useMarketStore((s) => s.tickers);
 
   const total = balances.reduce(
     (sum, b) => sum + toUsd(b.currency, b.available + b.frozen, tickers),

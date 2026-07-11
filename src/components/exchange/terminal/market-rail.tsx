@@ -5,8 +5,8 @@ import { useMemo, useState } from "react";
 import { ChevronLeft, ChevronRight, Search, Star } from "lucide-react";
 import { useExchangeT } from "@/hooks/use-exchange-t";
 import { useLocale } from "@/i18n/use-translation";
-import { MOCK_SYMBOLS } from "@/mocks/exchange-data";
-import { useMockMarketStore } from "@/stores/use-mock-market-store";
+import { getSpotSymbols } from "@/stores/use-symbol-registry";
+import { useMarketStore } from "@/stores/use-market-store";
 import { useTerminalStore } from "@/stores/use-terminal-store";
 import { useWatchlistStore } from "@/stores/use-watchlist-store";
 import {
@@ -32,14 +32,14 @@ export function MarketRail({
   const locale = useLocale();
   const open = useTerminalStore((s) => s.marketRailOpen);
   const toggle = useTerminalStore((s) => s.toggleMarketRail);
-  const tickers = useMockMarketStore((s) => s.tickers);
+  const tickers = useMarketStore((s) => s.tickers);
   const watchlist = useWatchlistStore((s) => s.symbols);
   const toggleWatch = useWatchlistStore((s) => s.toggle);
   const [q, setQ] = useState("");
   const [filter, setFilter] = useState<MarketFilter>("all");
 
   const rows = useMemo(() => {
-    return MOCK_SYMBOLS.filter((s) => {
+    return getSpotSymbols().filter((s) => {
       if (filter === "watch" && !watchlist.includes(s.symbol)) return false;
       if (filter === "main" && !["BTC-USDT", "ETH-USDT", "SOL-USDT"].includes(s.symbol))
         return false;

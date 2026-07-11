@@ -2,16 +2,16 @@
 
 import Link from "next/link";
 import { NetworkStatusBadge } from "@/components/exchange/network-status-badge";
-import { MOCK_SYMBOLS } from "@/mocks/exchange-data";
-import { useMockMarketStore } from "@/stores/use-mock-market-store";
+import { getSpotSymbols } from "@/stores/use-symbol-registry";
+import { useMarketStore } from "@/stores/use-market-store";
 import { useLocale } from "@/i18n/use-translation";
 import { displayPair, formatPrice } from "@/utils/format-exchange";
 import { PriceChange } from "@/components/exchange/price-change";
 
 export function TickerTape() {
-  const tickers = useMockMarketStore((s) => s.tickers);
+  const tickers = useMarketStore((s) => s.tickers);
   const locale = useLocale();
-  const items = [...MOCK_SYMBOLS, ...MOCK_SYMBOLS];
+  const items = [...getSpotSymbols(), ...getSpotSymbols()];
 
   return (
     <div className="terminal-panel flex shrink-0 items-center overflow-hidden border-t border-[var(--terminal-border)] bg-black py-1">

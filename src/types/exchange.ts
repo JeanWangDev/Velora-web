@@ -77,8 +77,11 @@ export interface UserTrade {
   ts: number;
 }
 
+export type AccountType = "funding" | "trading" | "futures";
+
 export interface Balance {
   currency: string;
+  accountType?: AccountType;
   available: number;
   frozen: number;
 }

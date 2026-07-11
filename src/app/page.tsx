@@ -14,8 +14,8 @@ import {
 import { LocaleLink } from "@/components/ui/locale-link";
 import { useTranslation } from "@/i18n/use-translation";
 import { useAuthStore } from "@/stores/use-auth-store";
-import { useMockMarketStore } from "@/stores/use-mock-market-store";
-import { MOCK_SYMBOLS } from "@/mocks/exchange-data";
+import { useMarketStore } from "@/stores/use-market-store";
+import { getSpotSymbols } from "@/stores/use-symbol-registry";
 import { displayPair, formatPrice } from "@/utils/format-exchange";
 import { useLocale } from "@/i18n/use-translation";
 import { PriceChange } from "@/components/exchange/price-change";
@@ -53,10 +53,10 @@ export default function HomePage() {
   const t = useTranslation();
   const locale = useLocale();
   const user = useAuthStore((s) => s.user);
-  const tickers = useMockMarketStore((s) => s.tickers);
+  const tickers = useMarketStore((s) => s.tickers);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
-  const rows = MOCK_SYMBOLS.slice(0, 6).map((s) => ({
+  const rows = getSpotSymbols().slice(0, 6).map((s) => ({
     meta: s,
     ticker: tickers[s.symbol],
   }));

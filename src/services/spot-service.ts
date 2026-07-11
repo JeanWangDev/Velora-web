@@ -59,6 +59,22 @@ export class SpotService {
     return apiClient.sendRequest<{ data: ServerSpotSymbol[] }>({
       url: `${BASE}/symbols`,
       method: "GET",
+      skipAuth: true,
+    });
+  }
+
+  static getOrderBook(symbol: string, limit = 50) {
+    return apiClient.sendRequest<{
+      symbol: string;
+      bids: { price: number; quantity: number; source: string }[];
+      asks: { price: number; quantity: number; source: string }[];
+      lastPrice: number;
+      ts: number;
+    }>({
+      url: `${BASE}/orderbook`,
+      method: "GET",
+      params: { symbol, limit },
+      skipAuth: true,
     });
   }
 
@@ -112,6 +128,40 @@ export class SpotService {
       url: `${BASE}/trades`,
       method: "GET",
       params,
+      showErrorToast: false,
+    });
+  }
+
+  static placeAlgoOrder(input: {
+    symbol: string;
+    side: OrderSide;
+    algoType: "stop_loss" | "take_profit";
+    triggerPrice: number;
+    orderPrice: number | null;
+    quantity: number;
+  }) {
+    return apiClient.sendRequest<{ algoNo: string; status: string }>({
+      url: `${BASE}/algo-order`,
+      method: "POST",
+      data: input,
+      showErrorToast: false,
+    });
+  }
+
+  static listAlgoOrders(symbol?: string) {
+    return apiClient.sendRequest<{ data: unknown[] }>({
+      url: `${BASE}/algo-orders`,
+      method: "GET",
+      params: symbol ? { symbol } : undefined,
+      showErrorToast: false,
+    });
+  }
+
+  static cancelAlgoOrder(algoNo: string) {
+    return apiClient.sendRequest({
+      url: `${BASE}/algo-order/cancel`,
+      method: "POST",
+      data: { algoNo },
       showErrorToast: false,
     });
   }

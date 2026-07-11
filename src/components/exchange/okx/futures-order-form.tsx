@@ -3,9 +3,11 @@
 import { useEffect, useState } from "react";
 import { useExchangeT } from "@/hooks/use-exchange-t";
 import { useLocale } from "@/i18n/use-translation";
-import { getSymbolMeta } from "@/mocks/exchange-data";
+import { getSymbolMeta } from "@/stores/use-symbol-registry";
 import { formatPrice } from "@/utils/format-exchange";
 import { toast } from "@/services/toast";
+import { FuturesService } from "@/services/futures-service";
+import { useFuturesStore } from "@/stores/use-futures-store";
 import { cn } from "@/lib/cn";
 import { LoginModal } from "@/components/auth/login-modal";
 import { useAuthStore } from "@/stores/use-auth-store";
@@ -31,8 +33,10 @@ export function FuturesOrderForm({
   const [price, setPrice] = useState(String(lastPrice));
   const [qty, setQty] = useState("");
   const [loginOpen, setLoginOpen] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const user = useAuthStore((s) => s.user);
   const isLoggedIn = Boolean(user);
+  const refreshFutures = useFuturesStore((s) => s.refresh);
 
   useEffect(() => {
     setPrice(String(lastPrice));
@@ -47,11 +51,39 @@ export function FuturesOrderForm({
     onFillLevelConsumed?.();
   }, [fillLevel, onFillLevelConsumed, meta?.qtyPrecision]);
 
-  const submit = () => {
-    toast.success(
-      `${side === "long" ? t("trade.openLong") : t("trade.openShort")} · ${leverage}x`,
-    );
-    setQty("");
+  const submit = async () => {
+    if (!isLoggedIn) {
+      setLoginOpen(true);
+      return;
+    }
+    const quantity = Number(qty);
+    if (!(quantity > 0)) {
+      toast.error(t("trade.insufficient"));
+      return;
+    }
+    const futuresSymbol = symbol.includes("SWAP") ? symbol : `${symbol}-SWAP`;
+    setSubmitting(true);
+    try {
+      await FuturesService.placeOrder({
+        symbol: futuresSymbol,
+        side: side === "long" ? "buy" : "sell",
+        posSide: side,
+        type,
+        price: type === "limit" ? Number(price) : null,
+        quantity,
+        leverage,
+        marginMode,
+      });
+      toast.success(
+        `${side === "long" ? t("trade.openLong") : t("trade.openShort")} · ${leverage}x`,
+      );
+      setQty("");
+      void refreshFutures();
+    } catch {
+      toast.error(t("trade.insufficient"));
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (

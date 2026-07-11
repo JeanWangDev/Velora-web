@@ -2,21 +2,28 @@
 
 import { useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { MOCK_SYMBOLS } from "@/mocks/exchange-data";
-import { useMockMarketStore } from "@/stores/use-mock-market-store";
+import { useSymbolRegistry } from "@/stores/use-symbol-registry";
+import { useMarketStore } from "@/stores/use-market-store";
 import { TradeWorkspace } from "@/components/exchange/okx/trade-workspace";
 
 export default function TradeSymbolPage() {
   const params = useParams<{ symbol: string }>();
   const router = useRouter();
   const symbol = (params.symbol ?? "BTC-USDT").toUpperCase();
-  const initSymbol = useMockMarketStore((s) => s.initSymbol);
+  const initSymbol = useMarketStore((s) => s.initSymbol);
+  const isValidSymbol = useSymbolRegistry((s) => s.isValidSymbol);
+  const loaded = useSymbolRegistry((s) => s.loaded);
 
   useEffect(() => {
-    if (!MOCK_SYMBOLS.some((s) => s.symbol === symbol)) {
+    void useSymbolRegistry.getState().hydrate();
+  }, []);
+
+  useEffect(() => {
+    if (!loaded) return;
+    if (!isValidSymbol(symbol, "spot")) {
       router.replace("/trade/BTC-USDT");
     }
-  }, [symbol, router]);
+  }, [symbol, router, loaded, isValidSymbol]);
 
   useEffect(() => {
     initSymbol(symbol);

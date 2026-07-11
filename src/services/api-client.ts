@@ -46,7 +46,7 @@ function getCookie(name: string) {
 
 /** 公开读接口 + 登录/注册全流程（401 时展示接口真实错误，不弹「会话失效」） */
 const PUBLIC_AUTH_API_PATH =
-  /\/api\/v1\/(?:auth\/(?:login(?:\/challenge|\/verify)?|register|send-code|verify-code|forgot-password|reset-password)|events|chart-templates\/(?:public|rankings|starter|detail|track))(?:\/|\?|$)/;
+  /\/api\/v1\/(?:auth\/(?:login(?:\/challenge|\/verify)?|register|send-code|verify-code|forgot-password|reset-password)|events|market|spot\/(?:symbols|orderbook)|futures\/(?:symbols|mark-prices)|chart-templates\/(?:public|rankings|starter|detail|track))(?:\/|\?|$)/;
 
 function isPublicAuthApiRequest(config?: Pick<AxiosRequestConfig, "url">) {
   const url = config?.url ?? "";
@@ -70,6 +70,7 @@ class ApiClient {
   private static instance: ApiClient;
   private static unauthorizedHandler: UnauthorizedHandler | null = null;
   static _401ToastShown = false;
+  private static _sessionExpiredHandling = false;
 
   private constructor(config?: CreateAxiosDefaults) {
     this.axiosInstance = axios.create({
@@ -302,20 +303,23 @@ class ApiClient {
     // 仅「曾携带 token 的受保护请求」401 才视为会话失效；未登录访客静默失败
     if (status === 401 && !isAuthAttempt) {
       if (hadAuthToken) {
-        ApiClient.unauthorizedHandler?.();
+        if (!ApiClient._sessionExpiredHandling) {
+          ApiClient._sessionExpiredHandling = true;
+          ApiClient.unauthorizedHandler?.();
 
-        const sessionMessage = "登录状态已失效，请重新登录";
+          const sessionMessage = "登录状态已失效，请重新登录";
+          if (showErrorToast) {
+            toast.error(sessionMessage);
+          }
 
-        if (showErrorToast && !ApiClient._401ToastShown) {
-          ApiClient._401ToastShown = true;
-          toast.error(sessionMessage);
           setTimeout(() => {
+            ApiClient._sessionExpiredHandling = false;
             ApiClient._401ToastShown = false;
-          }, 5000);
+          }, 8000);
         }
 
         return Promise.reject(
-          new ApiClientError(status, sessionMessage, details),
+          new ApiClientError(status, "登录状态已失效，请重新登录", details),
         );
       }
 

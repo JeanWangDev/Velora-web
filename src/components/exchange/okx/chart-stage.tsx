@@ -11,7 +11,7 @@ import type { TVChartControls } from "@/app/trade/_components/tv-chart/tv-chart-
 import { veloraSymbolToTv } from "@/app/trade/_components/tv-chart/mock-datafeed";
 import { useExchangeT } from "@/hooks/use-exchange-t";
 import { useLocale } from "@/i18n/use-translation";
-import { getSymbolMeta } from "@/mocks/exchange-data";
+import { getSymbolMeta } from "@/stores/use-symbol-registry";
 import { NewsModal } from "@/components/exchange/okx/news-modal";
 import { ChartIndicatorBar } from "@/components/exchange/okx/chart-indicator-bar";
 import { toast } from "@/services/toast";
@@ -119,7 +119,7 @@ export function ChartStage({
             <TVChartLoader
               symbol={tvSymbol}
               interval={interval}
-              datafeedMode="mock"
+              datafeedMode="live"
               onControlsReady={setChartControls}
               onControlsDispose={() => setChartControls(null)}
             />

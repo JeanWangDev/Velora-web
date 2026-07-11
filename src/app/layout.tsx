@@ -6,7 +6,7 @@ import { ToastViewport } from "@/components/ui/toast-viewport";
 import { HtmlLangSync } from "@/i18n/html-lang-sync";
 import { LocaleSync } from "@/i18n/locale-sync";
 import { CommandPalette } from "@/components/command-palette";
-import { MockMarketTicker } from "@/components/exchange/mock-market-ticker";
+import { MarketBootstrap } from "@/components/exchange/market-bootstrap";
 import { RiseFallSync } from "@/components/exchange/rise-fall-sync";
 import "./globals.css";
 
@@ -44,7 +44,7 @@ export default function RootLayout({
           <HtmlLangSync />
           <LocaleSync />
           <RiseFallSync />
-          <MockMarketTicker />
+          <MarketBootstrap />
           <div className="min-h-screen bg-background">
             <SiteHeader />
             <main className="flex flex-1 flex-col">{children}</main>

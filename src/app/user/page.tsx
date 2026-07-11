@@ -16,7 +16,7 @@ import { useExchangeT } from "@/hooks/use-exchange-t";
 import { useLocale } from "@/i18n/use-translation";
 import { useAuthStore } from "@/stores/use-auth-store";
 import { useKycStore } from "@/stores/use-kyc-store";
-import { useMockMarketStore } from "@/stores/use-mock-market-store";
+import { useMarketStore } from "@/stores/use-market-store";
 import { useTradingStore } from "@/stores/use-trading-store";
 import { maskEmail } from "@/utils/mask-email";
 import { formatCompact } from "@/utils/format-exchange";
@@ -27,7 +27,7 @@ const STABLE = new Set(["USDT", "USDC"]);
 function assetUsdValue(
   currency: string,
   amount: number,
-  tickers: ReturnType<typeof useMockMarketStore.getState>["tickers"],
+  tickers: ReturnType<typeof useMarketStore.getState>["tickers"],
 ) {
   if (STABLE.has(currency)) return amount;
   return amount * (tickers[`${currency}-USDT`]?.last ?? 0);
@@ -40,7 +40,7 @@ export default function UserOverviewPage() {
   const user = useAuthStore((s) => s.user)!;
   const kycStatus = useKycStore((s) => s.status);
   const balances = useTradingStore((s) => s.balances);
-  const tickers = useMockMarketStore((s) => s.tickers);
+  const tickers = useMarketStore((s) => s.tickers);
 
   useEffect(() => {
     void useTradingStore.getState().hydrate();
