@@ -1028,7 +1028,15 @@ export const es = {
         "ai": "AI",
         "meme": "Meme",
         "platform": "Plataforma"
-      }
+      },
+      "chartLoading": "Cargando gráfico…",
+      "toggleIndicatorFailed": "Error al cambiar indicador",
+      "maxSubIndicators": "Máx. {n} subindicadores",
+      "chartIndicatorSub": "Sub",
+      "chartIndicatorSettings": "Ajustes de indicadores",
+      "orderBookCumulative": "Total",
+      "deskLoginConnector": " o ",
+      "deskLoginSuffix": " para empezar a operar"
     },
     "assets": {
       "title": "Activos",

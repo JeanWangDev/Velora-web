@@ -6,7 +6,6 @@ import type { OrderBook } from "@/types/exchange";
 import { formatPrice, formatQty } from "@/utils/format-exchange";
 import { getSymbolMeta } from "@/mocks/exchange-data";
 import { cn } from "@/lib/cn";
-import { isChineseLocale } from "@/i18n/locale-helpers";
 
 interface DepthBookProps {
   symbol: string;
@@ -98,7 +97,7 @@ export function DepthBook({
       <div className="grid grid-cols-3 gap-1 px-2 py-1.5 text-[10px] text-muted">
         <span>{t("trade.price")}</span>
         <span className="text-right">{t("trade.quantity")}</span>
-        <span className="text-right">{isChineseLocale(locale) ? "累计" : "Total"}</span>
+        <span className="text-right">{t("trade.orderBookCumulative")}</span>
       </div>
       <div className="terminal-scroll min-h-0 flex-1 overflow-y-auto">
         <div>{askRows}</div>

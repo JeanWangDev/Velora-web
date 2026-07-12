@@ -1028,7 +1028,15 @@ export const ru = {
         "ai": "AI",
         "meme": "Meme",
         "platform": "Платформа"
-      }
+      },
+      "chartLoading": "Загрузка графика…",
+      "toggleIndicatorFailed": "Не удалось переключить индикатор",
+      "maxSubIndicators": "Макс. {n} доп. индикаторов",
+      "chartIndicatorSub": "Доп.",
+      "chartIndicatorSettings": "Настройки индикаторов",
+      "orderBookCumulative": "Сумма",
+      "deskLoginConnector": " или ",
+      "deskLoginSuffix": " чтобы начать торговлю"
     },
     "assets": {
       "title": "Активы",

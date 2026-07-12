@@ -5,7 +5,7 @@ import { ExternalLink, Loader2, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useExchangeT } from "@/hooks/use-exchange-t";
 import { useLocale } from "@/i18n/use-translation";
-import { getThirdPartyLocale } from "@/i18n/locale-helpers";
+import { getDiditLocale } from "@/i18n/locale-helpers";
 import { KycService } from "@/services/kyc-service";
 import { toast } from "@/services/toast";
 
@@ -67,7 +67,7 @@ export function KycDiditFlow({ onSynced, onCancel }: KycDiditFlowProps) {
 
       const res = await KycService.createDiditSession({
         callbackUrl,
-        language: getThirdPartyLocale(locale),
+        language: getDiditLocale(locale),
       });
 
       if (!res?.url) {

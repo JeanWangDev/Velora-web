@@ -1028,7 +1028,15 @@ export const vi = {
         "ai": "AI",
         "meme": "Meme",
         "platform": "Token sàn"
-      }
+      },
+      "chartLoading": "Đang tải biểu đồ…",
+      "toggleIndicatorFailed": "Không thể chuyển chỉ báo",
+      "maxSubIndicators": "Tối đa {n} chỉ báo phụ",
+      "chartIndicatorSub": "Phụ",
+      "chartIndicatorSettings": "Cài đặt chỉ báo",
+      "orderBookCumulative": "Tích lũy",
+      "deskLoginConnector": " hoặc ",
+      "deskLoginSuffix": " để bắt đầu giao dịch"
     },
     "assets": {
       "title": "Tài sản",

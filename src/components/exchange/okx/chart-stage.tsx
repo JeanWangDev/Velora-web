@@ -10,13 +10,11 @@ import type { TVResolution } from "@/app/trade/_types/chart";
 import type { TVChartControls } from "@/app/trade/_components/tv-chart/tv-chart-controls";
 import { veloraSymbolToTv } from "@/app/trade/_components/tv-chart/mock-datafeed";
 import { useExchangeT } from "@/hooks/use-exchange-t";
-import { useLocale } from "@/i18n/use-translation";
 import { getSymbolMeta } from "@/stores/use-symbol-registry";
 import { NewsModal } from "@/components/exchange/okx/news-modal";
 import { ChartIndicatorBar } from "@/components/exchange/okx/chart-indicator-bar";
 import { toast } from "@/services/toast";
 import { cn } from "@/lib/cn";
-import { isChineseLocale } from "@/i18n/locale-helpers";
 
 type CenterTab = "chart" | "info" | "data" | "news";
 
@@ -30,7 +28,6 @@ export function ChartStage({
   onIntervalChange: (v: TVResolution) => void;
 }) {
   const t = useExchangeT();
-  const locale = useLocale();
   const [tab, setTab] = useState<CenterTab>("chart");
   const [newsOpen, setNewsOpen] = useState(false);
   const [chartControls, setChartControls] = useState<TVChartControls | null>(null);
@@ -100,7 +97,7 @@ export function ChartStage({
               aria-label={t("trade.settings")}
               onClick={() => {
                 if (!chartControls) {
-                  toast.info(isChineseLocale(locale) ? "图表加载中…" : "Chart loading…");
+                  toast.info(t("trade.chartLoading"));
                   return;
                 }
                 chartControls.openChartSettings();

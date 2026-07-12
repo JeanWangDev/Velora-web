@@ -36,10 +36,39 @@ export function getIntlLocale(locale: Locale | string): string {
   return map[locale] ?? "en-US";
 }
 
-/** TradingView / Didit 等第三方组件语言码 */
+/** TradingView Charting Library 语言码（见 public/charting_library/.../static/*-tv-chart*.html） */
+const TRADING_VIEW_LOCALE_MAP: Record<string, string> = {
+  "zh-CN": "zh",
+  "zh-TW": "zh_TW",
+  zh: "zh",
+  en: "en",
+  vi: "vi",
+  ru: "ru",
+  es: "es",
+  id: "id_ID",
+  fr: "fr",
+  ko: "ko",
+  ja: "ja",
+  pt: "pt",
+  de: "de",
+  it: "it",
+  tr: "tr",
+  uk: "en",
+  ar: "ar",
+  th: "th",
+  pl: "pl",
+};
+
+/** TradingView / 图表组件语言码 */
 export function getThirdPartyLocale(locale: Locale | string): string {
-  if (locale === "zh-CN" || locale === "zh-TW" || locale === "zh") return "zh";
-  return "en";
+  return TRADING_VIEW_LOCALE_MAP[locale] ?? "en";
+}
+
+/** Didit KYC 等业务方语言码（BCP 47 简写） */
+export function getDiditLocale(locale: Locale | string): string {
+  if (locale === "zh-TW") return "zh-TW";
+  if (locale === "zh-CN" || locale === "zh") return "zh-CN";
+  return String(locale);
 }
 
 export function localeToHtmlLang(locale: Locale | string): string {

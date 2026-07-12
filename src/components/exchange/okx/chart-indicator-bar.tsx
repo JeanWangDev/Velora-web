@@ -10,6 +10,7 @@ import {
 import { getIndicatorById } from "@/app/trade/_config/indicators";
 import type { TVChartControls } from "@/app/trade/_components/tv-chart/tv-chart-controls";
 import { IndicatorSettingsModal } from "@/components/exchange/okx/indicator-settings-modal";
+import { useExchangeT } from "@/hooks/use-exchange-t";
 import { useLocale } from "@/i18n/use-translation";
 import { isChineseLocale } from "@/i18n/locale-helpers";
 import type { Locale } from "@/i18n/types";
@@ -21,6 +22,7 @@ export function ChartIndicatorBar({
 }: {
   chartControls: TVChartControls | null;
 }) {
+  const t = useExchangeT();
   const locale = useLocale();
   const [appliedIds, setAppliedIds] = useState<string[]>([]);
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -50,7 +52,7 @@ export function ChartIndicatorBar({
     async (item: QuickIndicatorItem) => {
       if (!item.indicatorId || item.disabled) return;
       if (!chartControls) {
-        toast.info(isChineseLocale(locale) ? "图表加载中…" : "Chart loading…");
+        toast.info(t("trade.chartLoading"));
         return;
       }
 
@@ -66,9 +68,7 @@ export function ChartIndicatorBar({
         );
         if (activeSubs.length >= MAX_SUB_INDICATORS) {
           toast.info(
-            isChineseLocale(locale)
-              ? `副指标最多 ${MAX_SUB_INDICATORS} 个`
-              : `Max ${MAX_SUB_INDICATORS} sub-indicators`,
+            t("trade.maxSubIndicators").replace("{n}", String(MAX_SUB_INDICATORS)),
           );
           return;
         }
@@ -85,15 +85,13 @@ export function ChartIndicatorBar({
         toast.error(
           error instanceof Error
             ? error.message
-            : isChineseLocale(locale)
-              ? "指标切换失败"
-              : "Failed to toggle indicator",
+            : t("trade.toggleIndicatorFailed"),
         );
       } finally {
         setPending(null);
       }
     },
-    [appliedSet, chartControls, locale],
+    [appliedSet, chartControls, t],
   );
 
   const mainItems = CHART_QUICK_INDICATORS.filter((i) => i.kind === "main");
@@ -133,13 +131,13 @@ export function ChartIndicatorBar({
           {subItems.map(chip)}
         </div>
         <span className="shrink-0 text-[10px] text-[var(--terminal-muted)]">
-          {isChineseLocale(locale) ? "副" : "Sub"}({subCount}/{MAX_SUB_INDICATORS})
+          {t("trade.chartIndicatorSub")}({subCount}/{MAX_SUB_INDICATORS})
         </span>
         <button
           type="button"
           onClick={() => setSettingsOpen(true)}
           className="shrink-0 rounded p-1 text-[var(--terminal-muted)] hover:bg-[var(--terminal-panel)] hover:text-[var(--terminal-text)]"
-          title={isChineseLocale(locale) ? "指标设置" : "Indicator settings"}
+          title={t("trade.chartIndicatorSettings")}
         >
           <Settings2 className="h-3.5 w-3.5" />
         </button>

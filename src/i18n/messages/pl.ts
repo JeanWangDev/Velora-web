@@ -1028,7 +1028,15 @@ export const pl = {
         "ai": "AI",
         "meme": "Meme",
         "platform": "Platform"
-      }
+      },
+      "chartLoading": "Chart loading…",
+      "toggleIndicatorFailed": "Failed to toggle indicator",
+      "maxSubIndicators": "Max {n} sub-indicators",
+      "chartIndicatorSub": "Sub",
+      "chartIndicatorSettings": "Indicator settings",
+      "orderBookCumulative": "Total",
+      "deskLoginConnector": " or ",
+      "deskLoginSuffix": " to start trading"
     },
     "assets": {
       "title": "Aktywa",

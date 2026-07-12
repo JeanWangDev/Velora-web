@@ -1028,7 +1028,15 @@ export const ko = {
         "ai": "AI",
         "meme": "밈",
         "platform": "플랫폼"
-      }
+      },
+      "chartLoading": "Chart loading…",
+      "toggleIndicatorFailed": "Failed to toggle indicator",
+      "maxSubIndicators": "Max {n} sub-indicators",
+      "chartIndicatorSub": "Sub",
+      "chartIndicatorSettings": "Indicator settings",
+      "orderBookCumulative": "Total",
+      "deskLoginConnector": " or ",
+      "deskLoginSuffix": " to start trading"
     },
     "assets": {
       "title": "자산",

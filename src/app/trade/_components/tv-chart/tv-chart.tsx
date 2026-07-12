@@ -146,11 +146,11 @@ export default function TVChart({
       enabled_features: [],
       overrides: {
         "paneProperties.background": isDark ? "#000000" : "#ffffff",
-        // 隐藏主图品种 OHLC 图例，保留指标图例
+        // 主图品种图例：交易对 / 周期 / 开高低收 / 涨跌幅（对齐 OKX）
         "paneProperties.legendProperties.showLegend": true,
-        "paneProperties.legendProperties.showSeriesTitle": false,
-        "paneProperties.legendProperties.showSeriesOHLC": false,
-        "paneProperties.legendProperties.showBarChange": false,
+        "paneProperties.legendProperties.showSeriesTitle": true,
+        "paneProperties.legendProperties.showSeriesOHLC": true,
+        "paneProperties.legendProperties.showBarChange": true,
         "paneProperties.legendProperties.showStudyTitles": true,
         "paneProperties.legendProperties.showStudyValues": true,
         "paneProperties.vertGridProperties.color": isDark
