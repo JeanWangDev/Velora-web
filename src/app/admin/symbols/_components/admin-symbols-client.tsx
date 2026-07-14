@@ -59,6 +59,7 @@ export function AdminSymbolsClient() {
   const [submitting, setSubmitting] = useState(false);
   const [removeTarget, setRemoveTarget] = useState<TradingPair | null>(null);
   const [removeSubmitting, setRemoveSubmitting] = useState(false);
+  const [syncing, setSyncing] = useState(false);
 
   const isAdmin = isAdminUser(user);
 
@@ -137,6 +138,21 @@ export function AdminSymbolsClient() {
     }
   };
 
+  const handleSyncSpot = async () => {
+    setSyncing(true);
+    try {
+      const res = await AdminTradingPairsService.syncSpotFromBinance();
+      toast.success(`已从 Binance 同步 ${res.synced} 个现货交易对`);
+      if (res.failed.length > 0) {
+        toast.info(`部分失败：${res.failed.slice(0, 3).join("；")}`);
+      }
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "同步失败");
+    } finally {
+      setSyncing(false);
+    }
+  };
+
   const confirmRemove = async () => {
     if (!removeTarget) return;
 
@@ -201,14 +217,25 @@ export function AdminSymbolsClient() {
           <h1 className="text-2xl font-semibold text-foreground">{t("adminSymbols.title")}</h1>
           <p className="mt-1 text-sm text-muted">{t("adminSymbols.subtitle")}</p>
         </div>
-        <button
-          type="button"
-          onClick={openCreate}
-          className="inline-flex items-center justify-center gap-2 rounded-md bg-accent px-4 py-2 text-sm font-medium text-background hover:opacity-90"
-        >
-          <Plus className="h-4 w-4" />
-          {t("adminSymbols.create")}
-        </button>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            disabled={syncing}
+            onClick={() => void handleSyncSpot()}
+            className="inline-flex items-center justify-center gap-2 rounded-md border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-surface-muted disabled:opacity-60"
+          >
+            {syncing ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+            从 Binance 同步现货
+          </button>
+          <button
+            type="button"
+            onClick={openCreate}
+            className="inline-flex items-center justify-center gap-2 rounded-md bg-accent px-4 py-2 text-sm font-medium text-background hover:opacity-90"
+          >
+            <Plus className="h-4 w-4" />
+            {t("adminSymbols.create")}
+          </button>
+        </div>
       </div>
 
       {loading ? (

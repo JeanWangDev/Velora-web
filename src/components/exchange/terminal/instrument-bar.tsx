@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { ExternalLink, Star } from "lucide-react";
 import { useExchangeT } from "@/hooks/use-exchange-t";
 import { useLocale, useTranslation } from "@/i18n/use-translation";
@@ -17,6 +18,8 @@ import { CoinIcon } from "@/components/exchange/coin-icon";
 import { useLayoutStore } from "@/stores/use-layout-store";
 import { cn } from "@/lib/cn";
 import type { TradeMode } from "@/stores/use-trade-mode-store";
+import { FuturesService } from "@/services/futures-service";
+import { spotToFuturesInstId } from "@/utils/symbol";
 
 function StatCell({
   label,
@@ -68,6 +71,43 @@ export function InstrumentBar({
   const changeAbs = ticker.last - ticker.last / (1 + ticker.change24h / 100);
   const priceColor = up ? "text-up" : "text-down";
 
+  const [markData, setMarkData] = useState<{
+    markPrice: number;
+    indexPrice: number;
+    fundingRate: number;
+  } | null>(null);
+
+  useEffect(() => {
+    if (mode !== "futures") {
+      setMarkData(null);
+      return;
+    }
+    const instId = spotToFuturesInstId(ticker.symbol);
+    let cancelled = false;
+    const load = async () => {
+      try {
+        const res = await FuturesService.listMarkPrices();
+        const row = (res.data ?? []).find(
+          (r) => String((r as Record<string, unknown>).symbol) === instId,
+        ) as Record<string, unknown> | undefined;
+        if (!row || cancelled) return;
+        setMarkData({
+          markPrice: Number(row.markPrice ?? 0),
+          indexPrice: Number(row.indexPrice ?? 0),
+          fundingRate: Number(row.fundingRate ?? 0),
+        });
+      } catch {
+        if (!cancelled) setMarkData(null);
+      }
+    };
+    void load();
+    const timer = setInterval(() => void load(), 10000);
+    return () => {
+      cancelled = true;
+      clearInterval(timer);
+    };
+  }, [mode, ticker.symbol]);
+
   const tagLabel = mode === "futures" ? "PERP" : "SPOT";
   const tagClass =
     mode === "futures" ? "bg-accent/15 text-accent" : "bg-up/15 text-up";
@@ -97,11 +137,6 @@ export function InstrumentBar({
           >
             {tagLabel}
           </span>
-          {mode === "futures" && (
-            <span className="rounded bg-primary/15 px-1.5 py-0.5 text-[10px] font-mono text-primary">
-              10x
-            </span>
-          )}
         </div>
         <button
           type="button"
@@ -138,20 +173,23 @@ export function InstrumentBar({
           <>
             <StatCell
               label={t("trade.indexPrice")}
-              value={formatPrice(ticker.last * 0.9999, precision, locale)}
+              value={
+                markData
+                  ? formatPrice(markData.indexPrice, precision, locale)
+                  : "—"
+              }
               link
             />
             <StatCell
               label={t("trade.markPrice")}
-              value={formatPrice(ticker.last * 1.0001, precision, locale)}
+              value={
+                markData
+                  ? formatPrice(markData.markPrice, precision, locale)
+                  : "—"
+              }
             />
           </>
         )}
-        <StatCell
-          label={`${meta?.base ?? ""} ${t("trade.price")}`}
-          value={`¥${formatPrice(ticker.last * 6.78, 1, locale)}`}
-          link
-        />
         <StatCell
           label={t("trade.low24h")}
           value={formatPrice(ticker.low24h, precision, locale)}
@@ -169,7 +207,14 @@ export function InstrumentBar({
           value={`${formatCompact(ticker.quoteVolume24h, locale)} ${meta?.quote ?? ""}`}
         />
         {mode === "futures" && (
-          <StatCell label={t("trade.fundingRate")} value="0.0100%" />
+          <StatCell
+            label={t("trade.fundingRate")}
+            value={
+              markData
+                ? formatPercent(markData.fundingRate * 100)
+                : "—"
+            }
+          />
         )}
       </div>
 

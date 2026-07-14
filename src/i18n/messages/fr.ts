@@ -1004,6 +1004,18 @@ export const fr = {
       "historySubTpsl": "TP/SL",
       "historySubTrailingTpsl": "TP/SL trailing",
       "historySubTrigger": "Déclenchement",
+
+      "timeInForce": "Time in force",
+      "tifGtc": "GTC",
+      "tifPostOnly": "Post Only",
+      "tifIoc": "IOC",
+      "tifFok": "FOK",
+      "takeProfitTrigger": "TP trigger",
+      "stopLossTrigger": "SL trigger",
+      "trailingCallback": "Callback",
+      "placeTrailingStop": "Place trailing stop",
+      "toolsTrailingDesc": "Trail the market and trigger when price retraces by callback %",
+      "toolsTrailingHint": "Last price",
       "allTradeTypes": "Tous les types",
       "sortByOrderTime": "Par heure d'ordre",
       "currentSymbolOnly": "Symbole actuel",
@@ -1036,7 +1048,15 @@ export const fr = {
       "chartIndicatorSettings": "Indicator settings",
       "orderBookCumulative": "Total",
       "deskLoginConnector": " or ",
-      "deskLoginSuffix": " to start trading"
+      "deskLoginSuffix": " to start trading",
+      "positions": "Positions",
+      "contract": "Contract",
+      "contracts": "Size",
+      "entryPrice": "Entry",
+      "unrealizedPnl": "Unrealized PnL",
+      "liquidationPrice": "Liq. Price",
+      "closePosition": "Close",
+      "filledTotal": "Filled / Total"
     },
     "assets": {
       "title": "Actifs",
@@ -1051,6 +1071,14 @@ export const fr = {
       "amount": "Montant",
       "time": "Heure",
       "ref": "Réf.",
+      "account": "Account",
+      "filterAll": "All",
+      "filterCurrency": "Asset",
+      "filterAccount": "Account",
+      "filterType": "Type",
+      "accountFunding": "Funding",
+      "accountTrading": "Trading",
+      "accountFutures": "Futures",
       "deposit": "Dépôt",
       "withdraw": "Retrait",
       "depositDemo": "Dépôt démo crédité",
@@ -1064,7 +1092,8 @@ export const fr = {
         "unfreeze": "Dégel",
         "credit": "Crédit démo",
         "deposit": "Dépôt",
-        "withdraw": "Retrait"
+        "withdraw": "Retrait",
+        "transfer": "Transfer"
       }
     },
     "orders": {
@@ -1101,6 +1130,7 @@ export const fr = {
       "boostSecurity": "Renforcer la sécurité",
       "securityHint": "Mot de passe, 2FA et historique de connexion",
       "security": "Sécurité",
+      "support": "Support",
       "preferences": "Préférences",
       "kyc": "Vérification d'identité",
       "kycTitle": "Vérification d'identité",

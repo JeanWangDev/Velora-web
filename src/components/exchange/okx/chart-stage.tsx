@@ -11,6 +11,9 @@ import type { TVChartControls } from "@/app/trade/_components/tv-chart/tv-chart-
 import { veloraSymbolToTv } from "@/app/trade/_components/tv-chart/mock-datafeed";
 import { useExchangeT } from "@/hooks/use-exchange-t";
 import { getSymbolMeta } from "@/stores/use-symbol-registry";
+import { useMarketStore } from "@/stores/use-market-store";
+import { formatCompact, formatPercent, formatPrice } from "@/utils/format-exchange";
+import { useLocale } from "@/i18n/use-translation";
 import { NewsModal } from "@/components/exchange/okx/news-modal";
 import { ChartIndicatorBar } from "@/components/exchange/okx/chart-indicator-bar";
 import { toast } from "@/services/toast";
@@ -33,6 +36,8 @@ export function ChartStage({
   const [chartControls, setChartControls] = useState<TVChartControls | null>(null);
   const { chartType, setChartType } = useChartType();
   const meta = getSymbolMeta(symbol);
+  const locale = useLocale();
+  const ticker = useMarketStore((s) => s.tickers[symbol]);
   const tvSymbol = veloraSymbolToTv(symbol);
 
   useEffect(() => {
@@ -134,9 +139,8 @@ export function ChartStage({
         <div className="terminal-scroll flex-1 overflow-y-auto p-4 text-sm">
           <h3 className="text-lg font-semibold">{meta?.displayName}</h3>
           <p className="mt-2 text-xs leading-relaxed text-muted">
-            {meta?.base} 是 Velora 现货交易对，当前为内测模拟环境，不涉及真实资金。
-            交易规则：最小下单量 {meta?.minQty} {meta?.base}，价格精度{" "}
-            {meta?.pricePrecision} 位。
+            {meta?.base} / {meta?.quote} · {meta?.displayName}
+            {meta?.minQty != null ? ` · min ${meta.minQty}` : ""}
           </p>
           <div className="mt-4 grid gap-2 text-xs">
             {[
@@ -159,15 +163,18 @@ export function ChartStage({
 
       {tab === "data" && (
         <div className="grid flex-1 grid-cols-2 gap-2 p-2">
-          {["资金流向", "净流向", "多空比", "买卖量"].map((title) => (
+          {[
+            { label: t("trade.high24h"), value: ticker ? formatPrice(ticker.high24h, meta?.pricePrecision ?? 2, locale) : "—" },
+            { label: t("trade.low24h"), value: ticker ? formatPrice(ticker.low24h, meta?.pricePrecision ?? 2, locale) : "—" },
+            { label: t("trade.vol24h"), value: ticker ? `${formatCompact(ticker.volume24h, locale)} ${meta?.base ?? ""}` : "—" },
+            { label: t("markets.change"), value: ticker ? formatPercent(ticker.change24h) : "—" },
+          ].map((card) => (
             <div
-              key={title}
+              key={card.label}
               className="rounded border border-[var(--terminal-border)] bg-[var(--terminal-panel)] p-3"
             >
-              <p className="text-xs font-medium">{title}</p>
-              <div className="mt-4 flex h-24 items-center justify-center text-[10px] text-muted">
-                Mock · 接入后端后展示
-              </div>
+              <p className="text-xs font-medium text-muted">{card.label}</p>
+              <p className="mt-2 font-mono text-sm tabular-nums">{card.value}</p>
             </div>
           ))}
         </div>

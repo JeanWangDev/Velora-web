@@ -1004,6 +1004,18 @@ export const ja = {
       "historySubTpsl": "利確/損切",
       "historySubTrailingTpsl": "トレーリング TP/SL",
       "historySubTrigger": "トリガー",
+
+      "timeInForce": "Time in force",
+      "tifGtc": "GTC",
+      "tifPostOnly": "Post Only",
+      "tifIoc": "IOC",
+      "tifFok": "FOK",
+      "takeProfitTrigger": "TP trigger",
+      "stopLossTrigger": "SL trigger",
+      "trailingCallback": "Callback",
+      "placeTrailingStop": "Place trailing stop",
+      "toolsTrailingDesc": "Trail the market and trigger when price retraces by callback %",
+      "toolsTrailingHint": "Last price",
       "allTradeTypes": "すべての取引タイプ",
       "sortByOrderTime": "注文日時順",
       "currentSymbolOnly": "現在の銘柄のみ",
@@ -1036,7 +1048,15 @@ export const ja = {
       "chartIndicatorSettings": "Indicator settings",
       "orderBookCumulative": "Total",
       "deskLoginConnector": " or ",
-      "deskLoginSuffix": " to start trading"
+      "deskLoginSuffix": " to start trading",
+      "positions": "Positions",
+      "contract": "Contract",
+      "contracts": "Size",
+      "entryPrice": "Entry",
+      "unrealizedPnl": "Unrealized PnL",
+      "liquidationPrice": "Liq. Price",
+      "closePosition": "Close",
+      "filledTotal": "Filled / Total"
     },
     "assets": {
       "title": "資産",
@@ -1051,6 +1071,14 @@ export const ja = {
       "amount": "金額",
       "time": "日時",
       "ref": "参照",
+      "account": "Account",
+      "filterAll": "All",
+      "filterCurrency": "Asset",
+      "filterAccount": "Account",
+      "filterType": "Type",
+      "accountFunding": "Funding",
+      "accountTrading": "Trading",
+      "accountFutures": "Futures",
       "deposit": "入金",
       "withdraw": "出金",
       "depositDemo": "デモ入金が反映されました",
@@ -1064,7 +1092,8 @@ export const ja = {
         "unfreeze": "凍結解除",
         "credit": "デモ入金",
         "deposit": "入金",
-        "withdraw": "出金"
+        "withdraw": "出金",
+        "transfer": "Transfer"
       }
     },
     "orders": {
@@ -1101,6 +1130,7 @@ export const ja = {
       "boostSecurity": "セキュリティを強化",
       "securityHint": "パスワード、2FA、ログイン履歴",
       "security": "セキュリティ",
+      "support": "Support",
       "preferences": "設定",
       "kyc": "本人確認",
       "kycTitle": "本人確認",

@@ -1,7 +1,7 @@
 "use client";
 
 import { isChineseLocale } from "@/i18n/locale-helpers";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   ArrowRight,
   BadgeCheck,
@@ -19,6 +19,7 @@ import { useAuthStore } from "@/stores/use-auth-store";
 import { useKycStore } from "@/stores/use-kyc-store";
 import { useMarketStore } from "@/stores/use-market-store";
 import { useTradingStore } from "@/stores/use-trading-store";
+import { PlatformService } from "@/services/platform-service";
 import { maskEmail } from "@/utils/mask-email";
 import { formatCompact } from "@/utils/format-exchange";
 import { cn } from "@/lib/cn";
@@ -42,10 +43,21 @@ export default function UserOverviewPage() {
   const kycStatus = useKycStore((s) => s.status);
   const balances = useTradingStore((s) => s.balances);
   const tickers = useMarketStore((s) => s.tickers);
+  const [tierName, setTierName] = useState<string | null>(null);
+  const [tierProgress, setTierProgress] = useState<Record<string, unknown> | null>(null);
+  const [nextTier, setNextTier] = useState<string | null>(null);
 
   useEffect(() => {
     void useTradingStore.getState().hydrate();
-  }, []);
+    void PlatformService.getAccountTier()
+      .then((r) => {
+        const cur = r.current as { nameZh?: string; nameEn?: string } | null;
+        setTierName(isChineseLocale(locale) ? cur?.nameZh ?? null : cur?.nameEn ?? cur?.nameZh ?? null);
+        setTierProgress(r.progress);
+        setNextTier(r.nextTier);
+      })
+      .catch(() => null);
+  }, [locale]);
 
   const totalUsd = useMemo(() => {
     return balances.reduce((sum, b) => {
@@ -122,6 +134,35 @@ export default function UserOverviewPage() {
         </div>
       </section>
 
+      {tierName ? (
+        <section className="glass-panel rounded-2xl p-5">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <p className="text-sm text-muted">{isZh ? "账户等级" : "Account tier"}</p>
+              <p className="mt-1 text-xl font-semibold">{tierName}</p>
+              {nextTier ? (
+                <p className="mt-1 text-xs text-muted">
+                  {isZh ? "下一等级：" : "Next: "}
+                  {nextTier}
+                  {tierProgress?.volume30d != null ? (
+                    <span className="ml-2 font-mono">
+                      · 30d {String(tierProgress.volume30d)} / {String(tierProgress.volumeTarget ?? 100000)} USDT
+                    </span>
+                  ) : null}
+                </p>
+              ) : (
+                <p className="mt-1 text-xs text-muted">{isZh ? "已达最高等级" : "Top tier reached"}</p>
+              )}
+            </div>
+            <LocaleLink href="/vip">
+              <Button variant="secondary" className="px-3 py-1.5 text-xs">
+                {isZh ? "VIP 权益" : "VIP benefits"}
+              </Button>
+            </LocaleLink>
+          </div>
+        </section>
+      ) : null}
+
       {/* KYC Banner — 未认证时展示 */}
       {kycStatus !== "verified" ? (
         <section className="overflow-hidden rounded-2xl border border-border bg-gradient-to-r from-surface via-surface to-primary/5 p-6 sm:p-8">
@@ -168,6 +209,12 @@ export default function UserOverviewPage() {
             icon={Wallet}
             title={t("assets.title")}
             desc={isZh ? "查看余额与充提" : "Balances & transfers"}
+          />
+          <QuickRow
+            href="/earn"
+            icon={Gift}
+            title={t("trade.redeemEarn")}
+            desc={isZh ? "申购赚币产品" : "Subscribe earn products"}
           />
         </section>
 

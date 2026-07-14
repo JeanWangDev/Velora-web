@@ -14,8 +14,12 @@ import {
   formatPrice,
 } from "@/utils/format-exchange";
 import { PriceChange } from "@/components/exchange/price-change";
+import {
+  MARKET_LIST_GRID_3,
+  MARKET_LIST_NUM_CELL,
+} from "@/components/exchange/market-list-grid";
+import { filterSymbolsByCategory } from "@/utils/symbol-category-filter";
 import { cn } from "@/lib/cn";
-
 import type { TradeMode } from "@/stores/use-trade-mode-store";
 
 type MarketFilter = "all" | "watch" | "main";
@@ -39,10 +43,8 @@ export function MarketRail({
   const [filter, setFilter] = useState<MarketFilter>("all");
 
   const rows = useMemo(() => {
-    return getSpotSymbols().filter((s) => {
-      if (filter === "watch" && !watchlist.includes(s.symbol)) return false;
-      if (filter === "main" && !["BTC-USDT", "ETH-USDT", "SOL-USDT"].includes(s.symbol))
-        return false;
+    const cat = filter === "watch" ? "watch" : "all";
+    return filterSymbolsByCategory(getSpotSymbols(), cat, watchlist).filter((s) => {
       if (!q) return true;
       const qq = q.toLowerCase();
       return (
@@ -116,14 +118,13 @@ export function MarketRail({
       </div>
 
       <div className="terminal-scroll min-h-0 flex-1 overflow-y-auto">
-        <div className="grid grid-cols-[1fr_auto_auto] gap-1 px-2 py-1.5 text-[10px] text-muted">
+        <div className={cn(MARKET_LIST_GRID_3, "px-2 py-1.5 text-[10px] text-muted")}>
           <span>{t("markets.pair")}</span>
-          <span className="text-right">{t("markets.price")}</span>
-          <span className="w-12 text-right">{t("markets.change")}</span>
+          <span className={MARKET_LIST_NUM_CELL}>{t("markets.price")}</span>
+          <span className={MARKET_LIST_NUM_CELL}>{t("markets.change")}</span>
         </div>
         {rows.map((s) => {
           const tk = tickers[s.symbol];
-          if (!tk) return null;
           const active = s.symbol === activeSymbol;
           const watched = watchlist.includes(s.symbol);
           return (
@@ -131,7 +132,8 @@ export function MarketRail({
               key={s.symbol}
               href={`${basePath}/${s.symbol}`}
               className={cn(
-                "grid grid-cols-[1fr_auto_auto] items-center gap-1 px-2 py-1.5 text-xs transition",
+                MARKET_LIST_GRID_3,
+                "px-2 py-1.5 text-xs transition",
                 active
                   ? "bg-primary/15"
                   : "hover:bg-[var(--terminal-panel-2)]",
@@ -155,12 +157,12 @@ export function MarketRail({
                 </button>
                 {displayPair(s.symbol)}
               </span>
-              <span className="font-mono tabular-nums">
-                {formatPrice(tk.last, s.pricePrecision, locale)}
+              <span className={cn(MARKET_LIST_NUM_CELL, "text-foreground")}>
+                {tk ? formatPrice(tk.last, s.pricePrecision, locale) : "—"}
               </span>
               <PriceChange
-                value={tk.change24h}
-                className="w-12 justify-end text-[10px]"
+                value={tk?.change24h ?? 0}
+                className={cn(MARKET_LIST_NUM_CELL, "text-[10px]")}
               />
             </Link>
           );

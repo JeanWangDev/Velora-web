@@ -7,7 +7,10 @@ export interface ApiKeyRow {
   label: string;
   apiKey: string;
   permissions: string;
+  ipWhitelist?: string;
+  symbolWhitelist?: string;
   status: number;
+  lastUsedAt?: number | null;
   createdAt: number;
 }
 
@@ -20,7 +23,12 @@ export class ApiKeyService {
     });
   }
 
-  static create(input: { label?: string; permissions?: string }) {
+  static create(input: {
+    label?: string;
+    permissions?: string;
+    ipWhitelist?: string;
+    symbolWhitelist?: string;
+  }) {
     return apiClient.sendRequest<{
       apiKey: string;
       apiSecret: string;
@@ -30,6 +38,36 @@ export class ApiKeyService {
       url: BASE,
       method: "POST",
       data: input,
+    });
+  }
+
+  static update(input: {
+    apiKey: string;
+    label?: string;
+    permissions?: string;
+    ipWhitelist?: string;
+    symbolWhitelist?: string;
+  }) {
+    return apiClient.sendRequest<{ ok: boolean }>({
+      url: `${BASE}/update`,
+      method: "POST",
+      data: input,
+    });
+  }
+
+  static logs(apiKey: string) {
+    return apiClient.sendRequest<{
+      data: {
+        method: string;
+        path: string;
+        statusCode: number;
+        ip: string;
+        ts: number;
+      }[];
+    }>({
+      url: `${BASE}/logs`,
+      method: "GET",
+      params: { apiKey },
     });
   }
 

@@ -1004,6 +1004,18 @@ export const tr = {
       "historySubTpsl": "TP/SL",
       "historySubTrailingTpsl": "İzleyen TP/SL",
       "historySubTrigger": "Tetik",
+
+      "timeInForce": "Time in force",
+      "tifGtc": "GTC",
+      "tifPostOnly": "Post Only",
+      "tifIoc": "IOC",
+      "tifFok": "FOK",
+      "takeProfitTrigger": "TP trigger",
+      "stopLossTrigger": "SL trigger",
+      "trailingCallback": "Callback",
+      "placeTrailingStop": "Place trailing stop",
+      "toolsTrailingDesc": "Trail the market and trigger when price retraces by callback %",
+      "toolsTrailingHint": "Last price",
       "allTradeTypes": "Tüm işlem türleri",
       "sortByOrderTime": "Emir zamanına göre",
       "currentSymbolOnly": "Mevcut sembol",
@@ -1036,7 +1048,15 @@ export const tr = {
       "chartIndicatorSettings": "Indicator settings",
       "orderBookCumulative": "Total",
       "deskLoginConnector": " or ",
-      "deskLoginSuffix": " to start trading"
+      "deskLoginSuffix": " to start trading",
+      "positions": "Positions",
+      "contract": "Contract",
+      "contracts": "Size",
+      "entryPrice": "Entry",
+      "unrealizedPnl": "Unrealized PnL",
+      "liquidationPrice": "Liq. Price",
+      "closePosition": "Close",
+      "filledTotal": "Filled / Total"
     },
     "assets": {
       "title": "Varlıklar",
@@ -1051,6 +1071,14 @@ export const tr = {
       "amount": "Miktar",
       "time": "Zaman",
       "ref": "Ref",
+      "account": "Account",
+      "filterAll": "All",
+      "filterCurrency": "Asset",
+      "filterAccount": "Account",
+      "filterType": "Type",
+      "accountFunding": "Funding",
+      "accountTrading": "Trading",
+      "accountFutures": "Futures",
       "deposit": "Yatır",
       "withdraw": "Çek",
       "depositDemo": "Demo yatırma eklendi",
@@ -1064,7 +1092,8 @@ export const tr = {
         "unfreeze": "Çöz",
         "credit": "Demo Bakiye",
         "deposit": "Yatırma",
-        "withdraw": "Çekme"
+        "withdraw": "Çekme",
+        "transfer": "Transfer"
       }
     },
     "orders": {
@@ -1101,6 +1130,7 @@ export const tr = {
       "boostSecurity": "Güvenliği artır",
       "securityHint": "Şifre, 2FA ve giriş geçmişi",
       "security": "Güvenlik",
+      "support": "Support",
       "preferences": "Tercihler",
       "kyc": "Kimlik Doğrulama",
       "kycTitle": "Kimlik Doğrulama",

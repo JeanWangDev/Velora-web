@@ -1004,6 +1004,18 @@ export const ar = {
       "historySubTpsl": "TP/SL",
       "historySubTrailingTpsl": "TP/SL متحرك",
       "historySubTrigger": "تفعيل",
+
+      "timeInForce": "Time in force",
+      "tifGtc": "GTC",
+      "tifPostOnly": "Post Only",
+      "tifIoc": "IOC",
+      "tifFok": "FOK",
+      "takeProfitTrigger": "TP trigger",
+      "stopLossTrigger": "SL trigger",
+      "trailingCallback": "Callback",
+      "placeTrailingStop": "Place trailing stop",
+      "toolsTrailingDesc": "Trail the market and trigger when price retraces by callback %",
+      "toolsTrailingHint": "Last price",
       "allTradeTypes": "جميع أنواع التداول",
       "sortByOrderTime": "حسب وقت الأمر",
       "currentSymbolOnly": "الرمز الحالي",
@@ -1036,7 +1048,15 @@ export const ar = {
       "chartIndicatorSettings": "Indicator settings",
       "orderBookCumulative": "Total",
       "deskLoginConnector": " or ",
-      "deskLoginSuffix": " to start trading"
+      "deskLoginSuffix": " to start trading",
+      "positions": "Positions",
+      "contract": "Contract",
+      "contracts": "Size",
+      "entryPrice": "Entry",
+      "unrealizedPnl": "Unrealized PnL",
+      "liquidationPrice": "Liq. Price",
+      "closePosition": "Close",
+      "filledTotal": "Filled / Total"
     },
     "assets": {
       "title": "الأصول",
@@ -1051,6 +1071,14 @@ export const ar = {
       "amount": "المبلغ",
       "time": "الوقت",
       "ref": "المرجع",
+      "account": "Account",
+      "filterAll": "All",
+      "filterCurrency": "Asset",
+      "filterAccount": "Account",
+      "filterType": "Type",
+      "accountFunding": "Funding",
+      "accountTrading": "Trading",
+      "accountFutures": "Futures",
       "deposit": "إيداع",
       "withdraw": "سحب",
       "depositDemo": "تم إيداع تجريبي",
@@ -1064,7 +1092,8 @@ export const ar = {
         "unfreeze": "إلغاء التجميد",
         "credit": "رصيد تجريبي",
         "deposit": "إيداع",
-        "withdraw": "سحب"
+        "withdraw": "سحب",
+        "transfer": "Transfer"
       }
     },
     "orders": {
@@ -1101,6 +1130,7 @@ export const ar = {
       "boostSecurity": "تعزيز الأمان",
       "securityHint": "كلمة المرور و2FA وسجل الدخول",
       "security": "الأمان",
+      "support": "Support",
       "preferences": "التفضيلات",
       "kyc": "التحقق من الهوية",
       "kycTitle": "التحقق من الهوية",

@@ -1,12 +1,18 @@
 import type { LucideIcon } from "lucide-react";
 import {
   BadgeCheck,
+  Headset,
   LayoutDashboard,
   Settings,
   Shield,
 } from "lucide-react";
 
-export type UserAccountNavId = "overview" | "kyc" | "security" | "preferences";
+export type UserAccountNavId =
+  | "overview"
+  | "kyc"
+  | "security"
+  | "support"
+  | "preferences";
 
 export interface UserAccountNavItem {
   id: UserAccountNavId;
@@ -39,6 +45,12 @@ export const USER_ACCOUNT_NAV: UserAccountNavItem[] = [
     href: "/user/security",
     labelKey: "user.security",
     icon: Shield,
+  },
+  {
+    id: "support",
+    href: "/user/support",
+    labelKey: "user.support",
+    icon: Headset,
   },
   {
     id: "preferences",

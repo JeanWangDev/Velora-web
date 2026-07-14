@@ -1004,6 +1004,18 @@ export const zhTW = {
       "historySubTpsl": "止盈止損",
       "historySubTrailingTpsl": "移動止盈止損",
       "historySubTrigger": "計劃委託",
+
+      "timeInForce": "Time in force",
+      "tifGtc": "GTC",
+      "tifPostOnly": "Post Only",
+      "tifIoc": "IOC",
+      "tifFok": "FOK",
+      "takeProfitTrigger": "TP trigger",
+      "stopLossTrigger": "SL trigger",
+      "trailingCallback": "Callback",
+      "placeTrailingStop": "Place trailing stop",
+      "toolsTrailingDesc": "Trail the market and trigger when price retraces by callback %",
+      "toolsTrailingHint": "Last price",
       "allTradeTypes": "全部交易類型",
       "sortByOrderTime": "按委託時間",
       "currentSymbolOnly": "當前交易品種",
@@ -1036,7 +1048,15 @@ export const zhTW = {
       "chartIndicatorSettings": "Indicator settings",
       "orderBookCumulative": "Total",
       "deskLoginConnector": " or ",
-      "deskLoginSuffix": " to start trading"
+      "deskLoginSuffix": " to start trading",
+      "positions": "Positions",
+      "contract": "Contract",
+      "contracts": "Size",
+      "entryPrice": "Entry",
+      "unrealizedPnl": "Unrealized PnL",
+      "liquidationPrice": "Liq. Price",
+      "closePosition": "Close",
+      "filledTotal": "Filled / Total"
     },
     "assets": {
       "title": "資產總覽",
@@ -1051,6 +1071,14 @@ export const zhTW = {
       "amount": "金額",
       "time": "時間",
       "ref": "單號",
+      "account": "Account",
+      "filterAll": "All",
+      "filterCurrency": "Asset",
+      "filterAccount": "Account",
+      "filterType": "Type",
+      "accountFunding": "Funding",
+      "accountTrading": "Trading",
+      "accountFutures": "Futures",
       "deposit": "充值",
       "withdraw": "提現",
       "depositDemo": "演示充值成功",
@@ -1064,7 +1092,8 @@ export const zhTW = {
         "unfreeze": "解凍",
         "credit": "模擬充值",
         "deposit": "充值",
-        "withdraw": "提現"
+        "withdraw": "提現",
+        "transfer": "Transfer"
       }
     },
     "orders": {
@@ -1101,6 +1130,7 @@ export const zhTW = {
       "boostSecurity": "提升安全性",
       "securityHint": "密碼、雙重驗證與登錄歷史",
       "security": "安全中心",
+      "support": "Support",
       "preferences": "偏好設置",
       "kyc": "身份認證",
       "kycTitle": "身份認證",

@@ -10,7 +10,13 @@ export function ApiKeysClient() {
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
   const [label, setLabel] = useState("");
+  const [ipWhitelist, setIpWhitelist] = useState("");
+  const [symbolWhitelist, setSymbolWhitelist] = useState("");
   const [newSecret, setNewSecret] = useState<{ apiKey: string; apiSecret: string } | null>(null);
+  const [logsFor, setLogsFor] = useState<string | null>(null);
+  const [logs, setLogs] = useState<
+    { method: string; path: string; statusCode: number; ip: string; ts: number }[]
+  >([]);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -31,9 +37,15 @@ export function ApiKeysClient() {
   const create = async () => {
     setCreating(true);
     try {
-      const res = await ApiKeyService.create({ label: label || "Trading API" });
+      const res = await ApiKeyService.create({
+        label: label || "Trading API",
+        ipWhitelist: ipWhitelist.trim(),
+        symbolWhitelist: symbolWhitelist.trim(),
+      });
       setNewSecret({ apiKey: res.apiKey, apiSecret: res.apiSecret });
       setLabel("");
+      setIpWhitelist("");
+      setSymbolWhitelist("");
       toast.success("API Key 已创建");
       void load();
     } catch (e) {
@@ -97,22 +109,36 @@ export function ApiKeysClient() {
         </div>
       )}
 
-      <div className="flex gap-2">
+      <div className="space-y-2">
+        <div className="flex gap-2">
+          <input
+            value={label}
+            onChange={(e) => setLabel(e.target.value)}
+            placeholder="备注名称"
+            className="flex-1 rounded-lg border border-border bg-surface px-3 py-2 text-sm"
+          />
+          <button
+            type="button"
+            disabled={creating}
+            onClick={() => void create()}
+            className="inline-flex items-center gap-1 rounded-lg bg-primary px-4 py-2 text-sm text-primary-foreground"
+          >
+            <Plus className="h-4 w-4" />
+            创建
+          </button>
+        </div>
         <input
-          value={label}
-          onChange={(e) => setLabel(e.target.value)}
-          placeholder="备注名称"
-          className="flex-1 rounded-lg border border-border bg-surface px-3 py-2 text-sm"
+          value={ipWhitelist}
+          onChange={(e) => setIpWhitelist(e.target.value)}
+          placeholder="IP 白名单（逗号分隔，留空=不限制）"
+          className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm"
         />
-        <button
-          type="button"
-          disabled={creating}
-          onClick={() => void create()}
-          className="inline-flex items-center gap-1 rounded-lg bg-primary px-4 py-2 text-sm text-primary-foreground"
-        >
-          <Plus className="h-4 w-4" />
-          创建
-        </button>
+        <input
+          value={symbolWhitelist}
+          onChange={(e) => setSymbolWhitelist(e.target.value)}
+          placeholder="交易对白名单（如 BTC-USDT,ETH-USDT，留空=全部）"
+          className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm"
+        />
       </div>
 
       {loading ? (
@@ -127,6 +153,7 @@ export function ApiKeysClient() {
                 <th className="px-4 py-2 text-left">名称</th>
                 <th className="px-4 py-2 text-left">Key</th>
                 <th className="px-4 py-2 text-left">权限</th>
+                <th className="px-4 py-2 text-left">IP / 交易对</th>
                 <th className="px-4 py-2 text-left">状态</th>
                 <th className="px-4 py-2 text-right">操作</th>
               </tr>
@@ -137,6 +164,10 @@ export function ApiKeysClient() {
                   <td className="px-4 py-3">{r.label}</td>
                   <td className="px-4 py-3 font-mono text-xs">{r.apiKey}</td>
                   <td className="px-4 py-3 text-xs">{r.permissions}</td>
+                  <td className="px-4 py-3 text-[10px] text-muted">
+                    <div>{r.ipWhitelist || "全部 IP"}</div>
+                    <div>{r.symbolWhitelist || "全部交易对"}</div>
+                  </td>
                   <td className="px-4 py-3">
                     {r.status === 1 ? (
                       <span className="text-emerald-600">有效</span>
@@ -144,21 +175,66 @@ export function ApiKeysClient() {
                       <span className="text-muted">已吊销</span>
                     )}
                   </td>
-                  <td className="px-4 py-3 text-right">
+                  <td className="px-4 py-3 text-right space-x-2">
                     {r.status === 1 && (
-                      <button
-                        type="button"
-                        onClick={() => void revoke(r.apiKey)}
-                        className="text-rose-500 hover:underline"
-                      >
-                        <Trash2 className="inline h-3.5 w-3.5" />
-                      </button>
+                      <>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            void ApiKeyService.logs(r.apiKey).then((res) => {
+                              setLogsFor(r.apiKey);
+                              setLogs(res.data ?? []);
+                            })
+                          }
+                          className="text-xs text-primary hover:underline"
+                        >
+                          日志
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => void revoke(r.apiKey)}
+                          className="text-rose-500 hover:underline"
+                        >
+                          <Trash2 className="inline h-3.5 w-3.5" />
+                        </button>
+                      </>
                     )}
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {logsFor && (
+        <div className="rounded-xl border border-border p-4">
+          <div className="mb-2 flex items-center justify-between">
+            <p className="text-sm font-medium">最近调用 · {logsFor}</p>
+            <button
+              type="button"
+              className="text-xs text-muted hover:underline"
+              onClick={() => setLogsFor(null)}
+            >
+              关闭
+            </button>
+          </div>
+          {logs.length === 0 ? (
+            <p className="text-xs text-muted">暂无调用记录</p>
+          ) : (
+            <ul className="max-h-48 space-y-1 overflow-y-auto text-xs font-mono">
+              {logs.map((l, i) => (
+                <li key={i} className="flex justify-between gap-2 border-b border-border/40 py-1">
+                  <span>
+                    {l.method} {l.path}
+                  </span>
+                  <span className="text-muted">
+                    {l.statusCode} · {l.ip}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       )}
 

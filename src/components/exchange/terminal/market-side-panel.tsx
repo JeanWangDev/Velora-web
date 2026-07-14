@@ -9,18 +9,26 @@ import { useWatchlistStore } from "@/stores/use-watchlist-store";
 import { getSpotSymbols } from "@/stores/use-symbol-registry";
 import { CoinIcon } from "@/components/exchange/coin-icon";
 import { PriceChange } from "@/components/exchange/price-change";
-import { formatPrice, formatCompact } from "@/utils/format-exchange";
+import { formatPrice } from "@/utils/format-exchange";
 import { useLocale } from "@/i18n/use-translation";
 import { useExchangeT } from "@/hooks/use-exchange-t";
 
-type Cat = "watch" | "all" | "main" | "meme" | "platform" | "ai" | "new";
-type SortKey = "pair" | "price" | "change" | "turnover";
+import { filterSymbolsByCategory, type SymbolCategory } from "@/utils/symbol-category-filter";
+import {
+  MARKET_LIST_GRID,
+  MARKET_LIST_HEADER_NUM,
+  MARKET_LIST_NUM_CELL,
+} from "@/components/exchange/market-list-grid";
+
+type Cat = SymbolCategory;
+type SortKey = "pair" | "price" | "change";
 
 function SortHead({
-  k, label, className, sortKey, sortAsc, onToggle,
+  k, label, className, sortKey, sortAsc, onToggle, align = "start",
 }: {
   k: SortKey; label: string; className?: string;
   sortKey: SortKey; sortAsc: boolean; onToggle: (k: SortKey) => void;
+  align?: "start" | "end";
 }) {
   const active = sortKey === k;
   return (
@@ -28,7 +36,8 @@ function SortHead({
       type="button"
       onClick={() => onToggle(k)}
       className={cn(
-        "inline-flex items-center gap-0.5 text-[10px] transition",
+        "flex items-center gap-0.5 text-[10px] transition",
+        align === "end" && MARKET_LIST_HEADER_NUM,
         active
           ? "text-[var(--terminal-accent)]"
           : "text-[var(--terminal-muted)] hover:text-[var(--terminal-text)]",
@@ -50,7 +59,7 @@ export function MarketSidePanel({ currentSymbol }: { currentSymbol: string }) {
   const t = useExchangeT();
   const [search, setSearch] = useState("");
   const [cat, setCat] = useState<Cat>("all");
-  const [sortKey, setSortKey] = useState<SortKey>("turnover");
+  const [sortKey, setSortKey] = useState<SortKey>("change");
   const [sortAsc, setSortAsc] = useState(false);
   const tickers = useMarketStore((s) => s.tickers);
   const watchlist = useWatchlistStore((s) => s.symbols);
@@ -72,13 +81,7 @@ export function MarketSidePanel({ currentSymbol }: { currentSymbol: string }) {
   ];
 
   const rows = useMemo(() => {
-    let list = getSpotSymbols().filter((s) => {
-      if (cat === "watch" && !watchlist.includes(s.symbol)) return false;
-      if (cat === "main" && !["BTC-USDT","ETH-USDT","SOL-USDT"].includes(s.symbol)) return false;
-      if (cat === "new" && !["DOGE-USDT","XRP-USDT"].includes(s.symbol)) return false;
-      if (cat === "ai" && s.symbol !== "SOL-USDT") return false;
-      if (cat === "meme" && s.symbol !== "DOGE-USDT") return false;
-      if (cat === "platform" && s.symbol !== "BNB-USDT") return false;
+    let list = filterSymbolsByCategory(getSpotSymbols(), cat, watchlist).filter((s) => {
       if (!search) return true;
       const q = search.toLowerCase();
       return s.symbol.toLowerCase().includes(q) || s.base.toLowerCase().includes(q);
@@ -86,12 +89,13 @@ export function MarketSidePanel({ currentSymbol }: { currentSymbol: string }) {
 
     list = [...list].sort((a, b) => {
       const ta = tickers[a.symbol], tb = tickers[b.symbol];
-      if (!ta || !tb) return 0;
+      if (!ta && !tb) return a.symbol.localeCompare(b.symbol);
+      if (!ta) return 1;
+      if (!tb) return -1;
       let cmp = 0;
       if (sortKey === "pair")     cmp = a.symbol.localeCompare(b.symbol);
       if (sortKey === "price")    cmp = ta.last - tb.last;
       if (sortKey === "change")   cmp = ta.change24h - tb.change24h;
-      if (sortKey === "turnover") cmp = ta.quoteVolume24h - tb.quoteVolume24h;
       return sortAsc ? cmp : -cmp;
     });
 
@@ -143,11 +147,10 @@ export function MarketSidePanel({ currentSymbol }: { currentSymbol: string }) {
       </div>
 
       {/* 列头 */}
-      <div className="grid shrink-0 grid-cols-[minmax(0,1.4fr)_minmax(64px,auto)_minmax(52px,auto)_minmax(56px,auto)] items-center gap-x-1.5 border-b border-[var(--terminal-border)] px-2 py-1.5">
+      <div className={cn(MARKET_LIST_GRID, "shrink-0 border-b border-[var(--terminal-border)] px-2 py-1.5")}>
         <SortHead k="pair" label={t("markets.pair")} sortKey={sortKey} sortAsc={sortAsc} onToggle={toggleSort} />
-        <SortHead k="price" label={t("markets.price")} className="justify-end" sortKey={sortKey} sortAsc={sortAsc} onToggle={toggleSort} />
-        <SortHead k="change" label={t("markets.change")} className="justify-end" sortKey={sortKey} sortAsc={sortAsc} onToggle={toggleSort} />
-        <SortHead k="turnover" label={t("markets.volume")} className="justify-end" sortKey={sortKey} sortAsc={sortAsc} onToggle={toggleSort} />
+        <SortHead k="price" label={t("markets.price")} align="end" sortKey={sortKey} sortAsc={sortAsc} onToggle={toggleSort} />
+        <SortHead k="change" label={t("markets.change")} align="end" sortKey={sortKey} sortAsc={sortAsc} onToggle={toggleSort} />
       </div>
 
       {/* 列表 */}
@@ -157,7 +160,6 @@ export function MarketSidePanel({ currentSymbol }: { currentSymbol: string }) {
         )}
         {rows.map((s) => {
           const tk = tickers[s.symbol];
-          if (!tk) return null;
           const active = s.symbol === currentSymbol;
           return (
             <div
@@ -167,7 +169,8 @@ export function MarketSidePanel({ currentSymbol }: { currentSymbol: string }) {
               onClick={() => router.push(`/trade/${s.symbol}`)}
               onKeyDown={(e) => { if (e.key === "Enter") router.push(`/trade/${s.symbol}`); }}
               className={cn(
-                "grid cursor-pointer grid-cols-[minmax(0,1.4fr)_minmax(64px,auto)_minmax(52px,auto)_minmax(56px,auto)] items-center gap-x-1.5 px-2 py-2 text-xs transition",
+                MARKET_LIST_GRID,
+                "cursor-pointer px-2 py-2 text-xs transition",
                 active ? "bg-[var(--terminal-accent)]/10" : "hover:bg-[var(--terminal-panel)]",
               )}
             >
@@ -195,17 +198,14 @@ export function MarketSidePanel({ currentSymbol }: { currentSymbol: string }) {
               </span>
 
               {/* 最新价 */}
-              <span className="font-mono tabular-nums text-[var(--terminal-text)]">
-                {formatPrice(tk.last, s.pricePrecision, locale)}
+              <span className={cn(MARKET_LIST_NUM_CELL, "text-[var(--terminal-text)]")}>
+                {tk ? formatPrice(tk.last, s.pricePrecision, locale) : "—"}
               </span>
 
-              {/* 涨跌幅 */}
-              <PriceChange value={tk.change24h} className="justify-end text-[11px]" />
-
-              {/* 成交额 */}
-              <span className="font-mono tabular-nums text-[var(--terminal-muted)]">
-                {formatCompact(tk.quoteVolume24h, locale)}
-              </span>
+              <PriceChange
+                value={tk?.change24h ?? 0}
+                className={cn(MARKET_LIST_NUM_CELL, "text-[11px]")}
+              />
             </div>
           );
         })}

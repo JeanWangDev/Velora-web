@@ -1004,6 +1004,18 @@ export const ru = {
       "historySubTpsl": "TP/SL",
       "historySubTrailingTpsl": "Трейлинг TP/SL",
       "historySubTrigger": "Триггер",
+
+      "timeInForce": "Time in force",
+      "tifGtc": "GTC",
+      "tifPostOnly": "Post Only",
+      "tifIoc": "IOC",
+      "tifFok": "FOK",
+      "takeProfitTrigger": "TP trigger",
+      "stopLossTrigger": "SL trigger",
+      "trailingCallback": "Callback",
+      "placeTrailingStop": "Place trailing stop",
+      "toolsTrailingDesc": "Trail the market and trigger when price retraces by callback %",
+      "toolsTrailingHint": "Last price",
       "allTradeTypes": "Все типы сделок",
       "sortByOrderTime": "По времени ордера",
       "currentSymbolOnly": "Текущий символ",
@@ -1036,7 +1048,15 @@ export const ru = {
       "chartIndicatorSettings": "Настройки индикаторов",
       "orderBookCumulative": "Сумма",
       "deskLoginConnector": " или ",
-      "deskLoginSuffix": " чтобы начать торговлю"
+      "deskLoginSuffix": " чтобы начать торговлю",
+      "positions": "Positions",
+      "contract": "Contract",
+      "contracts": "Size",
+      "entryPrice": "Entry",
+      "unrealizedPnl": "Unrealized PnL",
+      "liquidationPrice": "Liq. Price",
+      "closePosition": "Close",
+      "filledTotal": "Filled / Total"
     },
     "assets": {
       "title": "Активы",
@@ -1051,6 +1071,14 @@ export const ru = {
       "amount": "Сумма",
       "time": "Время",
       "ref": "Реф.",
+      "account": "Account",
+      "filterAll": "All",
+      "filterCurrency": "Asset",
+      "filterAccount": "Account",
+      "filterType": "Type",
+      "accountFunding": "Funding",
+      "accountTrading": "Trading",
+      "accountFutures": "Futures",
       "deposit": "Депозит",
       "withdraw": "Вывести",
       "depositDemo": "Демо-депозит зачислен",
@@ -1064,7 +1092,8 @@ export const ru = {
         "unfreeze": "Разморозить",
         "credit": "Демо-кредит",
         "deposit": "Депозит",
-        "withdraw": "Вывести"
+        "withdraw": "Вывести",
+        "transfer": "Transfer"
       }
     },
     "orders": {
@@ -1101,6 +1130,7 @@ export const ru = {
       "boostSecurity": "Повысить безопасность",
       "securityHint": "Пароль, 2FA и история входов",
       "security": "Безопасность",
+      "support": "Support",
       "preferences": "Настройки",
       "kyc": "Верификация личности",
       "kycTitle": "Верификация личности",

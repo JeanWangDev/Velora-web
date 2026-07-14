@@ -21,6 +21,7 @@ import type {
   LedgerEntry,
   OrderSide,
   OrderType,
+  TimeInForce,
   UserTrade,
 } from "@/types/exchange";
 
@@ -30,6 +31,7 @@ interface PlaceOrderInput {
   type: OrderType;
   price: number | null;
   quantity: number;
+  timeInForce?: TimeInForce;
 }
 
 interface TradingState {
@@ -60,7 +62,7 @@ function toBalance(b: ServerBalance): Balance {
 }
 
 async function loadAllBalances(): Promise<Record<AcctType, Balance[]>> {
-  const types: AcctType[] = ["funding", "trading", "futures"];
+  const types: AcctType[] = ["funding", "trading", "futures", "earn", "margin"];
   const results = await Promise.all(types.map((t) => AccountService.getBalances(t)));
   const map = {} as Record<AcctType, Balance[]>;
   types.forEach((t, i) => {
@@ -75,6 +77,7 @@ function toOrder(o: ServerSpotOrder): ExchangeOrder {
     symbol: o.symbol,
     side: o.side,
     type: o.type,
+    timeInForce: o.timeInForce,
     price: o.price,
     quantity: o.quantity,
     filledQuantity: o.filledQuantity,
@@ -102,6 +105,7 @@ function toLedger(l: ServerLedgerEntry): LedgerEntry {
   return {
     id: String(l.id),
     currency: l.currency,
+    accountType: l.accountType,
     type: l.type,
     amount: l.amount,
     balanceAfter: l.balanceAfter,
@@ -112,7 +116,7 @@ function toLedger(l: ServerLedgerEntry): LedgerEntry {
 
 export const useTradingStore = create<TradingState>()((set, get) => ({
   balances: [],
-  balancesByAccount: { funding: [], trading: [], futures: [] },
+  balancesByAccount: { funding: [], trading: [], futures: [], earn: [], margin: [] },
   openOrders: [],
   orderHistory: [],
   userTrades: [],
@@ -122,7 +126,7 @@ export const useTradingStore = create<TradingState>()((set, get) => ({
   clearForLogout: () =>
     set({
       balances: [],
-      balancesByAccount: { funding: [], trading: [], futures: [] },
+      balancesByAccount: { funding: [], trading: [], futures: [], earn: [], margin: [] },
       openOrders: [],
       orderHistory: [],
       userTrades: [],

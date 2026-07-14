@@ -14,6 +14,10 @@ import { toast } from "@/services/toast";
 interface DepositMethodModalProps {
   open: boolean;
   onClose: () => void;
+  onTransfer?: () => void;
+  onDeposit?: () => void;
+  onQuickBuy?: () => void;
+  onEarn?: () => void;
 }
 
 const methods = [
@@ -43,13 +47,32 @@ const methods = [
   },
 ] as const;
 
-export function DepositMethodModal({ open, onClose }: DepositMethodModalProps) {
+export function DepositMethodModal({
+  open,
+  onClose,
+  onTransfer,
+  onDeposit,
+  onQuickBuy,
+  onEarn,
+}: DepositMethodModalProps) {
   const t = useExchangeT();
 
   const onSelect = (key: (typeof methods)[number]["key"]) => {
     onClose();
+    if (key === "transfer") {
+      onTransfer?.();
+      return;
+    }
     if (key === "deposit") {
-      toast.info(t("assets.depositContactAdmin"));
+      onDeposit?.();
+      return;
+    }
+    if (key === "quickBuy") {
+      onQuickBuy?.();
+      return;
+    }
+    if (key === "redeemEarn") {
+      onEarn?.();
       return;
     }
     toast.info(t("common.comingSoon"));

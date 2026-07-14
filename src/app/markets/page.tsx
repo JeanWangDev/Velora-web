@@ -8,7 +8,7 @@ import { useLocale } from "@/i18n/use-translation";
 import { getSpotSymbols } from "@/stores/use-symbol-registry";
 import { useMarketStore } from "@/stores/use-market-store";
 import { useWatchlistStore } from "@/stores/use-watchlist-store";
-import { getSymbolMeta } from "@/mocks/exchange-data";
+import { getSymbolMeta } from "@/stores/use-symbol-registry";
 import {
   displayPair,
   formatCompact,
@@ -92,7 +92,6 @@ export default function MarketsPage() {
             {rows.map((s) => {
               const tk = tickers[s.symbol];
               const meta = getSymbolMeta(s.symbol);
-              if (!tk) return null;
               return (
                 <tr
                   key={s.symbol}
@@ -120,13 +119,15 @@ export default function MarketsPage() {
                     </div>
                   </td>
                   <td className="px-4 py-3 text-right font-mono tabular-nums">
-                    {formatPrice(tk.last, meta?.pricePrecision ?? 2, locale)}
+                    {tk
+                      ? formatPrice(tk.last, meta?.pricePrecision ?? 2, locale)
+                      : "—"}
                   </td>
                   <td className="px-4 py-3 text-right">
-                    <PriceChange value={tk.change24h} />
+                    <PriceChange value={tk?.change24h ?? 0} />
                   </td>
                   <td className="hidden px-4 py-3 text-right font-mono tabular-nums text-muted sm:table-cell">
-                    {formatCompact(tk.quoteVolume24h, locale)}
+                    {tk ? formatCompact(tk.quoteVolume24h, locale) : "—"}
                   </td>
                   <td className="px-4 py-3 text-right">
                     <Link

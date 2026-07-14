@@ -44,4 +44,11 @@ export class AdminTradingPairsService {
       data: { id },
     });
   }
+
+  static syncSpotFromBinance() {
+    return apiClient.sendRequest<{ synced: number; failed: string[] }>({
+      url: `${BASE}/sync-spot`,
+      method: "POST",
+    });
+  }
 }

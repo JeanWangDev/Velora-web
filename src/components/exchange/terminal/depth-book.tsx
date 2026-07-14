@@ -4,7 +4,7 @@ import { useExchangeT } from "@/hooks/use-exchange-t";
 import { useLocale } from "@/i18n/use-translation";
 import type { OrderBook } from "@/types/exchange";
 import { formatPrice, formatQty } from "@/utils/format-exchange";
-import { getSymbolMeta } from "@/mocks/exchange-data";
+import { getSymbolMeta } from "@/stores/use-symbol-registry";
 import { cn } from "@/lib/cn";
 
 interface DepthBookProps {

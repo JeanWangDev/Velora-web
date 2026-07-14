@@ -1,4 +1,5 @@
 import { apiClient } from "./api-client";
+import type { AccountType } from "./account-service";
 
 const BASE = "/api/v1/wallet";
 
@@ -28,8 +29,8 @@ export class WalletService {
   static transfer(input: {
     currency: string;
     amount: number;
-    fromAccount: "funding" | "trading" | "futures";
-    toAccount: "funding" | "trading" | "futures";
+    fromAccount: AccountType;
+    toAccount: AccountType;
   }) {
     return apiClient.sendRequest<{ transferNo: string; status: string }>({
       url: `${BASE}/transfer`,

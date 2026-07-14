@@ -72,6 +72,46 @@ export const MOCK_SYMBOLS: MarketSymbol[] = [
     minQty: 10,
     status: "trading",
   },
+  {
+    symbol: "ADA-USDT",
+    base: "ADA",
+    quote: "USDT",
+    displayName: "Cardano",
+    pricePrecision: 4,
+    qtyPrecision: 1,
+    minQty: 1,
+    status: "trading",
+  },
+  {
+    symbol: "AVAX-USDT",
+    base: "AVAX",
+    quote: "USDT",
+    displayName: "Avalanche",
+    pricePrecision: 2,
+    qtyPrecision: 3,
+    minQty: 0.01,
+    status: "trading",
+  },
+  {
+    symbol: "LINK-USDT",
+    base: "LINK",
+    quote: "USDT",
+    displayName: "Chainlink",
+    pricePrecision: 3,
+    qtyPrecision: 2,
+    minQty: 0.01,
+    status: "trading",
+  },
+  {
+    symbol: "DOT-USDT",
+    base: "DOT",
+    quote: "USDT",
+    displayName: "Polkadot",
+    pricePrecision: 3,
+    qtyPrecision: 2,
+    minQty: 0.01,
+    status: "trading",
+  },
 ];
 
 const BASE_PRICES: Record<string, number> = {
@@ -81,6 +121,10 @@ const BASE_PRICES: Record<string, number> = {
   "BNB-USDT": 598.42,
   "XRP-USDT": 0.5123,
   "DOGE-USDT": 0.12456,
+  "ADA-USDT": 0.4521,
+  "AVAX-USDT": 35.12,
+  "LINK-USDT": 14.88,
+  "DOT-USDT": 7.25,
 };
 
 function seedFromSymbol(symbol: string): number {

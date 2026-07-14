@@ -238,7 +238,8 @@ button {
 }
 
 .ticker-animate {
-  animation: ticker-scroll 40s linear infinite;
+  /* 默认时长；组件按币对数量通过 animationDuration 覆盖，避免列表一长就飞过去 */
+  animation: ticker-scroll 80s linear infinite;
 }
 
 @keyframes kyc-scan {

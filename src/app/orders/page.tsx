@@ -6,7 +6,7 @@ import type { Locale } from "@/i18n/types";
 import { useExchangeT } from "@/hooks/use-exchange-t";
 import { useLocale } from "@/i18n/use-translation";
 import { useTradingStore } from "@/stores/use-trading-store";
-import { getSymbolMeta } from "@/mocks/exchange-data";
+import { getSymbolMeta } from "@/stores/use-symbol-registry";
 import {
   displayPair,
   formatDateTime,

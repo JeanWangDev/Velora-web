@@ -9,23 +9,29 @@ import { useExchangeT } from "@/hooks/use-exchange-t";
 import { useHydrated } from "@/hooks/use-hydrated";
 import { useLocale } from "@/i18n/use-translation";
 import { LocaleLink } from "@/components/ui/locale-link";
-import { getSpotSymbols } from "@/stores/use-symbol-registry";
+import { getSpotSymbols, useSymbolRegistry } from "@/stores/use-symbol-registry";
 import { useMarketStore } from "@/stores/use-market-store";
 import { useWatchlistStore } from "@/stores/use-watchlist-store";
 import type { TradeMode } from "@/stores/use-trade-mode-store";
 import {
   displayPair,
-  formatCompact,
   formatPrice,
 } from "@/utils/format-exchange";
 import { PriceChange } from "@/components/exchange/price-change";
+import { filterSymbolsByCategory, type SymbolCategory } from "@/utils/symbol-category-filter";
+import {
+  MARKET_LIST_GRID,
+  MARKET_LIST_HEADER_NUM,
+  MARKET_LIST_NUM_CELL,
+} from "@/components/exchange/market-list-grid";
+import { futuresInstIdToSpot, futuresSymbolsEqual } from "@/utils/symbol";
 import { cn } from "@/lib/cn";
 
-type Cat = "watch" | "all" | "main" | "meme" | "platform" | "ai" | "new";
-type SortKey = "pair" | "price" | "change" | "turnover";
+type Cat = SymbolCategory;
+type SortKey = "pair" | "price" | "change";
 
-const PANEL_W = 420;
-const PANEL_H = 460;
+const PANEL_W = 500;
+const PANEL_H = 480;
 
 function SortHead({
   k,
@@ -34,6 +40,7 @@ function SortHead({
   sortKey,
   sortAsc,
   onToggle,
+  align = "start",
 }: {
   k: SortKey;
   label: string;
@@ -41,13 +48,15 @@ function SortHead({
   sortKey: SortKey;
   sortAsc: boolean;
   onToggle: (k: SortKey) => void;
+  align?: "start" | "end";
 }) {
   return (
     <button
       type="button"
       onClick={() => onToggle(k)}
       className={cn(
-        "inline-flex items-center gap-0.5 text-[10px] text-[var(--terminal-muted)] hover:text-[var(--terminal-text)]",
+        "flex items-center gap-0.5 text-[10px] text-[var(--terminal-muted)] hover:text-[var(--terminal-text)]",
+        align === "end" && MARKET_LIST_HEADER_NUM,
         className,
       )}
     >
@@ -72,7 +81,7 @@ export function SymbolPickerDropdown({
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
   const [cat, setCat] = useState<Cat>("all");
-  const [sortKey, setSortKey] = useState<SortKey>("turnover");
+  const [sortKey, setSortKey] = useState<SortKey>("change");
   const [sortAsc, setSortAsc] = useState(false);
   const [pos, setPos] = useState({ top: 0, left: 0 });
   const mounted = useHydrated();
@@ -145,19 +154,14 @@ export function SymbolPickerDropdown({
     { key: "new", label: t("trade.categories.new") },
   ];
 
+  const futuresSymbols = useSymbolRegistry((s) => s.futuresSymbols);
+
+  const symbolList = useMemo(() => {
+    return mode === "futures" ? futuresSymbols : getSpotSymbols();
+  }, [mode, futuresSymbols, open]);
+
   const rows = useMemo(() => {
-    let list = getSpotSymbols().filter((s) => {
-      if (cat === "watch" && !watchlist.includes(s.symbol)) return false;
-      if (
-        cat === "main" &&
-        !["BTC-USDT", "ETH-USDT", "SOL-USDT"].includes(s.symbol)
-      )
-        return false;
-      if (cat === "new" && !["DOGE-USDT", "XRP-USDT"].includes(s.symbol))
-        return false;
-      if (cat === "ai" && s.symbol !== "SOL-USDT") return false;
-      if (cat === "meme" && s.symbol !== "DOGE-USDT") return false;
-      if (cat === "platform" && s.symbol !== "BNB-USDT") return false;
+    let list = filterSymbolsByCategory(symbolList, cat, watchlist).filter((s) => {
       if (!q) return true;
       const qq = q.toLowerCase();
       return (
@@ -168,19 +172,22 @@ export function SymbolPickerDropdown({
     });
 
     list = [...list].sort((a, b) => {
-      const ta = tickers[a.symbol];
-      const tb = tickers[b.symbol];
-      if (!ta || !tb) return 0;
+      const spotA = futuresInstIdToSpot(a.symbol);
+      const spotB = futuresInstIdToSpot(b.symbol);
+      const ta = tickers[spotA];
+      const tb = tickers[spotB];
+      if (!ta && !tb) return a.symbol.localeCompare(b.symbol);
+      if (!ta) return 1;
+      if (!tb) return -1;
       let cmp = 0;
       if (sortKey === "pair") cmp = a.symbol.localeCompare(b.symbol);
       if (sortKey === "price") cmp = ta.last - tb.last;
       if (sortKey === "change") cmp = ta.change24h - tb.change24h;
-      if (sortKey === "turnover") cmp = ta.quoteVolume24h - tb.quoteVolume24h;
       return sortAsc ? cmp : -cmp;
     });
 
     return list;
-  }, [cat, q, watchlist, tickers, sortKey, sortAsc]);
+  }, [cat, q, watchlist, tickers, sortKey, sortAsc, symbolList]);
 
   const toggleSort = (key: SortKey) => {
     if (sortKey === key) setSortAsc((v) => !v);
@@ -250,7 +257,7 @@ export function SymbolPickerDropdown({
             </div>
 
             {/* 列头 */}
-            <div className="grid grid-cols-[1.2fr_0.9fr_0.8fr_0.9fr] gap-1 border-b border-[var(--terminal-border)] px-3 py-1.5">
+            <div className={cn(MARKET_LIST_GRID, "border-b border-[var(--terminal-border)] px-3 py-1.5")}>
               <SortHead
                 k="pair"
                 label={
@@ -263,7 +270,7 @@ export function SymbolPickerDropdown({
               <SortHead
                 k="price"
                 label={t("markets.price")}
-                className="justify-end"
+                align="end"
                 sortKey={sortKey}
                 sortAsc={sortAsc}
                 onToggle={toggleSort}
@@ -271,15 +278,7 @@ export function SymbolPickerDropdown({
               <SortHead
                 k="change"
                 label={t("markets.change")}
-                className="justify-end"
-                sortKey={sortKey}
-                sortAsc={sortAsc}
-                onToggle={toggleSort}
-              />
-              <SortHead
-                k="turnover"
-                label={t("markets.volume")}
-                className="justify-end"
+                align="end"
                 sortKey={sortKey}
                 sortAsc={sortAsc}
                 onToggle={toggleSort}
@@ -294,16 +293,18 @@ export function SymbolPickerDropdown({
                 </p>
               )}
               {rows.map((s) => {
-                const tk = tickers[s.symbol];
-                if (!tk) return null;
-                const active = s.symbol === symbol;
+                const spotSym = futuresInstIdToSpot(s.symbol);
+                const tk = tickers[spotSym];
+                const routeSym = mode === "futures" ? spotSym : s.symbol;
+                const active = futuresSymbolsEqual(s.symbol, symbol);
                 return (
                   <LocaleLink
                     key={s.symbol}
-                    href={`${basePath}/${s.symbol}`}
+                    href={`${basePath}/${routeSym}`}
                     onClick={() => setOpen(false)}
                     className={cn(
-                      "grid grid-cols-[1.2fr_0.9fr_0.8fr_0.9fr] items-center gap-1 px-3 py-2 text-xs transition",
+                      MARKET_LIST_GRID,
+                      "px-3 py-2 text-xs transition",
                       active
                         ? "bg-[var(--terminal-accent)]/10"
                         : "hover:bg-[var(--terminal-panel)]",
@@ -333,19 +334,18 @@ export function SymbolPickerDropdown({
                         "truncate font-medium",
                         active ? "text-[var(--terminal-accent)]" : "text-[var(--terminal-text)]",
                       )}>
-                        {displayPair(s.symbol)}
+                        {displayPair(spotSym)}
                       </span>
                     </span>
-                    <span className="text-right font-mono tabular-nums text-[var(--terminal-text)]">
-                      {formatPrice(tk.last, s.pricePrecision, locale)}
+                    <span className={cn(MARKET_LIST_NUM_CELL, "text-[var(--terminal-text)]")}>
+                      {tk
+                        ? formatPrice(tk.last, s.pricePrecision, locale)
+                        : "—"}
                     </span>
                     <PriceChange
-                      value={tk.change24h}
-                      className="justify-end text-[11px]"
+                      value={tk?.change24h ?? 0}
+                      className={cn(MARKET_LIST_NUM_CELL, "text-[11px]")}
                     />
-                    <span className="text-right font-mono tabular-nums text-[var(--terminal-muted)]">
-                      {formatCompact(tk.quoteVolume24h, locale)}
-                    </span>
                   </LocaleLink>
                 );
               })}
@@ -360,7 +360,7 @@ export function SymbolPickerDropdown({
         )
       : null;
 
-  const current = getSpotSymbols().find((s) => s.symbol === symbol);
+  const current = symbolList.find((s) => futuresSymbolsEqual(s.symbol, symbol));
 
   return (
     <>

@@ -90,4 +90,53 @@ export class FuturesService {
       showErrorToast: false,
     });
   }
+
+  static getPreference(symbol: string) {
+    return apiClient.sendRequest<{
+      symbol: string;
+      leverage: number;
+      marginMode: "cross" | "isolated";
+    }>({
+      url: `${BASE}/preference`,
+      method: "GET",
+      params: { symbol },
+      showErrorToast: false,
+    });
+  }
+
+  static setLeverage(symbol: string, leverage: number) {
+    return apiClient.sendRequest<{
+      symbol: string;
+      leverage: number;
+      marginMode: "cross" | "isolated";
+    }>({
+      url: `${BASE}/leverage`,
+      method: "POST",
+      data: { symbol, leverage },
+      showErrorToast: false,
+    });
+  }
+
+  static setMarginMode(symbol: string, marginMode: "cross" | "isolated") {
+    return apiClient.sendRequest<{
+      symbol: string;
+      leverage: number;
+      marginMode: "cross" | "isolated";
+    }>({
+      url: `${BASE}/margin-mode`,
+      method: "POST",
+      data: { symbol, marginMode },
+      showErrorToast: false,
+    });
+  }
+
+  static fundingRate(symbol?: string) {
+    return apiClient.sendRequest<{ data: unknown[] }>({
+      url: `${BASE}/funding-rate`,
+      method: "GET",
+      params: symbol ? { symbol } : undefined,
+      skipAuth: true,
+      showErrorToast: false,
+    });
+  }
 }

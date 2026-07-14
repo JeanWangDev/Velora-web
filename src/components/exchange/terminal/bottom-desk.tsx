@@ -11,6 +11,7 @@ import {
 import { useExchangeT } from "@/hooks/use-exchange-t";
 import { useLocale } from "@/i18n/use-translation";
 import { SpotService } from "@/services/spot-service";
+import { FuturesService } from "@/services/futures-service";
 import { useFuturesStore } from "@/stores/use-futures-store";
 import { useTradingStore } from "@/stores/use-trading-store";
 import { useTerminalStore, type BottomDeskTab } from "@/stores/use-terminal-store";
@@ -22,6 +23,7 @@ import {
   formatQty,
 } from "@/utils/format-exchange";
 import { cn } from "@/lib/cn";
+import { futuresInstIdToSpot, futuresSymbolsEqual } from "@/utils/symbol";
 import { LoginModal } from "@/components/auth/login-modal";
 import { useAuthStore } from "@/stores/use-auth-store";
 
@@ -67,6 +69,27 @@ function FuturesBottomDesk({ symbol }: { symbol: string }) {
   const balances = useTradingStore((s) => s.getAccountBalances("futures"));
 
   const [currentSymbolOnly, setCurrentSymbolOnly] = useState(true);
+  const [closing, setClosing] = useState<string | null>(null);
+
+  const closePosition = async (p: (typeof positions)[number]) => {
+    setClosing(p.symbol);
+    try {
+      await FuturesService.placeOrder({
+        symbol: p.symbol,
+        side: p.side === "long" ? "sell" : "buy",
+        posSide: p.side,
+        type: "market",
+        price: null,
+        quantity: p.quantity,
+        leverage: p.leverage,
+        marginMode: p.marginMode,
+        reduceOnly: true,
+      });
+      void refresh();
+    } finally {
+      setClosing(null);
+    }
+  };
 
   useEffect(() => {
     if (!user) return;
@@ -76,19 +99,19 @@ function FuturesBottomDesk({ symbol }: { symbol: string }) {
   }, [user, refresh, symbol]);
 
   const symPositions = currentSymbolOnly
-    ? positions.filter((p) => p.symbol === symbol)
+    ? positions.filter((p) => futuresSymbolsEqual(p.symbol, symbol))
     : positions;
   const symOpen = currentSymbolOnly
-    ? openOrders.filter((o) => o.symbol === symbol)
+    ? openOrders.filter((o) => futuresSymbolsEqual(o.symbol, symbol))
     : openOrders;
   const symHistory = currentSymbolOnly
-    ? orderHistory.filter((o) => o.symbol === symbol)
+    ? orderHistory.filter((o) => futuresSymbolsEqual(o.symbol, symbol))
     : orderHistory;
 
   const tabs: { key: BottomDeskTab; label: string; count?: number }[] = [
     { key: "open", label: t("trade.openOrders"), count: symOpen.length },
     { key: "history", label: t("trade.orderHistory") },
-    { key: "trades", label: "持仓", count: symPositions.length },
+    { key: "trades", label: t("trade.positions"), count: symPositions.length },
     { key: "assets", label: t("assets.title") },
   ];
 
@@ -114,7 +137,15 @@ function FuturesBottomDesk({ symbol }: { symbol: string }) {
       {!user ? null : tab === "open" ? (
         <DeskTable
           empty={t("orders.empty")}
-          headers={["时间", "方向", "类型", "价格", "数量", "状态", ""]}
+          headers={[
+            t("orders.time"),
+            t("orders.side"),
+            t("orders.type"),
+            t("orders.price"),
+            t("orders.qty"),
+            t("orders.status"),
+            "",
+          ]}
           rows={symOpen.map((o) => [
             formatDateTime(o.createdAt, locale),
             <span key="s" className={o.side === "buy" ? "text-up" : "text-down"}>
@@ -141,7 +172,14 @@ function FuturesBottomDesk({ symbol }: { symbol: string }) {
       ) : tab === "history" ? (
         <DeskTable
           empty={t("orders.empty")}
-          headers={["时间", "方向", "类型", "价格", "成交/总量", "状态"]}
+          headers={[
+            t("orders.time"),
+            t("orders.side"),
+            t("orders.type"),
+            t("orders.price"),
+            t("trade.filledTotal"),
+            t("orders.status"),
+          ]}
           rows={symHistory.map((o) => [
             formatDateTime(o.createdAt, locale),
             `${o.posSide} ${o.side}`,
@@ -154,11 +192,20 @@ function FuturesBottomDesk({ symbol }: { symbol: string }) {
       ) : tab === "trades" ? (
         <DeskTable
           empty={t("orders.empty")}
-          headers={["合约", "方向", "张数", "开仓价", "标记价", "未实现盈亏", "强平价"]}
+          headers={[
+            t("trade.contract"),
+            t("orders.side"),
+            t("trade.contracts"),
+            t("trade.entryPrice"),
+            t("trade.markPrice"),
+            t("trade.unrealizedPnl"),
+            t("trade.liquidationPrice"),
+            "",
+          ]}
           rows={symPositions.map((p) => [
-            p.symbol,
+            futuresInstIdToSpot(p.symbol),
             <span key="s" className={p.side === "long" ? "text-up" : "text-down"}>
-              {p.side}
+              {p.side === "long" ? t("trade.openLong") : t("trade.openShort")}
             </span>,
             formatQty(p.quantity, 0),
             formatPrice(p.entryPrice, 2, locale),
@@ -170,6 +217,15 @@ function FuturesBottomDesk({ symbol }: { symbol: string }) {
               {formatPrice(p.unrealizedPnl, 2, locale)}
             </span>,
             formatPrice(p.liquidationPrice, 2, locale),
+            <button
+              key="close"
+              type="button"
+              disabled={closing === p.symbol}
+              onClick={() => void closePosition(p)}
+              className="text-down hover:underline disabled:opacity-50"
+            >
+              {t("trade.closePosition")}
+            </button>,
           ])}
         />
       ) : (
@@ -210,7 +266,13 @@ function SpotBottomDesk({ symbol }: { symbol: string }) {
 
   useEffect(() => {
     if (!user) return;
-    if (historySubTab !== "tpsl" && historySubTab !== "trigger") return;
+    if (
+      historySubTab !== "tpsl" &&
+      historySubTab !== "trigger" &&
+      historySubTab !== "trailingTpsl"
+    ) {
+      return;
+    }
     void SpotService.listAlgoOrders(currentSymbolOnly ? symbol : undefined).then((res) => {
       const rows = (res.data ?? []) as Record<string, unknown>[];
       setAlgoOrders(
@@ -236,6 +298,11 @@ function SpotBottomDesk({ symbol }: { symbol: string }) {
     if (hideCancelled) rows = rows.filter((o) => o.status !== "cancelled");
     if (historySubTab === "limitMarket") {
       rows = rows.filter((o) => o.type === "limit" || o.type === "market");
+    }
+    if (historySubTab === "advancedLimit") {
+      rows = rows.filter(
+        (o) => o.timeInForce && o.timeInForce !== "gtc",
+      );
     }
     return rows;
   }, [orderHistory, symbol, currentSymbolOnly, hideCancelled, historySubTab]);
@@ -374,20 +441,43 @@ function SpotBottomDesk({ symbol }: { symbol: string }) {
           })}
         />
       ) : tab === "history" ? (
-        historySubTab === "tpsl" || historySubTab === "trigger" ? (
+        historySubTab === "tpsl" ||
+        historySubTab === "trigger" ||
+        historySubTab === "trailingTpsl" ? (
           <DeskTable
             empty={t("orders.empty")}
-            headers={["时间", "类型", "方向", "触发价", "委托价", "数量", ""]}
-            rows={algoOrders.map((a) => {
+            headers={[
+              t("orders.time"),
+              t("orders.type"),
+              t("orders.side"),
+              t("trade.triggerPrice"),
+              t("orders.price"),
+              t("orders.qty"),
+              "",
+            ]}
+            rows={algoOrders
+              .filter((a) => {
+                if (historySubTab === "trailingTpsl") {
+                  return a.algoType === "trailing_stop";
+                }
+                return (
+                  a.algoType === "stop_loss" ||
+                  a.algoType === "take_profit" ||
+                  a.algoType === "oco"
+                );
+              })
+              .map((a) => {
               const meta = getSymbolMeta(a.symbol);
               return [
                 formatDateTime(a.createdAt, locale),
                 a.algoType,
                 a.side,
-                formatPrice(a.triggerPrice, meta?.pricePrecision ?? 2, locale),
+                a.triggerPrice > 0
+                  ? formatPrice(a.triggerPrice, meta?.pricePrecision ?? 2, locale)
+                  : "—",
                 a.orderPrice
                   ? formatPrice(a.orderPrice, meta?.pricePrecision ?? 2, locale)
-                  : "市价",
+                  : t("trade.market"),
                 formatQty(a.quantity, meta?.qtyPrecision ?? 4),
                 <button
                   key="c"
@@ -400,10 +490,39 @@ function SpotBottomDesk({ symbol }: { symbol: string }) {
               ];
             })}
           />
-        ) : historySubTab !== "limitMarket" ? (
-          <DeskEmptyState title={t("trade.historyEmptyTitle")}>
-            {t("common.comingSoon")}
-          </DeskEmptyState>
+        ) : historySubTab === "advancedLimit" ? (
+          <DeskTable
+            empty={t("orders.empty")}
+            headers={[
+              t("orders.time"),
+              t("trade.timeInForce"),
+              t("orders.side"),
+              t("orders.price"),
+              t("orders.qty"),
+              t("orders.status"),
+            ]}
+            rows={symbolHistory.map((o) => {
+              const meta = getSymbolMeta(o.symbol);
+              const tifLabels: Record<string, string> = {
+                post_only: "trade.tifPostOnly",
+                ioc: "trade.tifIoc",
+                fok: "trade.tifFok",
+                gtc: "trade.tifGtc",
+              };
+              return [
+                formatDateTime(o.createdAt, locale),
+                t(tifLabels[o.timeInForce ?? "gtc"] ?? "trade.tifGtc"),
+                <span key="s" className={o.side === "buy" ? "text-up" : "text-down"}>
+                  {t(`trade.${o.side}`)}
+                </span>,
+                o.price
+                  ? formatPrice(o.price, meta?.pricePrecision ?? 2, locale)
+                  : "—",
+                formatQty(o.filledQuantity || o.quantity, meta?.qtyPrecision ?? 4),
+                t(`orders.statusMap.${o.status}`),
+              ];
+            })}
+          />
         ) : (
           <DeskTable
             emptyNode={

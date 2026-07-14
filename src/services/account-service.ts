@@ -10,11 +10,12 @@ export interface ServerBalance {
   frozen: number;
 }
 
-export type AccountType = "funding" | "trading" | "futures";
+export type AccountType = "funding" | "trading" | "futures" | "earn" | "margin";
 
 export interface ServerLedgerEntry {
   id: number;
   currency: string;
+  accountType?: AccountType;
   type: LedgerType;
   amount: number;
   balanceAfter: number;
@@ -32,7 +33,13 @@ export class AccountService {
     });
   }
 
-  static getLedger(params?: { currency?: string; page?: number; pageSize?: number }) {
+  static getLedger(params?: {
+    currency?: string;
+    accountType?: AccountType;
+    type?: LedgerType;
+    page?: number;
+    pageSize?: number;
+  }) {
     return apiClient.sendRequest<{
       data: ServerLedgerEntry[];
       total: number;

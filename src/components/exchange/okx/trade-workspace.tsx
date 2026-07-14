@@ -17,6 +17,8 @@ import {
   stopMarketDepthPolling,
   useMarketStore,
 } from "@/stores/use-market-store";
+import { subscribePrivateStream } from "@/services/private-stream-client";
+import { useFuturesStore } from "@/stores/use-futures-store";
 import { useTradingStore } from "@/stores/use-trading-store";
 import { useTerminalStore } from "@/stores/use-terminal-store";
 import { useLayoutStore, type LayoutPreset } from "@/stores/use-layout-store";
@@ -328,17 +330,34 @@ export function TradeWorkspace({ symbol, mode }: { symbol: string; mode: TradeMo
     }
 
     void store.hydrate();
+
+    const unsubPrivate = subscribePrivateStream((frame) => {
+      if (frame.type === "account") {
+        void store.refreshBalances();
+      }
+      if (frame.type === "order") {
+        void store.refreshOrders();
+        const scope = (frame.data as { scope?: string })?.scope;
+        if (scope === "futures") {
+          void useFuturesStore.getState().refresh();
+        }
+      }
+    });
+
     const timer = window.setInterval(() => {
       if (!useAuthStore.getState().user) return;
       void store.refreshBalances();
       void store.refreshOrders();
-    }, 4000);
-    return () => window.clearInterval(timer);
+    }, 30_000);
+    return () => {
+      window.clearInterval(timer);
+      unsubPrivate();
+    };
   }, [authHydrated, user]);
 
   useEffect(() => {
     useMarketStore.getState().initSymbol(symbol);
-    startMarketDepthPolling(symbol, 2000);
+    startMarketDepthPolling(symbol, 5000);
     return () => stopMarketDepthPolling();
   }, [symbol]);
 
@@ -438,10 +457,10 @@ function LayoutBody({
 }) {
   /* 列宽 state（每种布局各自独立） */
   const [stdBookW,   setStdBookW]   = useState(260); // standard: 订单簿列
-  const [stdSymbolW, setStdSymbolW] = useState(320); // standard: 币对列表列
+  const [stdSymbolW, setStdSymbolW] = useState(380); // standard: 币对列表列
   const [proBookW,   setProBookW]   = useState(260); // pro-right: 订单簿列
   const [proFormW,   setProFormW]   = useState(320); // pro-right: 下单列
-  const [wideMarketW,  setWideMarketW]  = useState(320); // pro-left: 市场列表
+  const [wideMarketW,  setWideMarketW]  = useState(380); // pro-left: 市场列表
   const [wideBookW,    setWideBookW]    = useState(240); // pro-left: 订单簿
   const [wideTradesW,  setWideTradesW]  = useState(180); // pro-left: 成交
 
@@ -474,10 +493,10 @@ function LayoutBody({
         </Pane>
 
         <VDivider onDrag={(dx) => {
-          setStdSymbolW((w) => clampW(w - dx, 280, 480));
+          setStdSymbolW((w) => clampW(w - dx, 320, 520));
         }} />
 
-        <Pane style={{ width: stdSymbolW, minWidth: 280 }}>
+        <Pane style={{ width: stdSymbolW, minWidth: 320 }}>
           <MarketSidePanel currentSymbol={symbol} />
         </Pane>
       </div>
@@ -527,12 +546,12 @@ function LayoutBody({
   if (layout === "pro-left") {
     return (
       <div className="flex h-full">
-        <Pane style={{ width: wideMarketW, minWidth: 280 }}>
+        <Pane style={{ width: wideMarketW, minWidth: 320 }}>
           <MarketSidePanel currentSymbol={symbol} />
         </Pane>
 
         <VDivider onDrag={(dx) => {
-          setWideMarketW((w) => clampW(w + dx, 280, 480));
+          setWideMarketW((w) => clampW(w + dx, 320, 520));
         }} />
 
         <Pane className="flex-1">

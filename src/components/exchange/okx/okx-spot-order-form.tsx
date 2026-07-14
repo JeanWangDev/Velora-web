@@ -6,18 +6,26 @@ import { useExchangeT } from "@/hooks/use-exchange-t";
 import { useLocale } from "@/i18n/use-translation";
 import { useTradingStore } from "@/stores/use-trading-store";
 import { getSymbolMeta } from "@/stores/use-symbol-registry";
-import type { OrderSide } from "@/types/exchange";
+import type { OrderSide, TimeInForce } from "@/types/exchange";
 import { formatPrice } from "@/utils/format-exchange";
 import { toast } from "@/services/toast";
 import { SpotService } from "@/services/spot-service";
 import { cn } from "@/lib/cn";
 import { OkxAmountSlider } from "@/components/exchange/okx/okx-amount-slider";
 import { DepositMethodModal } from "@/components/exchange/okx/deposit-method-modal";
+import { DepositModal, TransferModal } from "@/components/exchange/okx/okx-wallet-modals";
 import { LoginModal } from "@/components/auth/login-modal";
 import { useAuthStore } from "@/stores/use-auth-store";
 import { isChineseLocale } from "@/i18n/locale-helpers";
 
 type FormMode = "limit" | "market" | "tpsl";
+
+const TIF_OPTIONS: { key: TimeInForce; labelKey: string }[] = [
+  { key: "gtc", labelKey: "trade.tifGtc" },
+  { key: "post_only", labelKey: "trade.tifPostOnly" },
+  { key: "ioc", labelKey: "trade.tifIoc" },
+  { key: "fok", labelKey: "trade.tifFok" },
+];
 
 /** OKX 风格分段输入框：左侧标签 | 输入 | 单位 | 步进 */
 function OkxInputRow({
@@ -149,6 +157,9 @@ function OkxSideForm({
   const [pct, setPct] = useState(0);
   const [attachTpsl, setAttachTpsl] = useState(false);
   const [triggerPrice, setTriggerPrice] = useState("");
+  const [tpTrigger, setTpTrigger] = useState("");
+  const [slTrigger, setSlTrigger] = useState("");
+  const [timeInForce, setTimeInForce] = useState<TimeInForce>("gtc");
   const [tpslMode, setTpslMode] = useState<"one" | "two">("one");
   const [tpslOpen, setTpslOpen] = useState(false);
 
@@ -221,8 +232,41 @@ function OkxSideForm({
 
     if (mode === "tpsl") {
       const quantity = Number(qty);
+      if (!(quantity > 0)) {
+        toast.error(t("trade.insufficient"));
+        return;
+      }
+
+      if (tpslMode === "two") {
+        const tp = Number(tpTrigger);
+        const sl = Number(slTrigger);
+        if (!(tp > 0) || !(sl > 0)) {
+          toast.error(t("trade.insufficient"));
+          return;
+        }
+        setSubmitting(true);
+        try {
+          await SpotService.placeOco({
+            symbol,
+            side,
+            quantity,
+            takeProfitTrigger: tp,
+            stopLossTrigger: sl,
+          });
+          toast.success(t("trade.tpslOrderPlaced"));
+          setQty("");
+          setTpTrigger("");
+          setSlTrigger("");
+        } catch {
+          toast.error(t("trade.insufficient"));
+        } finally {
+          setSubmitting(false);
+        }
+        return;
+      }
+
       const trigger = Number(triggerPrice);
-      if (!(quantity > 0) || !(trigger > 0)) {
+      if (!(trigger > 0)) {
         toast.error(t("trade.insufficient"));
         return;
       }
@@ -273,6 +317,7 @@ function OkxSideForm({
         type: mode === "limit" ? "limit" : "market",
         price: mode === "limit" ? Number(price) : null,
         quantity,
+        timeInForce: mode === "limit" ? timeInForce : undefined,
       });
       if (!result.ok) {
         toast.error(result.message ?? t("trade.insufficient"));
@@ -335,6 +380,23 @@ function OkxSideForm({
             placeholder={minQtyPh}
             unit={meta?.base}
           />
+          <div className="flex flex-wrap gap-1">
+            {TIF_OPTIONS.map((opt) => (
+              <button
+                key={opt.key}
+                type="button"
+                onClick={() => setTimeInForce(opt.key)}
+                className={cn(
+                  "rounded-md border px-2 py-1 text-[10px] transition",
+                  timeInForce === opt.key
+                    ? "border-[var(--terminal-accent)] text-[var(--terminal-accent)]"
+                    : "border-[var(--terminal-border)] text-[var(--terminal-muted)] hover:text-[var(--terminal-text)]",
+                )}
+              >
+                {t(opt.labelKey)}
+              </button>
+            ))}
+          </div>
         </>
       )}
 
@@ -387,20 +449,39 @@ function OkxSideForm({
               </div>
             )}
           </div>
-          <OkxInputRow
-            label={t("trade.triggerPrice")}
-            value={triggerPrice}
-            onChange={setTriggerPrice}
-            unit={meta?.quote}
-            steppers
-            onStep={stepTrigger}
-          />
-          <OkxInputRow
-            label={t("trade.marketOrder")}
-            value=""
-            readOnly
-            placeholder={t("trade.marketPriceLabel")}
-          />
+          {tpslMode === "one" ? (
+            <>
+              <OkxInputRow
+                label={t("trade.triggerPrice")}
+                value={triggerPrice}
+                onChange={setTriggerPrice}
+                unit={meta?.quote}
+                steppers
+                onStep={stepTrigger}
+              />
+              <OkxInputRow
+                label={t("trade.marketOrder")}
+                value=""
+                readOnly
+                placeholder={t("trade.marketPriceLabel")}
+              />
+            </>
+          ) : (
+            <>
+              <OkxInputRow
+                label={t("trade.takeProfitTrigger")}
+                value={tpTrigger}
+                onChange={setTpTrigger}
+                unit={meta?.quote}
+              />
+              <OkxInputRow
+                label={t("trade.stopLossTrigger")}
+                value={slTrigger}
+                onChange={setSlTrigger}
+                unit={meta?.quote}
+              />
+            </>
+          )}
           <OkxInputRow
             value={isBuy ? amount : qty}
             onChange={(v) => (isBuy ? setAmount(v) : setQty(v))}
@@ -508,6 +589,94 @@ function OkxSideForm({
   );
 }
 
+function OkxSpotToolsPanel({
+  symbol,
+  lastPrice,
+  side,
+  isLoggedIn,
+  onLoginClick,
+}: {
+  symbol: string;
+  lastPrice: number;
+  side: OrderSide;
+  isLoggedIn: boolean;
+  onLoginClick: () => void;
+}) {
+  const t = useExchangeT();
+  const locale = useLocale();
+  const meta = getSymbolMeta(symbol);
+  const [callbackRate, setCallbackRate] = useState("1");
+  const [qty, setQty] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const qtyPrecision = meta?.qtyPrecision ?? 4;
+
+  const submitTrailing = async () => {
+    const quantity = Number(qty);
+    const rate = Number(callbackRate) / 100;
+    if (!(quantity > 0) || !(rate > 0)) {
+      toast.error(t("trade.insufficient"));
+      return;
+    }
+    setSubmitting(true);
+    try {
+      await SpotService.placeAlgoOrder({
+        symbol,
+        side,
+        algoType: "trailing_stop",
+        triggerPrice: 0,
+        orderPrice: null,
+        quantity,
+        callbackRate: rate,
+      });
+      toast.success(t("trade.tpslOrderPlaced"));
+      setQty("");
+    } catch {
+      toast.error(t("trade.insufficient"));
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="flex flex-col gap-3 p-3">
+      <p className="text-[11px] text-[var(--terminal-muted)]">{t("trade.toolsTrailingDesc")}</p>
+      <OkxInputRow
+        label={t("trade.trailingCallback")}
+        value={callbackRate}
+        onChange={setCallbackRate}
+        unit="%"
+      />
+      <OkxInputRow
+        label={t("trade.quantity")}
+        value={qty}
+        onChange={setQty}
+        unit={meta?.base}
+      />
+      {isLoggedIn ? (
+        <button
+          type="button"
+          disabled={submitting}
+          onClick={() => void submitTrailing()}
+          className="rounded-full bg-[var(--terminal-accent)] py-2 text-sm font-semibold text-white disabled:opacity-60"
+        >
+          {t("trade.placeTrailingStop")}
+        </button>
+      ) : (
+        <button
+          type="button"
+          onClick={onLoginClick}
+          className="rounded-full bg-[var(--terminal-accent)] py-2 text-sm font-semibold text-white"
+        >
+          {t("trade.loginToTrade")}
+        </button>
+      )}
+      <p className="text-[10px] text-[var(--terminal-muted)]">
+        {t("trade.toolsTrailingHint")} · {formatPrice(lastPrice, meta?.pricePrecision ?? 2, locale)}
+      </p>
+    </div>
+  );
+}
+
 export function OkxSpotOrderForm({
   symbol,
   lastPrice,
@@ -527,9 +696,12 @@ export function OkxSpotOrderForm({
   const [workspaceTab, setWorkspaceTab] = useState<"trade" | "tools">("trade");
   const [leverageOn, setLeverageOn] = useState(false);
   const [depositOpen, setDepositOpen] = useState(false);
+  const [transferOpen, setTransferOpen] = useState(false);
+  const [depositModalOpen, setDepositModalOpen] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
   const user = useAuthStore((s) => s.user);
   const isLoggedIn = Boolean(user);
+  const meta = getSymbolMeta(symbol);
 
   useEffect(() => {
     if (!fillLevel) return;
@@ -647,12 +819,29 @@ export function OkxSpotOrderForm({
             </div>
           </>
         ) : (
-          <div className="flex flex-1 items-center justify-center p-6 text-[var(--terminal-muted)]">
-            {t("common.comingSoon")}
-          </div>
+          <OkxSpotToolsPanel
+            symbol={symbol}
+            lastPrice={lastPrice}
+            side={side}
+            isLoggedIn={isLoggedIn}
+            onLoginClick={() => setLoginOpen(true)}
+          />
         )}
 
-        <DepositMethodModal open={depositOpen} onClose={() => setDepositOpen(false)} />
+        <DepositMethodModal
+          open={depositOpen}
+          onClose={() => setDepositOpen(false)}
+          onTransfer={() => setTransferOpen(true)}
+          onDeposit={() => setDepositModalOpen(true)}
+          onQuickBuy={() => { window.location.href = "/quick-buy"; }}
+          onEarn={() => { window.location.href = "/earn"; }}
+        />
+        <TransferModal open={transferOpen} onClose={() => setTransferOpen(false)} />
+        <DepositModal
+          open={depositModalOpen}
+          onClose={() => setDepositModalOpen(false)}
+          defaultCurrency={meta?.quote ?? "USDT"}
+        />
         <LoginModal open={loginOpen} onClose={() => setLoginOpen(false)} />
       </div>
     );
@@ -710,7 +899,20 @@ export function OkxSpotOrderForm({
         />
       </div>
 
-      <DepositMethodModal open={depositOpen} onClose={() => setDepositOpen(false)} />
+      <DepositMethodModal
+        open={depositOpen}
+        onClose={() => setDepositOpen(false)}
+        onTransfer={() => setTransferOpen(true)}
+        onDeposit={() => setDepositModalOpen(true)}
+        onQuickBuy={() => { window.location.href = "/quick-buy"; }}
+        onEarn={() => { window.location.href = "/earn"; }}
+      />
+      <TransferModal open={transferOpen} onClose={() => setTransferOpen(false)} />
+      <DepositModal
+        open={depositModalOpen}
+        onClose={() => setDepositModalOpen(false)}
+        defaultCurrency={meta?.quote ?? "USDT"}
+      />
       <LoginModal open={loginOpen} onClose={() => setLoginOpen(false)} />
     </div>
   );

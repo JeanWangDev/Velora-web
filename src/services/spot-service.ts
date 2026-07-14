@@ -1,5 +1,5 @@
 import { apiClient } from "@/services/api-client";
-import type { OrderSide, OrderType } from "@/types/exchange";
+import type { OrderSide, OrderType, TimeInForce } from "@/types/exchange";
 
 const BASE = "/api/v1/spot";
 
@@ -21,6 +21,7 @@ export interface ServerSpotOrder {
   symbol: string;
   side: OrderSide;
   type: OrderType;
+  timeInForce?: TimeInForce;
   price: number | null;
   quantity: number;
   filledQuantity: number;
@@ -52,6 +53,7 @@ export interface PlaceSpotOrderInput {
   type: OrderType;
   price: number | null;
   quantity: number;
+  timeInForce?: TimeInForce;
 }
 
 export class SpotService {
@@ -95,6 +97,19 @@ export class SpotService {
     });
   }
 
+  static amendOrder(input: {
+    orderNo: string;
+    price?: number | null;
+    quantity?: number;
+  }) {
+    return apiClient.sendRequest<{ order: ServerSpotOrder }>({
+      url: `${BASE}/order/amend`,
+      method: "POST",
+      data: input,
+      showErrorToast: false,
+    });
+  }
+
   static openOrders(symbol?: string) {
     return apiClient.sendRequest<{ data: ServerSpotOrder[] }>({
       url: `${BASE}/orders/open`,
@@ -135,13 +150,35 @@ export class SpotService {
   static placeAlgoOrder(input: {
     symbol: string;
     side: OrderSide;
-    algoType: "stop_loss" | "take_profit";
+    algoType: "stop_loss" | "take_profit" | "trailing_stop";
     triggerPrice: number;
     orderPrice: number | null;
     quantity: number;
+    callbackRate?: number;
   }) {
     return apiClient.sendRequest<{ algoNo: string; status: string }>({
       url: `${BASE}/algo-order`,
+      method: "POST",
+      data: input,
+      showErrorToast: false,
+    });
+  }
+
+  static placeOco(input: {
+    symbol: string;
+    side: OrderSide;
+    quantity: number;
+    takeProfitTrigger: number;
+    stopLossTrigger: number;
+    takeProfitOrderPrice?: number | null;
+    stopLossOrderPrice?: number | null;
+  }) {
+    return apiClient.sendRequest<{
+      groupNo: string;
+      takeProfitAlgoNo: string;
+      stopLossAlgoNo: string;
+    }>({
+      url: `${BASE}/oco`,
       method: "POST",
       data: input,
       showErrorToast: false,

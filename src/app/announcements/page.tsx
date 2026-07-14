@@ -1,19 +1,25 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useExchangeT } from "@/hooks/use-exchange-t";
 import { useLocale } from "@/i18n/use-translation";
-import { MOCK_ANNOUNCEMENTS } from "@/mocks/exchange-data";
+import {
+  AnnouncementService,
+  type Announcement,
+  type AnnouncementCategory,
+} from "@/services/announcement-service";
 import { formatDateTime } from "@/utils/format-exchange";
 import { isChineseLocale } from "@/i18n/locale-helpers";
 
-type Cat = "all" | "maintenance" | "listing" | "risk";
+type Cat = AnnouncementCategory;
 
 export default function AnnouncementsPage() {
   const t = useExchangeT();
   const locale = useLocale();
   const [cat, setCat] = useState<Cat>("all");
+  const [rows, setRows] = useState<Announcement[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const tabs: { key: Cat; label: string }[] = [
     { key: "all", label: t("announcements.all") },
@@ -22,13 +28,18 @@ export default function AnnouncementsPage() {
     { key: "risk", label: t("announcements.risk") },
   ];
 
-  const rows = useMemo(() => {
-    const sorted = [...MOCK_ANNOUNCEMENTS].sort(
-      (a, b) => b.publishedAt - a.publishedAt,
-    );
-    if (cat === "all") return sorted;
-    return sorted.filter((a) => a.category === cat);
+  useEffect(() => {
+    setLoading(true);
+    void AnnouncementService.list(cat)
+      .then((res) => setRows(res.rows ?? []))
+      .catch(() => setRows([]))
+      .finally(() => setLoading(false));
   }, [cat]);
+
+  const sorted = useMemo(
+    () => [...rows].sort((a, b) => b.publishedAt - a.publishedAt),
+    [rows],
+  );
 
   return (
     <div className="aurora-bg mx-auto w-full max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
@@ -53,52 +64,32 @@ export default function AnnouncementsPage() {
         ))}
       </div>
 
-      <div className="space-y-3">
-        {rows.map((ann) => (
-          <Link
-            key={ann.id}
-            href={`/announcements/${ann.id}`}
-            className="glass-panel block rounded-2xl p-5 transition hover:border-primary/30"
-          >
-            <div className="mb-2 flex items-center gap-2">
-              <CategoryBadge category={ann.category} t={t} />
-              <time className="text-xs text-muted">
-                {formatDateTime(ann.publishedAt, locale)}
-              </time>
-            </div>
-            <h2 className="font-medium">
-              {isChineseLocale(locale) ? ann.titleZh : ann.titleEn}
-            </h2>
-            <p className="mt-1 line-clamp-2 text-sm text-muted">
-              {isChineseLocale(locale) ? ann.summaryZh : ann.summaryEn}
-            </p>
-            <span className="mt-3 inline-block text-sm text-primary">
-              {t("announcements.readMore")} →
-            </span>
-          </Link>
-        ))}
-      </div>
+      {loading ? (
+        <p className="py-12 text-center text-sm text-muted">{t("common.loading")}</p>
+      ) : sorted.length === 0 ? (
+        <p className="py-12 text-center text-sm text-muted">{t("common.noData")}</p>
+      ) : (
+        <ul className="divide-y divide-border rounded-2xl border border-border bg-surface">
+          {sorted.map((ann) => (
+            <li key={ann.id}>
+              <Link
+                href={`/announcements/${ann.id}`}
+                className="block px-5 py-4 transition hover:bg-surface-muted"
+              >
+                <p className="font-medium">
+                  {isChineseLocale(locale) ? ann.titleZh : ann.titleEn}
+                </p>
+                <p className="mt-1 text-sm text-muted line-clamp-2">
+                  {isChineseLocale(locale) ? ann.summaryZh : ann.summaryEn}
+                </p>
+                <p className="mt-2 text-xs text-muted">
+                  {formatDateTime(ann.publishedAt, locale)}
+                </p>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
-  );
-}
-
-function CategoryBadge({
-  category,
-  t,
-}: {
-  category: string;
-  t: (k: string) => string;
-}) {
-  const colors: Record<string, string> = {
-    listing: "bg-accent/15 text-accent",
-    maintenance: "bg-primary/15 text-primary",
-    risk: "bg-down/15 text-down",
-  };
-  return (
-    <span
-      className={`rounded-full px-2 py-0.5 text-[10px] uppercase tracking-wide ${colors[category] ?? "bg-surface-muted text-muted"}`}
-    >
-      {t(`announcements.${category}`)}
-    </span>
   );
 }

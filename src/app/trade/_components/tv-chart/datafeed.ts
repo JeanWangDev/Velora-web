@@ -13,6 +13,7 @@ import { MarketWorkerManager } from "@/lib/web-worker/market-worker-manager";
 import { getWorkerApiBaseUrl } from "@/config/api";
 import { MarketDataService } from "@/services/market-data-service";
 import { getMarketStreamClient } from "@/services/market-stream-client";
+import { veloraSymbolToTv } from "@/app/trade/_components/tv-chart/mock-datafeed";
 
 // ─── Resolution mapping ───────────────────────────────────────────────────────
 //
@@ -332,7 +333,12 @@ export function createMarketDatafeed(
     searchSymbols(userInput, _exchange, _symbolType, onResult) {
       const q = userInput.toUpperCase().trim();
 
-      MarketDataService.searchSymbols({ exchange, query: q, limit: 30 })
+      MarketDataService.searchSymbols({
+        exchange,
+        query: q,
+        quote: "USDT",
+        limit: 100,
+      })
         .then((symbols) => {
           onResult(
             symbols.map((item) => ({
@@ -346,8 +352,6 @@ export function createMarketDatafeed(
           );
         })
         .catch(() => {
-          // Fallback to the static popular list so the picker still works
-          // when the backend is unreachable.
           const results = POPULAR_SYMBOLS.filter((s) => s.includes(q)).map(
             (s) => ({
               symbol: s,

@@ -1004,6 +1004,18 @@ export const pt = {
       "historySubTpsl": "TP/SL",
       "historySubTrailingTpsl": "TP/SL trailing",
       "historySubTrigger": "Gatilho",
+
+      "timeInForce": "Time in force",
+      "tifGtc": "GTC",
+      "tifPostOnly": "Post Only",
+      "tifIoc": "IOC",
+      "tifFok": "FOK",
+      "takeProfitTrigger": "TP trigger",
+      "stopLossTrigger": "SL trigger",
+      "trailingCallback": "Callback",
+      "placeTrailingStop": "Place trailing stop",
+      "toolsTrailingDesc": "Trail the market and trigger when price retraces by callback %",
+      "toolsTrailingHint": "Last price",
       "allTradeTypes": "Todos os tipos",
       "sortByOrderTime": "Por hora da ordem",
       "currentSymbolOnly": "Símbolo atual",
@@ -1036,7 +1048,15 @@ export const pt = {
       "chartIndicatorSettings": "Indicator settings",
       "orderBookCumulative": "Total",
       "deskLoginConnector": " or ",
-      "deskLoginSuffix": " to start trading"
+      "deskLoginSuffix": " to start trading",
+      "positions": "Positions",
+      "contract": "Contract",
+      "contracts": "Size",
+      "entryPrice": "Entry",
+      "unrealizedPnl": "Unrealized PnL",
+      "liquidationPrice": "Liq. Price",
+      "closePosition": "Close",
+      "filledTotal": "Filled / Total"
     },
     "assets": {
       "title": "Ativos",
@@ -1051,6 +1071,14 @@ export const pt = {
       "amount": "Valor",
       "time": "Hora",
       "ref": "Ref.",
+      "account": "Account",
+      "filterAll": "All",
+      "filterCurrency": "Asset",
+      "filterAccount": "Account",
+      "filterType": "Type",
+      "accountFunding": "Funding",
+      "accountTrading": "Trading",
+      "accountFutures": "Futures",
       "deposit": "Depósito",
       "withdraw": "Saque",
       "depositDemo": "Depósito demo creditado",
@@ -1064,7 +1092,8 @@ export const pt = {
         "unfreeze": "Descongelamento",
         "credit": "Crédito Demo",
         "deposit": "Depósito",
-        "withdraw": "Saque"
+        "withdraw": "Saque",
+        "transfer": "Transfer"
       }
     },
     "orders": {
@@ -1101,6 +1130,7 @@ export const pt = {
       "boostSecurity": "Aumentar segurança",
       "securityHint": "Senha, 2FA e histórico de login",
       "security": "Segurança",
+      "support": "Support",
       "preferences": "Preferências",
       "kyc": "Verificação de Identidade",
       "kycTitle": "Verificação de Identidade",

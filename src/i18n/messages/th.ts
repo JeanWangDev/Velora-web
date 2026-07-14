@@ -1004,6 +1004,18 @@ export const th = {
       "historySubTpsl": "TP/SL",
       "historySubTrailingTpsl": "TP/SL ตามราคา",
       "historySubTrigger": "ทริกเกอร์",
+
+      "timeInForce": "Time in force",
+      "tifGtc": "GTC",
+      "tifPostOnly": "Post Only",
+      "tifIoc": "IOC",
+      "tifFok": "FOK",
+      "takeProfitTrigger": "TP trigger",
+      "stopLossTrigger": "SL trigger",
+      "trailingCallback": "Callback",
+      "placeTrailingStop": "Place trailing stop",
+      "toolsTrailingDesc": "Trail the market and trigger when price retraces by callback %",
+      "toolsTrailingHint": "Last price",
       "allTradeTypes": "ทุกประเภทการเทรด",
       "sortByOrderTime": "ตามเวลาคำสั่ง",
       "currentSymbolOnly": "สัญลักษณ์ปัจจุบัน",
@@ -1036,7 +1048,15 @@ export const th = {
       "chartIndicatorSettings": "Indicator settings",
       "orderBookCumulative": "Total",
       "deskLoginConnector": " or ",
-      "deskLoginSuffix": " to start trading"
+      "deskLoginSuffix": " to start trading",
+      "positions": "Positions",
+      "contract": "Contract",
+      "contracts": "Size",
+      "entryPrice": "Entry",
+      "unrealizedPnl": "Unrealized PnL",
+      "liquidationPrice": "Liq. Price",
+      "closePosition": "Close",
+      "filledTotal": "Filled / Total"
     },
     "assets": {
       "title": "สินทรัพย์",
@@ -1051,6 +1071,14 @@ export const th = {
       "amount": "จำนวน",
       "time": "เวลา",
       "ref": "อ้างอิง",
+      "account": "Account",
+      "filterAll": "All",
+      "filterCurrency": "Asset",
+      "filterAccount": "Account",
+      "filterType": "Type",
+      "accountFunding": "Funding",
+      "accountTrading": "Trading",
+      "accountFutures": "Futures",
       "deposit": "ฝาก",
       "withdraw": "ถอน",
       "depositDemo": "ฝากทดสอบสำเร็จ",
@@ -1064,7 +1092,8 @@ export const th = {
         "unfreeze": "ปลดระงับ",
         "credit": "เครดิตทดสอบ",
         "deposit": "ฝาก",
-        "withdraw": "ถอน"
+        "withdraw": "ถอน",
+        "transfer": "Transfer"
       }
     },
     "orders": {
@@ -1101,6 +1130,7 @@ export const th = {
       "boostSecurity": "เพิ่มความปลอดภัย",
       "securityHint": "รหัสผ่าน 2FA และประวัติเข้าสู่ระบบ",
       "security": "ความปลอดภัย",
+      "support": "Support",
       "preferences": "การตั้งค่า",
       "kyc": "ยืนยันตัวตน",
       "kycTitle": "ยืนยันตัวตน",

@@ -1004,6 +1004,18 @@ export const es = {
       "historySubTpsl": "TP/SL",
       "historySubTrailingTpsl": "TP/SL trailing",
       "historySubTrigger": "Activación",
+
+      "timeInForce": "Time in force",
+      "tifGtc": "GTC",
+      "tifPostOnly": "Post Only",
+      "tifIoc": "IOC",
+      "tifFok": "FOK",
+      "takeProfitTrigger": "TP trigger",
+      "stopLossTrigger": "SL trigger",
+      "trailingCallback": "Callback",
+      "placeTrailingStop": "Place trailing stop",
+      "toolsTrailingDesc": "Trail the market and trigger when price retraces by callback %",
+      "toolsTrailingHint": "Last price",
       "allTradeTypes": "Todos los tipos de operación",
       "sortByOrderTime": "Por hora de orden",
       "currentSymbolOnly": "Símbolo actual",
@@ -1036,7 +1048,15 @@ export const es = {
       "chartIndicatorSettings": "Ajustes de indicadores",
       "orderBookCumulative": "Total",
       "deskLoginConnector": " o ",
-      "deskLoginSuffix": " para empezar a operar"
+      "deskLoginSuffix": " para empezar a operar",
+      "positions": "Positions",
+      "contract": "Contract",
+      "contracts": "Size",
+      "entryPrice": "Entry",
+      "unrealizedPnl": "Unrealized PnL",
+      "liquidationPrice": "Liq. Price",
+      "closePosition": "Close",
+      "filledTotal": "Filled / Total"
     },
     "assets": {
       "title": "Activos",
@@ -1051,6 +1071,14 @@ export const es = {
       "amount": "Importe",
       "time": "Hora",
       "ref": "Ref.",
+      "account": "Account",
+      "filterAll": "All",
+      "filterCurrency": "Asset",
+      "filterAccount": "Account",
+      "filterType": "Type",
+      "accountFunding": "Funding",
+      "accountTrading": "Trading",
+      "accountFutures": "Futures",
       "deposit": "Depositar",
       "withdraw": "Retirar",
       "depositDemo": "Depósito demo acreditado",
@@ -1064,7 +1092,8 @@ export const es = {
         "unfreeze": "Descongelar",
         "credit": "Crédito demo",
         "deposit": "Depositar",
-        "withdraw": "Retirar"
+        "withdraw": "Retirar",
+        "transfer": "Transfer"
       }
     },
     "orders": {
@@ -1101,6 +1130,7 @@ export const es = {
       "boostSecurity": "Mejorar seguridad",
       "securityHint": "Contraseña, 2FA e historial de inicio de sesión",
       "security": "Seguridad",
+      "support": "Support",
       "preferences": "Preferencias",
       "kyc": "Verificación de identidad",
       "kycTitle": "Verificación de identidad",

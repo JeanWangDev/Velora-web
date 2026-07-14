@@ -25,6 +25,7 @@ export interface FetchKlinesParams {
 export interface FetchSymbolsParams {
   exchange?: string;
   query?: string;
+  quote?: string;
   limit?: number;
 }
 
@@ -65,11 +66,23 @@ export class MarketDataService {
     return apiClient.sendRequest<ISymbolSummary[]>({
       url: `${BASE}/symbols`,
       method: "GET",
+      skipAuth: true,
       params: {
         exchange: params.exchange ?? DEFAULT_EXCHANGE,
         query: params.query ?? "",
+        quote: params.quote,
         limit: params.limit,
       },
+    });
+  }
+
+  /** 全市场 24h ticker（默认 USDT 计价） */
+  static getTickers24h(quote = "USDT", exchange: string = DEFAULT_EXCHANGE) {
+    return apiClient.sendRequest<ITicker24h[]>({
+      url: `${BASE}/tickers`,
+      method: "GET",
+      skipAuth: true,
+      params: { exchange, quote },
     });
   }
 

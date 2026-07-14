@@ -1004,6 +1004,18 @@ export const id = {
       "historySubTpsl": "TP/SL",
       "historySubTrailingTpsl": "Trailing TP/SL",
       "historySubTrigger": "Pemicu",
+
+      "timeInForce": "Time in force",
+      "tifGtc": "GTC",
+      "tifPostOnly": "Post Only",
+      "tifIoc": "IOC",
+      "tifFok": "FOK",
+      "takeProfitTrigger": "TP trigger",
+      "stopLossTrigger": "SL trigger",
+      "trailingCallback": "Callback",
+      "placeTrailingStop": "Place trailing stop",
+      "toolsTrailingDesc": "Trail the market and trigger when price retraces by callback %",
+      "toolsTrailingHint": "Last price",
       "allTradeTypes": "Semua tipe trade",
       "sortByOrderTime": "Berdasarkan waktu order",
       "currentSymbolOnly": "Symbol saat ini",
@@ -1036,7 +1048,15 @@ export const id = {
       "chartIndicatorSettings": "Indicator settings",
       "orderBookCumulative": "Total",
       "deskLoginConnector": " or ",
-      "deskLoginSuffix": " to start trading"
+      "deskLoginSuffix": " to start trading",
+      "positions": "Positions",
+      "contract": "Contract",
+      "contracts": "Size",
+      "entryPrice": "Entry",
+      "unrealizedPnl": "Unrealized PnL",
+      "liquidationPrice": "Liq. Price",
+      "closePosition": "Close",
+      "filledTotal": "Filled / Total"
     },
     "assets": {
       "title": "Aset",
@@ -1051,6 +1071,14 @@ export const id = {
       "amount": "Jumlah",
       "time": "Waktu",
       "ref": "Ref",
+      "account": "Account",
+      "filterAll": "All",
+      "filterCurrency": "Asset",
+      "filterAccount": "Account",
+      "filterType": "Type",
+      "accountFunding": "Funding",
+      "accountTrading": "Trading",
+      "accountFutures": "Futures",
       "deposit": "Deposit",
       "withdraw": "Tarik",
       "depositDemo": "Deposit demo dikreditkan",
@@ -1064,7 +1092,8 @@ export const id = {
         "unfreeze": "Cairkan",
         "credit": "Kredit demo",
         "deposit": "Deposit",
-        "withdraw": "Tarik"
+        "withdraw": "Tarik",
+        "transfer": "Transfer"
       }
     },
     "orders": {
@@ -1101,6 +1130,7 @@ export const id = {
       "boostSecurity": "Tingkatkan keamanan",
       "securityHint": "Kata sandi, 2FA, dan riwayat login",
       "security": "Keamanan",
+      "support": "Support",
       "preferences": "Preferensi",
       "kyc": "Verifikasi identitas",
       "kycTitle": "Verifikasi identitas",

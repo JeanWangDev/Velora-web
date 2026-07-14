@@ -65,6 +65,24 @@ export function TradeModeNav() {
           >
             {t("orders.title")}
           </LocaleLink>
+          <LocaleLink
+            href="/options"
+            className="rounded-lg px-2 py-1.5 text-muted hover:bg-surface-muted hover:text-foreground"
+          >
+            Options
+          </LocaleLink>
+          <LocaleLink
+            href="/earn"
+            className="rounded-lg px-2 py-1.5 text-muted hover:bg-surface-muted hover:text-foreground"
+          >
+            {t("trade.redeemEarn")}
+          </LocaleLink>
+          <LocaleLink
+            href="/quick-buy"
+            className="col-span-2 rounded-lg px-2 py-1.5 text-muted hover:bg-surface-muted hover:text-foreground"
+          >
+            {t("trade.quickBuy")}
+          </LocaleLink>
         </div>
       </div>
     </div>

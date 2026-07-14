@@ -1004,6 +1004,18 @@ export const vi = {
       "historySubTpsl": "TP/SL",
       "historySubTrailingTpsl": "TP/SL trailing",
       "historySubTrigger": "Kích hoạt",
+
+      "timeInForce": "Time in force",
+      "tifGtc": "GTC",
+      "tifPostOnly": "Post Only",
+      "tifIoc": "IOC",
+      "tifFok": "FOK",
+      "takeProfitTrigger": "TP trigger",
+      "stopLossTrigger": "SL trigger",
+      "trailingCallback": "Callback",
+      "placeTrailingStop": "Place trailing stop",
+      "toolsTrailingDesc": "Trail the market and trigger when price retraces by callback %",
+      "toolsTrailingHint": "Last price",
       "allTradeTypes": "Mọi loại giao dịch",
       "sortByOrderTime": "Theo thời gian lệnh",
       "currentSymbolOnly": "Symbol hiện tại",
@@ -1036,7 +1048,15 @@ export const vi = {
       "chartIndicatorSettings": "Cài đặt chỉ báo",
       "orderBookCumulative": "Tích lũy",
       "deskLoginConnector": " hoặc ",
-      "deskLoginSuffix": " để bắt đầu giao dịch"
+      "deskLoginSuffix": " để bắt đầu giao dịch",
+      "positions": "Positions",
+      "contract": "Contract",
+      "contracts": "Size",
+      "entryPrice": "Entry",
+      "unrealizedPnl": "Unrealized PnL",
+      "liquidationPrice": "Liq. Price",
+      "closePosition": "Close",
+      "filledTotal": "Filled / Total"
     },
     "assets": {
       "title": "Tài sản",
@@ -1051,6 +1071,14 @@ export const vi = {
       "amount": "Số tiền",
       "time": "Thời gian",
       "ref": "Tham chiếu",
+      "account": "Account",
+      "filterAll": "All",
+      "filterCurrency": "Asset",
+      "filterAccount": "Account",
+      "filterType": "Type",
+      "accountFunding": "Funding",
+      "accountTrading": "Trading",
+      "accountFutures": "Futures",
       "deposit": "Nạp",
       "withdraw": "Rút",
       "depositDemo": "Đã ghi có nạp demo",
@@ -1064,7 +1092,8 @@ export const vi = {
         "unfreeze": "Mở băng",
         "credit": "Tín dụng demo",
         "deposit": "Nạp",
-        "withdraw": "Rút"
+        "withdraw": "Rút",
+        "transfer": "Transfer"
       }
     },
     "orders": {
@@ -1101,6 +1130,7 @@ export const vi = {
       "boostSecurity": "Tăng cường bảo mật",
       "securityHint": "Mật khẩu, 2FA và lịch sử đăng nhập",
       "security": "Bảo mật",
+      "support": "Support",
       "preferences": "Tùy chọn",
       "kyc": "Xác minh danh tính",
       "kycTitle": "Xác minh danh tính",

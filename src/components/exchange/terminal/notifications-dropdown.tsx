@@ -6,7 +6,10 @@ import { Bell } from "lucide-react";
 import { useExchangeT } from "@/hooks/use-exchange-t";
 import { useHydrated } from "@/hooks/use-hydrated";
 import { useLocale } from "@/i18n/use-translation";
-import { MOCK_ANNOUNCEMENTS } from "@/mocks/exchange-data";
+import {
+  AnnouncementService,
+  type Announcement,
+} from "@/services/announcement-service";
 import { NotificationService, type UserNotification } from "@/services/notification-service";
 import { useAuthStore } from "@/stores/use-auth-store";
 import { formatDateTime } from "@/utils/format-exchange";
@@ -19,11 +22,8 @@ export function NotificationsDropdown() {
   const mounted = useHydrated();
   const [open, setOpen] = useState(false);
   const [notifications, setNotifications] = useState<UserNotification[]>([]);
+  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [unread, setUnread] = useState(0);
-
-  const announcements = [...MOCK_ANNOUNCEMENTS]
-    .sort((a, b) => b.publishedAt - a.publishedAt)
-    .slice(0, 3);
 
   const loadNotifications = useCallback(async () => {
     if (!user) return;
@@ -35,6 +35,12 @@ export function NotificationsDropdown() {
       /* 静默 */
     }
   }, [user]);
+
+  useEffect(() => {
+    void AnnouncementService.list("all", 1, 5)
+      .then((res) => setAnnouncements(res.rows ?? []))
+      .catch(() => setAnnouncements([]));
+  }, []);
 
   useEffect(() => {
     if (!open) return;
@@ -90,7 +96,7 @@ export function NotificationsDropdown() {
         >
           <div className="flex items-center justify-between border-b border-border px-3 py-2">
             <span className="text-sm font-medium">
-              {user ? "通知中心" : t("announcements.title")}
+              {user ? t("announcements.title") : t("announcements.title")}
             </span>
             <Link
               href="/announcements"
@@ -102,55 +108,59 @@ export function NotificationsDropdown() {
           </div>
 
           {user && notifications.length > 0 && (
-            <>
-              <ul className="max-h-48 overflow-y-auto border-b border-border">
-                {notifications.map((n) => (
-                  <li key={n.id} className="border-b border-border/60 last:border-0">
-                    <button
-                      type="button"
-                      className="block w-full px-3 py-2.5 text-left transition hover:bg-surface-muted"
-                      onClick={() => void markRead(n.id)}
+            <ul className="max-h-48 overflow-y-auto border-b border-border">
+              {notifications.map((n) => (
+                <li key={n.id} className="border-b border-border/60 last:border-0">
+                  <button
+                    type="button"
+                    className="block w-full px-3 py-2.5 text-left transition hover:bg-surface-muted"
+                    onClick={() => void markRead(n.id)}
+                  >
+                    <p
+                      className={`text-xs font-medium line-clamp-1 ${
+                        n.read ? "text-muted" : "text-foreground"
+                      }`}
                     >
-                      <p
-                        className={`text-xs font-medium line-clamp-1 ${
-                          n.read ? "text-muted" : "text-foreground"
-                        }`}
-                      >
-                        {n.title}
-                      </p>
-                      {n.body ? (
-                        <p className="mt-0.5 text-[10px] text-muted line-clamp-1">{n.body}</p>
-                      ) : null}
-                      <p className="mt-0.5 text-[10px] text-muted">
-                        {mounted ? formatDateTime(n.ts, locale) : "--"}
-                      </p>
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </>
+                      {n.title}
+                    </p>
+                    {n.body ? (
+                      <p className="mt-0.5 text-[10px] text-muted line-clamp-1">{n.body}</p>
+                    ) : null}
+                    <p className="mt-0.5 text-[10px] text-muted">
+                      {mounted ? formatDateTime(n.ts, locale) : "--"}
+                    </p>
+                  </button>
+                </li>
+              ))}
+            </ul>
           )}
 
           <div className="px-3 py-1.5 text-[10px] uppercase tracking-wide text-muted">
             {t("announcements.title")}
           </div>
           <ul className="max-h-40 overflow-y-auto">
-            {announcements.map((ann) => (
-              <li key={ann.id} className="border-b border-border/60 last:border-0">
-                <Link
-                  href={`/announcements/${ann.id}`}
-                  className="block px-3 py-2 transition hover:bg-surface-muted"
-                  onClick={() => setOpen(false)}
-                >
-                  <p className="text-xs font-medium line-clamp-1">
-                    {isChineseLocale(locale) ? ann.titleZh : ann.titleEn}
-                  </p>
-                  <p className="mt-0.5 text-[10px] text-muted">
-                    {mounted ? formatDateTime(ann.publishedAt, locale) : "--"}
-                  </p>
-                </Link>
+            {announcements.length === 0 ? (
+              <li className="px-3 py-4 text-center text-xs text-muted">
+                {t("common.noData")}
               </li>
-            ))}
+            ) : (
+              announcements.map((ann) => (
+                <li key={ann.id} className="border-b border-border/60 last:border-0">
+                  <Link
+                    href={`/announcements/${ann.id}`}
+                    className="block px-3 py-2 transition hover:bg-surface-muted"
+                    onClick={() => setOpen(false)}
+                  >
+                    <p className="text-xs font-medium line-clamp-1">
+                      {isChineseLocale(locale) ? ann.titleZh : ann.titleEn}
+                    </p>
+                    <p className="mt-0.5 text-[10px] text-muted">
+                      {mounted ? formatDateTime(ann.publishedAt, locale) : "--"}
+                    </p>
+                  </Link>
+                </li>
+              ))
+            )}
           </ul>
         </div>
       )}

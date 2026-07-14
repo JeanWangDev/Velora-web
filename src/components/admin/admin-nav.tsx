@@ -21,6 +21,7 @@ const links: {
   { href: "/admin/withdrawals", label: "提现审核" },
   { href: "/admin/orders", labelKey: "site.adminOrders" },
   { href: "/admin/kyc", labelKey: "site.adminKyc" },
+  { href: "/admin/platform", label: "平台运维" },
 ];
 
 export function AdminNav() {

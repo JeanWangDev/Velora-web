@@ -27,6 +27,25 @@ export function baseFromTradingPair(pair: string): string {
   return base || "BTC";
 }
 
+/** 现货路由 symbol → 永续合约 instId（如 BTC-USDT → BTC-USDT-SWAP） */
+export function spotToFuturesInstId(spotSymbol: string): string {
+  const upper = spotSymbol.trim().toUpperCase();
+  if (upper.endsWith("-SWAP")) return upper;
+  return `${upper}-SWAP`;
+}
+
+/** 永续合约 instId → 现货路由 symbol */
+export function futuresInstIdToSpot(instId: string): string {
+  const upper = instId.trim().toUpperCase();
+  if (upper.endsWith("-SWAP")) return upper.slice(0, -"-SWAP".length);
+  return upper;
+}
+
+/** 比较现货路由与合约 instId 是否同一品种 */
+export function futuresSymbolsEqual(a: string, b: string): boolean {
+  return futuresInstIdToSpot(a) === futuresInstIdToSpot(b);
+}
+
 /** 校验是否为合法交易对字符串 */
 export function normalizeTradingPair(
   pair: string | null | undefined,

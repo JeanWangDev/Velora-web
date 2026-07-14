@@ -17,6 +17,7 @@ export const LOCAL_API_ORIGIN = "http://localhost:4000";
 
 const MARKET_WS_PATH = "/ws/market";
 const EVENTS_WS_PATH = "/ws/events";
+const PRIVATE_WS_PATH = "/ws/private";
 
 function trimOrigin(origin: string): string {
   return origin.replace(/\/$/, "");
@@ -114,6 +115,15 @@ function buildEventsWsBaseUrl(): string {
 
 export function getEventsWsUrl(): string {
   const base = buildEventsWsBaseUrl();
+  if (typeof window === "undefined") return base;
+  return appendWsToken(base);
+}
+
+export function getPrivateWsUrl(): string {
+  if (process.env.NEXT_PUBLIC_PRIVATE_WS_URL) {
+    return appendWsToken(process.env.NEXT_PUBLIC_PRIVATE_WS_URL);
+  }
+  const base = wsOriginFromHttpOrigin(resolveApiOrigin(), PRIVATE_WS_PATH);
   if (typeof window === "undefined") return base;
   return appendWsToken(base);
 }

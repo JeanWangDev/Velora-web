@@ -1004,6 +1004,18 @@ export const uk = {
       "historySubTpsl": "TP/SL",
       "historySubTrailingTpsl": "Трейлінг TP/SL",
       "historySubTrigger": "Тригерний",
+
+      "timeInForce": "Time in force",
+      "tifGtc": "GTC",
+      "tifPostOnly": "Post Only",
+      "tifIoc": "IOC",
+      "tifFok": "FOK",
+      "takeProfitTrigger": "TP trigger",
+      "stopLossTrigger": "SL trigger",
+      "trailingCallback": "Callback",
+      "placeTrailingStop": "Place trailing stop",
+      "toolsTrailingDesc": "Trail the market and trigger when price retraces by callback %",
+      "toolsTrailingHint": "Last price",
       "allTradeTypes": "Усі типи торгівлі",
       "sortByOrderTime": "За часом ордера",
       "currentSymbolOnly": "Поточний символ",
@@ -1036,7 +1048,15 @@ export const uk = {
       "chartIndicatorSettings": "Indicator settings",
       "orderBookCumulative": "Total",
       "deskLoginConnector": " or ",
-      "deskLoginSuffix": " to start trading"
+      "deskLoginSuffix": " to start trading",
+      "positions": "Positions",
+      "contract": "Contract",
+      "contracts": "Size",
+      "entryPrice": "Entry",
+      "unrealizedPnl": "Unrealized PnL",
+      "liquidationPrice": "Liq. Price",
+      "closePosition": "Close",
+      "filledTotal": "Filled / Total"
     },
     "assets": {
       "title": "Активи",
@@ -1051,6 +1071,14 @@ export const uk = {
       "amount": "Сума",
       "time": "Час",
       "ref": "Посилання",
+      "account": "Account",
+      "filterAll": "All",
+      "filterCurrency": "Asset",
+      "filterAccount": "Account",
+      "filterType": "Type",
+      "accountFunding": "Funding",
+      "accountTrading": "Trading",
+      "accountFutures": "Futures",
       "deposit": "Депозит",
       "withdraw": "Виведення",
       "depositDemo": "Демо-депозит нараховано",
@@ -1064,7 +1092,8 @@ export const uk = {
         "unfreeze": "Розморозка",
         "credit": "Демо-нарахування",
         "deposit": "Депозит",
-        "withdraw": "Виведення"
+        "withdraw": "Виведення",
+        "transfer": "Transfer"
       }
     },
     "orders": {
@@ -1101,6 +1130,7 @@ export const uk = {
       "boostSecurity": "Підвищити безпеку",
       "securityHint": "Пароль, 2FA та історія входів",
       "security": "Безпека",
+      "support": "Support",
       "preferences": "Налаштування",
       "kyc": "Верифікація особи",
       "kycTitle": "Верифікація особи",

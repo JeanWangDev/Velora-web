@@ -50,6 +50,7 @@ export interface KlineBar {
 
 export type OrderSide = "buy" | "sell";
 export type OrderType = "limit" | "market";
+export type TimeInForce = "gtc" | "post_only" | "ioc" | "fok";
 export type OrderStatus = "open" | "partial" | "filled" | "cancelled";
 
 export interface ExchangeOrder {
@@ -57,6 +58,7 @@ export interface ExchangeOrder {
   symbol: string;
   side: OrderSide;
   type: OrderType;
+  timeInForce?: TimeInForce;
   price: number | null;
   quantity: number;
   filledQuantity: number;
@@ -77,7 +79,7 @@ export interface UserTrade {
   ts: number;
 }
 
-export type AccountType = "funding" | "trading" | "futures";
+export type AccountType = "funding" | "trading" | "futures" | "earn" | "margin";
 
 export interface Balance {
   currency: string;
@@ -93,11 +95,15 @@ export type LedgerType =
   | "unfreeze"
   | "credit"
   | "deposit"
-  | "withdraw";
+  | "withdraw"
+  | "transfer";
+
+export type LedgerAccountType = "funding" | "trading" | "futures" | "earn" | "margin";
 
 export interface LedgerEntry {
   id: string;
   currency: string;
+  accountType?: LedgerAccountType;
   type: LedgerType;
   amount: number;
   balanceAfter: number;

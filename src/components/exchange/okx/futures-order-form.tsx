@@ -8,6 +8,8 @@ import { formatPrice } from "@/utils/format-exchange";
 import { toast } from "@/services/toast";
 import { FuturesService } from "@/services/futures-service";
 import { useFuturesStore } from "@/stores/use-futures-store";
+import { useTradingStore } from "@/stores/use-trading-store";
+import { spotToFuturesInstId } from "@/utils/symbol";
 import { cn } from "@/lib/cn";
 import { LoginModal } from "@/components/auth/login-modal";
 import { useAuthStore } from "@/stores/use-auth-store";
@@ -37,10 +39,70 @@ export function FuturesOrderForm({
   const user = useAuthStore((s) => s.user);
   const isLoggedIn = Boolean(user);
   const refreshFutures = useFuturesStore((s) => s.refresh);
+  const refreshBalances = useTradingStore((s) => s.refreshBalances);
+  const futuresBalances = useTradingStore((s) => s.getAccountBalances("futures"));
+  const availableUsdt =
+    futuresBalances.find((b) => b.currency === "USDT")?.available ?? 0;
+
+  const [markPrice, setMarkPrice] = useState(lastPrice);
+
+  useEffect(() => {
+    const instId = spotToFuturesInstId(symbol);
+    let cancelled = false;
+    const load = async () => {
+      try {
+        const res = await FuturesService.listMarkPrices();
+        const row = (res.data ?? []).find(
+          (r) => String((r as Record<string, unknown>).symbol) === instId,
+        ) as Record<string, unknown> | undefined;
+        if (row && !cancelled) {
+          setMarkPrice(Number(row.markPrice ?? lastPrice));
+        }
+      } catch {
+        if (!cancelled) setMarkPrice(lastPrice);
+      }
+    };
+    void load();
+    return () => {
+      cancelled = true;
+    };
+  }, [symbol, lastPrice]);
 
   useEffect(() => {
     setPrice(String(lastPrice));
   }, [lastPrice, symbol]);
+
+  useEffect(() => {
+    if (!isLoggedIn) return;
+    void refreshBalances();
+    const instId = spotToFuturesInstId(symbol);
+    void FuturesService.getPreference(instId)
+      .then((pref) => {
+        setLeverage(pref.leverage);
+        setMarginMode(pref.marginMode);
+      })
+      .catch(() => {});
+  }, [isLoggedIn, refreshBalances, symbol]);
+
+  const persistLeverage = async (value: number) => {
+    setLeverage(value);
+    if (!isLoggedIn) return;
+    try {
+      await FuturesService.setLeverage(spotToFuturesInstId(symbol), value);
+    } catch {
+      /* 偏好同步失败不阻断交易 */
+    }
+  };
+
+  const persistMarginMode = async (mode: "cross" | "isolated") => {
+    setMarginMode(mode);
+    if (!isLoggedIn) return;
+    try {
+      await FuturesService.setMarginMode(spotToFuturesInstId(symbol), mode);
+    } catch {
+      /* ignore */
+    }
+  };
 
   useEffect(() => {
     if (!fillLevel || fillLevel.price <= 0) return;
@@ -61,7 +123,7 @@ export function FuturesOrderForm({
       toast.error(t("trade.insufficient"));
       return;
     }
-    const futuresSymbol = symbol.includes("SWAP") ? symbol : `${symbol}-SWAP`;
+    const futuresSymbol = spotToFuturesInstId(symbol);
     setSubmitting(true);
     try {
       await FuturesService.placeOrder({
@@ -113,7 +175,7 @@ export function FuturesOrderForm({
           <button
             key={m}
             type="button"
-            onClick={() => setMarginMode(m)}
+            onClick={() => void persistMarginMode(m)}
             className={cn(
               "flex-1 rounded py-1 text-[10px]",
               marginMode === m
@@ -134,7 +196,7 @@ export function FuturesOrderForm({
         min={1}
         max={100}
         value={leverage}
-        onChange={(e) => setLeverage(Number(e.target.value))}
+        onChange={(e) => void persistLeverage(Number(e.target.value))}
         className="w-full accent-accent"
       />
 
@@ -177,7 +239,7 @@ export function FuturesOrderForm({
       </label>
 
       <p className="text-[10px] text-muted">
-        {t("trade.available")}: {formatPrice(50000, 2, locale)} USDT
+        {t("trade.available")}: {formatPrice(availableUsdt, 2, locale)} USDT
       </p>
 
       {isLoggedIn ? (
@@ -208,8 +270,10 @@ export function FuturesOrderForm({
       <LoginModal open={loginOpen} onClose={() => setLoginOpen(false)} />
 
       <div className="rounded border border-[var(--terminal-border)] p-2 text-[10px] text-muted">
-        <p>{t("trade.marginRatio")}: 0.12%</p>
-        <p>{t("trade.markPrice")}: {formatPrice(lastPrice, meta?.pricePrecision ?? 2, locale)}</p>
+        <p>
+          {t("trade.markPrice")}:{" "}
+          {formatPrice(markPrice, meta?.pricePrecision ?? 2, locale)}
+        </p>
       </div>
     </div>
   );

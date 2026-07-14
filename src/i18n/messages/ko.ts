@@ -1004,6 +1004,18 @@ export const ko = {
       "historySubTpsl": "TP/SL",
       "historySubTrailingTpsl": "트레일링 TP/SL",
       "historySubTrigger": "트리거",
+
+      "timeInForce": "Time in force",
+      "tifGtc": "GTC",
+      "tifPostOnly": "Post Only",
+      "tifIoc": "IOC",
+      "tifFok": "FOK",
+      "takeProfitTrigger": "TP trigger",
+      "stopLossTrigger": "SL trigger",
+      "trailingCallback": "Callback",
+      "placeTrailingStop": "Place trailing stop",
+      "toolsTrailingDesc": "Trail the market and trigger when price retraces by callback %",
+      "toolsTrailingHint": "Last price",
       "allTradeTypes": "모든 거래 유형",
       "sortByOrderTime": "주문 시간순",
       "currentSymbolOnly": "현재 심볼",
@@ -1036,7 +1048,15 @@ export const ko = {
       "chartIndicatorSettings": "Indicator settings",
       "orderBookCumulative": "Total",
       "deskLoginConnector": " or ",
-      "deskLoginSuffix": " to start trading"
+      "deskLoginSuffix": " to start trading",
+      "positions": "Positions",
+      "contract": "Contract",
+      "contracts": "Size",
+      "entryPrice": "Entry",
+      "unrealizedPnl": "Unrealized PnL",
+      "liquidationPrice": "Liq. Price",
+      "closePosition": "Close",
+      "filledTotal": "Filled / Total"
     },
     "assets": {
       "title": "자산",
@@ -1051,6 +1071,14 @@ export const ko = {
       "amount": "금액",
       "time": "시간",
       "ref": "참조",
+      "account": "Account",
+      "filterAll": "All",
+      "filterCurrency": "Asset",
+      "filterAccount": "Account",
+      "filterType": "Type",
+      "accountFunding": "Funding",
+      "accountTrading": "Trading",
+      "accountFutures": "Futures",
       "deposit": "입금",
       "withdraw": "출금",
       "depositDemo": "데모 입금 완료",
@@ -1064,7 +1092,8 @@ export const ko = {
         "unfreeze": "해제",
         "credit": "데모 크레딧",
         "deposit": "입금",
-        "withdraw": "출금"
+        "withdraw": "출금",
+        "transfer": "Transfer"
       }
     },
     "orders": {
@@ -1101,6 +1130,7 @@ export const ko = {
       "boostSecurity": "보안 강화",
       "securityHint": "비밀번호, 2FA, 로그인 기록",
       "security": "보안",
+      "support": "Support",
       "preferences": "환경설정",
       "kyc": "신원 인증",
       "kycTitle": "신원 인증",

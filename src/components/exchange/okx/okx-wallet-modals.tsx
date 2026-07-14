@@ -14,6 +14,8 @@ const ACCOUNT_LABELS: Record<AccountType, { zh: string; en: string }> = {
   funding: { zh: "资金账户", en: "Funding" },
   trading: { zh: "交易账户", en: "Trading" },
   futures: { zh: "合约账户", en: "Futures" },
+  earn: { zh: "赚币账户", en: "Earn" },
+  margin: { zh: "杠杆账户", en: "Margin" },
 };
 
 function ModalShell({
