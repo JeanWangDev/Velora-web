@@ -61,7 +61,6 @@ export default function LoginPage() {
   const [verifyOpen, setVerifyOpen] = useState(false);
   const [challengeToken, setChallengeToken] = useState("");
   const [maskedContact, setMaskedContact] = useState("");
-  const [devCode, setDevCode] = useState("");
   const [verifyError, setVerifyError] = useState("");
   const [verifyLoading, setVerifyLoading] = useState(false);
   const [resendCooldown, setResendCooldown] = useState(0);
@@ -121,7 +120,6 @@ export default function LoginPage() {
       });
       setChallengeToken(result.challengeToken);
       setMaskedContact(result.maskedEmail);
-      setDevCode(result.devCode ?? "");
       setResendCooldown(60);
       setVerifyOpen(true);
       toast.success(result.message || t("loginModal.codeSent"));
@@ -477,7 +475,6 @@ export default function LoginPage() {
       open={verifyOpen}
       onClose={() => setVerifyOpen(false)}
       maskedContact={maskedContact}
-      devCode={devCode}
       loading={verifyLoading}
       error={verifyError}
       resendCooldown={resendCooldown}

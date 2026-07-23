@@ -57,13 +57,12 @@ export class AuthService {
     });
   }
 
-  /** 登录第一步：校验密码并发送验证码 */
+  /** 登录第一步：校验密码并发送邮箱验证码 */
   static loginChallenge(input: { email: string; password: string }) {
     return apiClient.sendRequest<{
       challengeToken: string;
       maskedEmail: string;
       message: string;
-      devCode?: string;
     }>({
       url: `${BASE}/login/challenge`,
       method: "POST",

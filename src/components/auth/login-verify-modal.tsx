@@ -9,7 +9,6 @@ interface LoginVerifyModalProps {
   open: boolean;
   onClose: () => void;
   maskedContact: string;
-  devCode?: string;
   loading?: boolean;
   error?: string;
   onResend?: () => void;
@@ -26,7 +25,6 @@ export function LoginVerifyModal({
   open,
   onClose,
   maskedContact,
-  devCode,
   loading = false,
   error,
   onResend,
@@ -48,12 +46,6 @@ export function LoginVerifyModal({
     }
     window.setTimeout(() => inputsRef.current[0]?.focus(), 50);
   }, [open]);
-
-  useEffect(() => {
-    if (devCode && devCode.length === 6 && open) {
-      setDigits(devCode.split(""));
-    }
-  }, [devCode, open]);
 
   const code = digits.join("");
   const canConfirm = code.length === 6 && !loading;
@@ -136,12 +128,6 @@ export function LoginVerifyModal({
             />
           ))}
         </div>
-
-        {devCode ? (
-          <p className="mt-3 rounded bg-amber-50 px-2 py-1 text-center text-xs text-amber-800">
-            开发环境验证码：{devCode}
-          </p>
-        ) : null}
 
         {error ? (
           <p className="mt-3 text-center text-xs text-rose-600">{error}</p>

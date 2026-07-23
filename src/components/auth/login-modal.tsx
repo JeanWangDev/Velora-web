@@ -78,7 +78,6 @@ export function LoginModal({
   const [verifyOpen, setVerifyOpen] = useState(false);
   const [challengeToken, setChallengeToken] = useState("");
   const [maskedContact, setMaskedContact] = useState("");
-  const [devCode, setDevCode] = useState("");
   const [verifyError, setVerifyError] = useState("");
   const [verifyLoading, setVerifyLoading] = useState(false);
   const [resendCooldown, setResendCooldown] = useState(0);
@@ -170,7 +169,6 @@ export function LoginModal({
       });
       setChallengeToken(result.challengeToken);
       setMaskedContact(result.maskedEmail);
-      setDevCode(result.devCode ?? "");
       setResendCooldown(60);
       setVerifyOpen(true);
       toast.success(result.message || t("loginModal.codeSent"));
@@ -517,7 +515,6 @@ export function LoginModal({
       open={verifyOpen}
       onClose={() => setVerifyOpen(false)}
       maskedContact={maskedContact}
-      devCode={devCode}
       loading={verifyLoading}
       error={verifyError}
       resendCooldown={resendCooldown}
